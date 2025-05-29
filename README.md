@@ -1,20 +1,51 @@
-# Introduction 
-TODO: Give a short introduction of your project. Let this section explain the objectives or the motivation behind this project. 
+# FES - Create a UK catch certificate (prototype)
 
-# Getting Started
-TODO: Guide users through getting your code up and running on their own system. In this section you can talk about:
-1.	Installation process
-2.	Software dependencies
-3.	Latest releases
-4.	API references
+## Introduction
+This project was created using the [GOV.UK Prototype Kit](https://prototype-kit.service.gov.uk/docs/). The Prototype Kit allows you to quickly create realistic, interactive prototypes of GOV.UK services.
 
-# Build and Test
-TODO: Describe and show how to build your code and run the tests. 
+## Getting Started
 
-# Contribute
-TODO: Explain how other users and developers can contribute to make your code better. 
+### Prerequisites
+- Node.js (version 20.11.1)
+- npm (Node Package Manager)
+- Git
 
-If you want to learn more about creating good readme files then refer the following [guidelines](https://docs.microsoft.com/en-us/azure/devops/repos/git/create-a-readme?view=azure-devops). You can also seek inspiration from the below readme files:
-- [ASP.NET Core](https://github.com/aspnet/Home)
-- [Visual Studio Code](https://github.com/Microsoft/vscode)
-- [Chakra Core](https://github.com/Microsoft/ChakraCore)
+### Installation
+1. **Clone the repository**:
+   ```sh
+   git clone https://github.com/thefishman-fish/fes.git
+   cd fes
+   ```
+
+2. **Install dependencies**:
+   ```sh
+   npm install
+   ```
+
+3. **Run the application**:
+   ```sh
+   npm run dev
+   ```
+
+## Usage
+- **Developing locally**: The application will be available at `http://localhost:3001`. You can make changes to the code and see them reflected in real-time.
+- **Prototyping**: Use the templates and components provided by the GOV.UK Design System to create your prototypes. Refer to the [GOV.UK Prototype Kit documentation](https://prototype-kit.service.gov.uk/docs/) for detailed guidance.
+
+## Project Structure
+- `app/` - Contains the main application files.
+- `public/` - Static files such as images, stylesheets, and JavaScript.
+- `views/` - HTML templates for the application.
+- `routes/` - Application routes.
+
+## Deployment
+To deploy your prototype, follow the instructions provided in the [GOV.UK Prototype Kit documentation](https://prototype-kit.service.gov.uk/docs/).
+
+## Contributing
+If you would like to contribute to this project, please fork the repository and submit a pull request. For major changes, please open an issue first to discuss what you would like to change.
+
+## License
+This project is licensed under the MIT License. See the `LICENSE` file for more details.
+
+## Acknowledgements
+- [GOV.UK Prototype Kit](https://prototype-kit.service.gov.uk/docs/)
+- GOV.UK Design System
