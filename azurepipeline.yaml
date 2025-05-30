@@ -1,0 +1,57 @@
+trigger:
+  branches:
+    include:
+      - "*"
+  batch: True
+jobs:
+  - job: Deploy_Prototype_App
+    displayName: Agent job 1
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+      - checkout: self
+        fetchDepth: 1
+      # - task: Npm@1
+      #   displayName: npm ci
+      #   enabled: False
+      #   inputs:
+      #     command: ci
+      #     verbose: false
+      - task: CopyFiles@2
+        displayName: "Copy Files to: $(Build.ArtifactStagingDirectory)"
+        inputs:
+          SourceFolder: $(Build.SourcesDirectory)
+          TargetFolder: $(Build.ArtifactStagingDirectory)
+      - task: PublishPipelineArtifact@1
+        displayName: Publish Pipeline Artifact
+        enabled: False
+        inputs:
+          path: $(Build.ArtifactStagingDirectory)
+          artifactName: drop
+      - task: AzureAppServiceSettings@1
+        displayName: "Azure App Service Settings: Prototype app"
+        inputs:
+          ConnectedServiceName: 68823705-7fcd-4114-b0ef-8af2b76f519f
+          appName: SND-MMO-FES-PROTOTYPE-WA
+          resourceGroupName: SNDMMOINFRG1401
+          appSettings: >-
+            [
+               {
+                "name": "NODE_ENV",
+                "value": "production",
+                "slotSetting": false
+              },
+              {
+                "name": "PASSWORD",
+                "value": "fishfishfish",
+                "slotSetting": false
+              }
+            ]
+      - task: AzureRmWebAppDeployment@5
+        displayName: "Azure App Service Deploy: Prototype app"
+        inputs:
+          ConnectedServiceName: 68823705-7fcd-4114-b0ef-8af2b76f519f
+          WebAppKind: webAppLinux
+          WebAppName: SND-MMO-FES-PROTOTYPE-WA
+          Package: $(Build.ArtifactStagingDirectory)
+          RuntimeStack: NODE|20-lts
