@@ -39,9 +39,15 @@
 		
 		<h1 class="govuk-heading-xl">Transport details</h1>
 
+      <div class="govuk-warning-text">
+  <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+  <strong class="govuk-warning-text__text">
+    <span class="govuk-visually-hidden">Warning</span>
+    Only the transport entry marked “PDF” will appear on the catch certificate.
+  </strong>
+</div>
 
 <table class="govuk-table govuk-table--small-text-until-tablet">
-  <caption class="govuk-table__caption govuk-table__caption--m">Transport details</caption>
   <thead class="govuk-table__head">
     <tr class="govuk-table__row">
       <th scope="col" class="govuk-table__header app-custom-class">Transport type</th>
@@ -57,7 +63,7 @@
     <td class="govuk-table__cell">Invoice</td>
     <td class="govuk-table__cell">INV00001</td>
     <td class="govuk-table__cell">
-      <strong class="govuk-tag govuk-tag--blue">Primary</strong>
+      <strong class="govuk-tag govuk-tag--blue">PDF</strong>
     </td>
     <td class="govuk-table__cell">
       <a href="transport-type.html" class="govuk-button govuk-button--secondary" data-module="govuk-button">Edit</a>
@@ -70,9 +76,7 @@
 
 
 
-<div class="govuk-inset-text">
-  Only the transport details marked as ‘Primary’ will appear on the catch certificate.
-</div>
+
 
     
 		
@@ -121,7 +125,7 @@
       button.addEventListener('click', function () {
         const row = button.closest('tr');
         const tbody = row.closest('tbody');
-        const wasPrimary = row.querySelector('.govuk-tag--blue');
+        const wasPDF = row.querySelector('.govuk-tag--blue');
 
         // Get the next sibling <tbody>
         let nextTbody = tbody.nextElementSibling;
@@ -132,12 +136,12 @@
         // Remove the current row's tbody
         tbody.remove();
 
-        // If the removed row was primary, assign primary to the next row
-        if (wasPrimary && nextTbody) {
+        // If the removed row was PDF, assign PDF to the next row
+        if (wasPDF && nextTbody) {
           const nextRow = nextTbody.querySelector('tr');
           if (nextRow) {
             const tagCell = nextRow.children[3]; // 4th cell
-            tagCell.innerHTML = '<strong class="govuk-tag govuk-tag--blue">Primary</strong>';
+            tagCell.innerHTML = '<strong class="govuk-tag govuk-tag--blue">PDF</strong>';
           }
         }
       });

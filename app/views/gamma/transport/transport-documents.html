@@ -39,7 +39,7 @@ GOV.UK Prototype Kit
 
     <h1 class="govuk-heading-xl">Truck documents</h1>
 
-<form id="document-form" method="post" action="/gamma/transport/transport-additional">
+<form method="post" action="/gamma/transport/transport-additional">
   {% if editIndex is defined %}
     <input type="hidden" name="editIndex" value="{{ editIndex }}">
   {% endif %}
@@ -47,17 +47,17 @@ GOV.UK Prototype Kit
   <!-- Add this wrapper -->
   <div id="document-fields">
     <div class="govuk-form-group document-field" id="document-field-1">
-      <legend class="govuk-fieldset__legend govuk-fieldset__legend--s" for="document-name-1">Document name</legend>
+      <legend class="govuk-fieldset__legend govuk-fieldset__legend--s" for="document-name-1">Document name (optional)</legend>
       <div id="document-name-hint-1" class="govuk-hint">
         For example, an invoice, packing list or certificate of origin.
       </div>
-      <input class="govuk-input govuk-input--width-20" id="document-name-1" name="documentName[]" type="text" aria-describedby="document-name-hint-1">
+      <input class="govuk-input govuk-input--width-20" id="document-name-1" name="documentName" type="text" aria-describedby="document-name-hint-1">
 
-      <legend class="govuk-fieldset__legend govuk-fieldset__legend--s" for="reference-number-1">Document reference</legend>
+      <legend class="govuk-fieldset__legend govuk-fieldset__legend--s" for="reference-number-1">Document reference (optional)</legend>
       <div id="reference-number-hint-1" class="govuk-hint">
         For example, INV00001
       </div>
-      <input class="govuk-input govuk-input--width-10" id="reference-number-1" name="referenceNumber[]" type="text" aria-describedby="reference-number-hint-1">
+      <input class="govuk-input govuk-input--width-10" id="reference-number-1" name="referenceNumber" type="text" aria-describedby="reference-number-hint-1">
     </div>
   </div>
 
@@ -71,7 +71,9 @@ GOV.UK Prototype Kit
       <!-- Form controls -->
       <div class="govuk-button-group">
         <button class="govuk-button govuk-button--secondary" data-module="govuk-button" formaction="/gamma/progress">Save as draft</button>
-        <button class="govuk-button" data-module="govuk-button" formaction="/gamma/transport/transport-additional" type="submit">Save and continue</button>
+                <button class="govuk-button" data-module="govuk-button" type="submit">
+          Save and continue
+        </button>
       </div>
     </form>
   </div>

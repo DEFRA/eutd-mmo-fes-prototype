@@ -117,8 +117,8 @@ router.post('/gamma/transport/transport-additional', function (req, res) {
 
 // Route for exporter details
 router.post('../gamma/add-products', function (req, res) {
-  req.session.data['company-name'] = req.body['company-name']
   req.session.data['exporter-name'] = req.body['exporter-name']
+  req.session.data['company-name'] = req.body['exporter-name']
   // Add more fields as needed
   res.redirect('../gamma/add-products')
 })
@@ -134,9 +134,9 @@ router.post('../gamma/add-landings', function (req, res) {
   session['startDateMonth'] = req.body['startDateMonth'];
   session['startDateYear'] = req.body['startDateYear'];
 
-  session['day'] = req.body['day'];
-  session['month'] = req.body['month'];
-  session['year'] = req.body['year'];
+  session['day'] = req.body['dateLandedDay'];
+  session['month'] = req.body['dateLandedMonth'];
+  session['year'] = req.body['dateLandedYear'];
 
   session['faoArea'] = req.body['faoArea'];
   session['highSeas'] = req.body['highSeas'];
@@ -199,3 +199,17 @@ router.post('../gamma/transport/transport-documents-plane', function (req, res) 
   req.session.data['freight-bill'] = req.body['freight-bill'];
   res.redirect('../gamma/transport/transport-documents-plane');
 });
+
+router.post('../gamma/transport/check-your-answers', function (req, res) {
+  // You could log, save, or simulate submission here
+  console.log('Final submission:', req.session.data);
+
+  // Redirect to a confirmation page
+  res.redirect('../gamma/catch-certificate-complete');
+});
+
+router.get('../gamma/catch-certificate-complete', function (req, res) {
+  res.render('../gamma/catch-certificate-complete');
+});
+
+

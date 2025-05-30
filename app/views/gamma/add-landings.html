@@ -60,8 +60,10 @@ GOV.UK Prototype Kit
 
 
       <div style="background-color: #f8f8f8; width: 100%; padding: 2rem; border-radius: 2;">
-          <form id="landingForm" method="post" action="/gamma/add-landings" novalidate>
+      <form method="post" action="/gamma/catch-waters">
 
+ 
+  
 
           <div class="govuk-form-group">
             <fieldset class="govuk-fieldset" role="group" aria-describedby="date-hint">
@@ -131,7 +133,7 @@ GOV.UK Prototype Kit
                     <div class="govuk-form-group">
                       <label class="govuk-label govuk-date-input__label" for="dateLanded-day">Day</label>
                       <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="dateLanded-day"
-                        name="day" type="number" inputmode="numeric">
+                        name="dateLandedDay" type="number" inputmode="numeric">
                     </div>
                   </div>
                   <!-- Month -->
@@ -139,7 +141,7 @@ GOV.UK Prototype Kit
                     <div class="govuk-form-group">
                       <label class="govuk-label govuk-date-input__label" for="dateLanded-month">Month</label>
                       <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="dateLanded-month"
-                        name="month" type="number" inputmode="numeric">
+                        name="dateLandedMonth" type="number" inputmode="numeric">
                     </div>
                   </div>
                   <!-- Year -->
@@ -147,7 +149,7 @@ GOV.UK Prototype Kit
                     <div class="govuk-form-group">
                       <label class="govuk-label govuk-date-input__label" for="dateLanded-year">Year</label>
                       <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="dateLanded-year"
-                        name="year" type="number" inputmode="numeric">
+                        name="dateLandedYear" type="number" inputmode="numeric">
                     </div>
                   </div>
 
@@ -195,7 +197,7 @@ GOV.UK Prototype Kit
 
           <div class="govuk-form-group">
             <fieldset class="govuk-fieldset" aria-describedby="high-seas-hint">
-              <label class="govuk-label"><b>Product caught in high seas area? (optional)</b></label>
+              <label class="govuk-label"><b>High seas area (optional)</b></label>
               <div id="high-seas-hint" class="govuk-hint">
                 Select yes if the product was caught in international waters.
               </div>
@@ -553,16 +555,11 @@ GOV.UK Prototype Kit
             <button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">
               Cancel
             </button>
-            <button class="govuk-button" type="submit">Add landing</button>
-        </form>
+            <button type="button" id="addLandingButton" class="govuk-button">Add landing</button>
+        
       </div>
 
-
-        </form>
-    </div>
-
-
-    <h2 class="govuk-heading-l">Your landings</h2>
+          <h2 class="govuk-heading-l">Your landings</h2>
     <table class="govuk-table" id="landingsTable">
       <thead>
         <tr class="govuk-table__row">
@@ -580,16 +577,27 @@ GOV.UK Prototype Kit
     <div class="govuk-button-group">
       <button type="submit" name="_action" class="dcx-button govuk-button govuk-button--secondary" value="saveAsDraft"
         id="saveAsDraft" data-module="govuk-button" data-testid="save-draft-button" onclick="location.href='catch-certificates.html'">Save as draft</button>
-      <button type="submit" name="_action" class="dcx-button govuk-button" value="saveAndContinue" id="continue"
-        data-module="govuk-button" data-testid="save-and-continue" onclick="location.href='catch-waters.html'"> Save and continue</button>
+       <button class="govuk-button" data-module="govuk-button" type="submit">
+          Save and continue
+        </button>
     </div>
+          
+ 
+     </form>
+
+        
+    </div>
+
+
+
+   
 
     <p class="govuk-body">
       <a class="govuk-link" href="../gamma/progress.html">
         Back to Your Progress
       </a>
     </p>
-    </form>
+    
   </div>
   </div>
 
@@ -609,84 +617,77 @@ GOV.UK Prototype Kit
 </main>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const form = document.getElementById('landingForm');
-    const tableBody = document.getElementById('landingsTableBody');
-    let editIndex = -1;
+document.addEventListener('DOMContentLoaded', function () {
+  const form = document.getElementById('landingForm');
+  const tableBody = document.getElementById('landingsTableBody');
+  const addButton = document.getElementById('addLandingButton');
+  let editIndex = -1;
 
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
+  addButton.addEventListener('click', function () {
+    const landedDay = document.getElementById('dateLanded-day').value;
+    const landedMonth = document.getElementById('dateLanded-month').value;
+    const landedYear = document.getElementById('dateLanded-year').value;
+    const dateLanded = `${landedDay}/${landedMonth}/${landedYear}`;
+    const faoArea = document.getElementById('select-faoArea').value;
+    const vessel = document.getElementById('vessel').value;
+    const weight = document.getElementById('weight').value;
+    const gear1 = document.getElementById('gear1').value;
+    const gear2 = document.getElementById('gear2').value;
 
-      // ✅ Corrected: Use Date Landed fields
-      const landedDay = document.getElementById('dateLanded-day').value;
-      const landedMonth = document.getElementById('dateLanded-month').value;
-      const landedYear = document.getElementById('dateLanded-year').value;
-      const dateLanded = `${landedDay}/${landedMonth}/${landedYear}`;
+    const newRow = `
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">Product</td>
+        <td class="govuk-table__cell">
+          <b>Date Landed:</b> ${dateLanded}<br>
+          <b>Catch area:</b> ${faoArea}<br>
+          <b>Vessel:</b> ${vessel}<br>
+          <b>Gear category:</b> ${gear1}<br>
+          <b>Gear type:</b> ${gear2}
+        </td>
+        <td class="govuk-table__cell">${weight}</td>
+        <td class="govuk-table__cell govuk-!-text-align-right">
+          <button class="govuk-button govuk-button--secondary edit-button" type="button">Edit</button>
+          <button class="govuk-button govuk-button--secondary remove-button" type="button">Remove</button>
+        </td>
+      </tr>
+    `;
 
-      const faoArea = document.getElementById('select-faoArea').value;
-      const vessel = document.getElementById('vessel').value;
-      const weight = document.getElementById('weight').value;
-      const gear1 = document.getElementById('gear1').value;
-      const gear2 = document.getElementById('gear2').value;
-
-   const product = localStorage.getItem('selectedProduct') || '';
-   
-const newRow = `
-  <tr class="govuk-table__row">
-    <td class="govuk-table__cell">${product}</td>
-    <td class="govuk-table__cell">
-      <b>Date Landed:</b> ${dateLanded}<br>
-      <b>Catch area:</b> ${faoArea}<br>
-      <b>Vessel:</b> ${vessel}<br>
-      <b>Gear category:</b> ${gear1}<br>
-      <b>Gear type:</b> ${gear2}
-    </td>
-    <td class="govuk-table__cell">${weight}</td>
-    <td class="govuk-table__cell govuk-!-text-align-right">
-      <button class="govuk-button govuk-button--secondary edit-button" type="button">Edit</button>
-      <button class="govuk-button govuk-button--secondary remove-button" type="button">Remove</button>
-    </td>
-  </tr>
-`;
-
-
-      if (editIndex === -1) {
-        tableBody.insertAdjacentHTML('beforeend', newRow);
-      } else {
-        tableBody.rows[editIndex].outerHTML = newRow;
-        editIndex = -1;
-      }
-
-      form.reset();
-    });
-
-    tableBody.addEventListener('click', function (e) {
-      const row = e.target.closest('tr');
-      if (e.target.classList.contains('edit-button')) {
-        editIndex = Array.from(tableBody.rows).indexOf(row);
-        const details = row.cells[1].innerText.split('\n');
-        const date = details[0].replace('Date Landed: ', '').split('/');
-        const area = details[1].replace('Catch area: ', '');
-        const vessel = details[2].replace('Vessel: ', '');
-        const gear1 = details[3].replace('Gear category: ', '');
-        const gear2 = details[4].replace('Gear type: ', '');
-
-        document.getElementById('dateLanded-day').value = date[0];
-        document.getElementById('dateLanded-month').value = date[1];
-        document.getElementById('dateLanded-year').value = date[2];
-        document.getElementById('select-faoArea').value = area;
-        document.getElementById('vessel').value = vessel;
-        document.getElementById('weight').value = row.cells[2].innerText;
-        document.getElementById('gear1').value = gear1;
-        document.getElementById('gear2').value = gear2;
-      }
-
-      if (e.target.classList.contains('remove-button')) {
-        row.remove();
-      }
-    });
+    tableBody.insertAdjacentHTML('beforeend', newRow);
+    form.reset();
   });
+
+  // ✅ Event delegation for edit/remove buttons
+  tableBody.addEventListener('click', function (e) {
+    const row = e.target.closest('tr');
+    if (!row) return;
+
+    if (e.target.classList.contains('edit-button')) {
+      const details = row.cells[1].innerText.split('\n');
+      const date = details[0].replace('Date Landed: ', '').split('/');
+      const area = details[1].replace('Catch area: ', '');
+      const vessel = details[2].replace('Vessel: ', '');
+      const gear1 = details[3].replace('Gear category: ', '');
+      const gear2 = details[4].replace('Gear type: ', '');
+
+      document.getElementById('dateLanded-day').value = date[0];
+      document.getElementById('dateLanded-month').value = date[1];
+      document.getElementById('dateLanded-year').value = date[2];
+      document.getElementById('select-faoArea').value = area;
+      document.getElementById('vessel').value = vessel;
+      document.getElementById('gear1').value = gear1;
+      document.getElementById('gear2').value = gear2;
+      document.getElementById('weight').value = row.cells[2].innerText;
+
+      row.remove(); // Remove the row so it can be re-added after editing
+    }
+
+    if (e.target.classList.contains('remove-button')) {
+      row.remove();
+    }
+  });
+});
 </script>
+
 
 
 
@@ -786,10 +787,33 @@ const newRow = `
 </script>
 
 
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const product = localStorage.getItem('selectedProduct');
+  if (product) {
+    const [species, state, presentation, code] = product.split(', ');
+    const tableBody = document.getElementById('landingsTableBody');
+    const newRow = `
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">${species}, ${state}, ${presentation}</td>
+        <td class="govuk-table__cell">
+          <b>Commodity code:</b> ${code}
+        </td>
+        <td class="govuk-table__cell">—</td>
+        <td class="govuk-table__cell govuk-!-text-align-right">
+          <button class="govuk-button govuk-button--secondary remove-button" type="button">Remove</button>
+        </td>
+      </tr>
+    `;
+    tableBody.insertAdjacentHTML('beforeend', newRow);
+    localStorage.removeItem('selectedProduct'); // Clear after use
+  }
+});
+</script>
 
 
 
 
 
 
-{% endblock %}
+{% endblock %}</form>

@@ -201,42 +201,15 @@ GOV.UK Prototype Kit
       <div class="govuk-tabs__panel" id="manual">
         <h2 class="govuk-heading-l">Add products</h2>
 
-        <form id="product-form" method="post">
+        <form method="post" action="/gamma/add-landings">
+
           <input class="govuk-input" id="pid" name="pid" type="hidden" value="">
 
           <!-- Species -->
-          <div class="govuk-form-group">
-            <label class="govuk-label govuk-label--s" for="species">Common name or FAO code</label>
-            <div id="species-hint" class="dcx-hint govuk-hint">For example, Lobster or LBE.</div>
-            <select class="govuk-select govuk-!-width-one-half" id="species" name="species">
-              <option value=""></option>
-              <option value="COD">Atlantic Cod (COD)</option>
-              <option value="HAD">Haddock (HAD)</option>
-              <option value="MAC">Atlantic Mackerel (MAC)</option>
-              <option value="HKE">European Hake (HKE)</option>
-              <option value="SAL">Atlantic Salmon (SAL)</option>
-              <option value="PLE">European Plaice (PLE)</option>
-              <option value="SOL">Common Sole (SOL)</option>
-              <option value="LBE">European Lobster (LBE)</option>
-              <option value="MON">Monkfish (MON)</option>
-              <option value="HER">Herring (HER)</option>
-              <option value="BFT">Bluefin Tuna (BFT)</option>
-              <option value="YFT">Yellowfin Tuna (YFT)</option>
-              <option value="BET">Bigeye Tuna (BET)</option>
-              <option value="SWO">Swordfish (SWO)</option>
-              <option value="ANC">Anchovy (ANC)</option>
-              <option value="SAR">Sardine (SAR)</option>
-              <option value="SPR">Sprat (SPR)</option>
-              <option value="WHG">Whiting (WHG)</option>
-              <option value="POL">Pollock (POL)</option>
-              <option value="MUL">Red Mullet (MUL)</option>
-              <option value="BSS">Sea Bass (BSS)</option>
-              <option value="DOR">John Dory (DOR)</option>
-              <option value="TUR">Turbot (TUR)</option>
-              <option value="HAL">Halibut (HAL)</option>
-              <option value="LIN">Ling (LIN)</option>
-            </select>
-          </div>
+               <label class="govuk-label govuk-label--s" for="species">Common name or FAO code</label>
+  <input class="govuk-input govuk-!-width-one-half" id="species" name="species" type="text" autocomplete="off" aria-expanded="false" role="combobox" aria-autocomplete="list" aria-owns="species-listbox" aria-activedescendant="">
+<ul id="species-listbox" role="listbox" class="govuk-list" style="display: none; border: 1px solid #b1b4b6; padding: 0.5em; background: white; position: absolute; z-index: 1000; width: 50%;">
+</ul>
 
                     <details class="govuk-details">
   <summary class="govuk-details__summary">
@@ -250,6 +223,61 @@ GOV.UK Prototype Kit
    <p class="govuk-body">If you cannot find the species and it is not exempt, call 0330 159 1989.</p>
   </div>
 </details>
+
+<script>
+  const speciesList = [
+    "Atlantic Cod (COD)", "Haddock (HAD)", "Atlantic Mackerel (MAC)", "European Hake (HKE)",
+    "Atlantic Salmon (SAL)", "European Plaice (PLE)", "Common Sole (SOL)", "European Lobster (LBE)",
+    "Monkfish (MON)", "Herring (HER)", "Bluefin Tuna (BFT)", "Yellowfin Tuna (YFT)",
+    "Bigeye Tuna (BET)", "Swordfish (SWO)", "Anchovy (ANC)", "Sardine (SAR)", "Sprat (SPR)",
+    "Whiting (WHG)", "Pollock (POL)", "Red Mullet (MUL)", "Sea Bass (BSS)", "John Dory (DOR)",
+    "Turbot (TUR)", "Halibut (HAL)", "Ling (LIN)"
+  ];
+
+  const speciesInput = document.getElementById("species");
+  const speciesListbox = document.getElementById("species-listbox");
+
+  speciesInput.addEventListener("input", () => {
+    const value = speciesInput.value.toLowerCase();
+    speciesListbox.innerHTML = "";
+
+    if (value.length < 2) {
+      speciesListbox.style.display = "none";
+      return;
+    }
+
+    const matches = speciesList.filter(item => item.toLowerCase().includes(value));
+    if (matches.length === 0) {
+      speciesListbox.style.display = "none";
+      return;
+    }
+
+    matches.forEach((item, index) => {
+      const option = document.createElement("li");
+      option.setAttribute("role", "option");
+      option.setAttribute("id", `species-option-${index}`);
+      option.textContent = item;
+      option.style.cursor = "pointer";
+      option.style.padding = "0.25em 0";
+      option.onclick = () => {
+        speciesInput.value = item;
+        speciesListbox.style.display = "none";
+      };
+      speciesListbox.appendChild(option);
+    });
+
+    speciesListbox.style.display = "block";
+  });
+
+  document.addEventListener("click", (e) => {
+    if (!speciesInput.contains(e.target) && !speciesListbox.contains(e.target)) {
+      speciesListbox.style.display = "none";
+    }
+  });
+</script>
+
+
+
 
           <!-- State -->
           <div class="govuk-form-group">
@@ -314,7 +342,7 @@ GOV.UK Prototype Kit
             <button class="govuk-button" data-module="govuk-button" id="update-button"
               onclick="return updateProduct()">Update product</button>
           </div>
-        </form>
+       
       </div>
 
       <!-- Add products from favourites panel -->
@@ -322,7 +350,7 @@ GOV.UK Prototype Kit
         <h2 class="govuk-heading-l">Add products from favourites</h2>
         <form id="favourites-form" method="post">
           <!-- Placeholder for favourites functionality -->
-        </form>
+        
       </div>
     </div>
 
@@ -351,8 +379,11 @@ GOV.UK Prototype Kit
     Save as draft
   </button>
 
-<button class="govuk-button" onclick="saveProduct()">Save and continue</button>
+        <button class="govuk-button" data-module="govuk-button" type="submit">
+          Save and continue
+        </button>
 </div>
+ </form>
 
 
 <p class="govuk-body">
