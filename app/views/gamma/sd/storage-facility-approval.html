@@ -1,0 +1,166 @@
+{% set serviceName = "Create a UK storage document" %}
+
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  GOV.UK Prototype Kit
+{% endblock %}
+
+{% block content %}
+	{% include "../../includes/phase.html" %}
+
+<style>
+	.govuk-button-group {margin-top:50px;}
+</style>
+
+<style>
+  .app-contact-panel {
+    margin-top: 60px;
+    /* govuk-responsive-margin(9, "top") equivalent */
+    padding-top: 20px;
+    /* govuk-spacing(3) equivalent */
+    border-top: 2px solid #1d70b8;
+    /* govuk-colour("blue") */
+  }
+
+  .app-contact-panel__heading,
+  .app-contact-panel__body,
+  .app-contact-panel__link {
+    max-width: 100%;
+  }
+
+  .app-contact-panel__heading {
+    font-family: "GDS Transport", Arial, sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 1.25;
+    padding-top: 10px;
+  }
+
+  .app-contact-panel__heading:first-child {
+    padding-top: 0;
+  }
+
+  .app-contact-panel__body:last-child {
+    margin-bottom: 0;
+  }
+</style>
+
+
+
+  
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      
+		<a href="progress.html" class="govuk-back-link">Back</a>
+		
+		<h1 class="govuk-heading-xl">Add storage facility details</h1>
+		
+    <form method="post" action="/gamma/sd/storage-facility-approval">
+
+       <div class="govuk-warning-text">
+  <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+  <strong class="govuk-warning-text__text">
+    <span class="govuk-visually-hidden">Warning</span>
+    This section is optional. You can skip it and continue. 
+    These questions will become mandatory from 10 January 2026, under new EU regulations.
+  </strong>
+</div>
+
+
+      <div class="govuk-form-group">
+  <label class="govuk-label govuk-label--s" for="approval-number">
+    Approval number (if applicable)
+  </label>
+        <div id="approval-number" class="govuk-hint">
+          If the storage facility has an approval number, enter it here. For example, UK/ABC/001, 1 UK 22028 or TSF001.
+        </div>
+  <input class="govuk-input govuk-input--width-10" id="approval-number" name="approval-number" type="text">
+</div>
+
+<div class="govuk-form-group">
+  <fieldset class="govuk-fieldset" aria-describedby="product-storage-hint">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+      How was the product stored?
+    </legend>
+    <div id="product-storage-hint" class="govuk-hint">
+      Select one option.
+    </div>
+  <div class="govuk-radios" data-module="govuk-radios">
+      <div class="govuk-radios__item">
+        <input class="govuk-radios__input" id="product-storage-1" name="product-storage" type="radio" value="Chilled">
+        <label class="govuk-label govuk-radios__label" for="product-storage-1">
+          Chilled
+        </label>
+      </div>
+      <div class="govuk-radios__item">
+        <input class="govuk-radios__input" id="product-storage-2" name="product-storage" type="radio" value="Frozen">
+        <label class="govuk-label govuk-radios__label" for="product-storage-2">
+          Frozen
+        </label>
+      </div>
+      <div class="govuk-radios__divider">or</div>
+      <div class="govuk-radios__item">
+        <input class="govuk-radios__input" id="product-storage-3" name="product-storage" type="radio" value="Other">
+        <label class="govuk-label govuk-radios__label" for="product-storage-3">
+          Other
+        </label>
+      </div>
+    </div>
+  </fieldset>
+</div>
+
+
+
+			
+  
+      
+      <!-- Form controls -->
+			<div class="govuk-button-group">
+         <button type="submit" class="govuk-button" data-module="govuk-button">
+          Save and continue
+        </button>
+        <button class="govuk-button govuk-button--secondary" data-module="govuk-button" formaction="../non-manipulation-document.html">Save as draft</button>
+
+
+      </div>
+
+      <p class="govuk-body">
+                <a href="../sd/progress.html" class="govuk-link">Back to your progress</a>
+              </p>			
+		</form>
+
+                  <div class="app-contact-panel">
+                <h2 class="app-contact-panel__heading">Get help with your application</h2>
+
+                <p class="app-contact-panel__body">
+                  If you have a storage document unique reference number, have it with you when you call.
+                </p>
+
+                <ul class="govuk-list">
+                  <li>Phone: 0330 159 1989 </li>
+                  <li>Monday to Friday, 9am to 5pm (except public holidays)</li>
+                </ul>
+
+                <p class="govuk-body">
+                  <a class="govuk-link" href="#">Find out about call charges</a>
+                </p>
+
+                <p>Read the guidance on <a
+                    href="https://www.gov.uk/guidance/exporting-or-moving-fish-from-the-uk#get-help-with-fish-export-documents"
+                    class="govuk-link" rel="noreferrer noopener" target="_blank">exporting or moving fish from the UK
+                    (opens in new tab).</a>
+                </p>
+
+                <p class="govuk-body">
+                  Visit the
+                  <a href="https://www.gov.uk/contact-local-marine-management-product-storage" class="govuk-link"
+                    target="_blank" rel="noopener noreferrer"> Marine Management Product-storage (MMO) contact page for
+                    more information and local office details.</a>
+
+	  </div>
+  </div>
+
+	
+{% endblock %}
+

@@ -1,4 +1,3 @@
-
 {% extends "layouts/main.html" %}
 
 {% block pageTitle %}
@@ -14,50 +13,50 @@
   .govuk-details {margin-bottom:50px;}
 </style>
 
-<script>
+<style>
+  .app-contact-panel {
+    margin-top: 60px;
+    /* govuk-responsive-margin(9, "top") equivalent */
+    padding-top: 20px;
+    /* govuk-spacing(3) equivalent */
+    border-top: 2px solid #1d70b8;
+    /* govuk-colour("blue") */
+  }
 
-  	// Navigate to form chosen in options
-    function navigateOption() {
-        
-      if (document.getElementById('dl-option').checked) {
-        
-        // Navigate to add products page
-        window.location = 'add-products.html';
-        
-      };
-      
-      if (document.getElementById('manual-option').checked) {
-        
-        //Navigate to add products page
-        window.location = 'add-products.html';
-        
-      };
-      
-      if (document.getElementById('upload-option').checked) {
-        
-        //Navigate to data upload page
-        window.location = 'upload-file.html';
-        
-      };
-      
-		  // Stop page refreshing
-		  return false;
+  .app-contact-panel__heading,
+  .app-contact-panel__body,
+  .app-contact-panel__link {
+    max-width: 100%;
+  }
 
-    }
-		
+  .app-contact-panel__heading {
+    font-family: "GDS Transport", Arial, sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 1.25;
+    padding-top: 10px;
+  }
 
-	
-</script>
+  .app-contact-panel__heading:first-child {
+    padding-top: 0;
+  }
+
+  .app-contact-panel__body:last-child {
+    margin-bottom: 0;
+  }
+</style>
+
 
   
 <div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
+    <div class="govuk-grid-column-two-thirds">
       
 		<a href="progress.html" class="govuk-back-link">Back</a>
 		
-		<h1 class="govuk-heading-xl">How do you want to enter your products and landings?</h1>{{releaseVersion | log }}
+		<h1 class="govuk-heading-xl">How do you want to enter your products and landings?</h1>
 		
-		<form id="options-form" method="post">
+		<form method="post" action="/gamma/landings-entry">
+
 			
 			<div class="govuk-form-group">
         <fieldset class="govuk-fieldset">
@@ -66,7 +65,7 @@
             <div class="govuk-radios__item">
               <input class="govuk-radios__input" id="dl-option" name="landings-option" type="radio" value="dl">
               <label class="govuk-label govuk-radios__label" for="dl-option">Direct landing</label>
-              <div id="dl-option-item-hint" class="govuk-hint govuk-radios__hint">Recommended for UK registered fishing vessels landing and exporting their catch simultaneously in the EU (or a GB registered fishing vessel direct landing in Northern Ireland).</div>
+              <div id="dl-option-item-hint" class="govuk-hint govuk-radios__hint">For UK-registered vessels landing and exporting in the EU, or GB-registered vessels landing directly in Northern Ireland.</div>
             </div>
             <div class="govuk-radios__item">
               <input class="govuk-radios__input" id="manual-option" name="landings-option" type="radio" value="manual">
@@ -76,7 +75,7 @@
             <div class="govuk-radios__item">
               <input class="govuk-radios__input" id="upload-option" name="landings-option" type="radio" value="upload">
               <label class="govuk-label govuk-radios__label" for="upload-option">Upload from a CSV file</label>
-              <div id="upload-option-item-hint" class="govuk-hint govuk-radios__hint">Recommended for large exports. (Requires the set up of product favourites).</div>
+              <div id="upload-option-item-hint" class="govuk-hint govuk-radios__hint">Recommended for large exports.</div>
             </div>
           </div>
         </fieldset>
@@ -95,16 +94,41 @@
           
       <!-- Form controls -->
 			<div class="govuk-button-group">
-		    <button class="govuk-button" data-module="govuk-button" formaction="progress">Save and continue</button>
+		            <button class="govuk-button" data-module="govuk-button" type="submit">
+          Save and continue
+        </button>
 		  </div>
-        
 		</form>
+
+    <div class="app-contact-panel">
+                <h2 class="app-contact-panel__heading">Get help with your application</h2>
+
+                <p class="app-contact-panel__body">
+                  If you have a catch certificate unique reference number, have it with you when you call.
+                </p>
+
+                <ul class="govuk-list">
+                  <li>Phone: 0330 159 1989 </li>
+                  <li>Monday to Friday, 9am to 5pm (except public holidays)</li>
+                </ul>
+
+                <p class="govuk-body">
+                  <a class="govuk-link" href="#">Find out about call charges</a>
+                </p>
+
+                <p>Read the guidance on <a
+                    href="https://www.gov.uk/guidance/exporting-or-moving-fish-from-the-uk#get-help-with-fish-export-documents"
+                    class="govuk-link" rel="noreferrer noopener" target="_blank">exporting or moving fish from the UK
+                    (opens in new tab).</a>
+                </p>
+
+              </div>
 		
 		
 
 	  </div>
   </div>
 
-	{% include "../includes/help.html" %}
+	
 {% endblock %}
 

@@ -1,0 +1,214 @@
+
+{% set serviceName = "Create a UK non-manipulation document" %}
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  GOV.UK Prototype Kit
+{% endblock %}
+
+{% block content %}
+  {% include "../../includes/phase.html" %}
+
+<style>
+  .govuk-fieldset {margin-bottom:30px;}
+  .govuk-fieldset__legend {font-weight:bold;}
+  .black {color:#0b0c0c;}
+  .govuk-button-group {margin-top:50px;}
+</style>
+
+<style>
+  .app-contact-panel {
+    margin-top: 60px;
+    /* govuk-responsive-margin(9, "top") equivalent */
+    padding-top: 20px;
+    /* govuk-spacing(3) equivalent */
+    border-top: 2px solid #1d70b8;
+    /* govuk-colour("blue") */
+  }
+
+  .app-contact-panel__heading,
+  .app-contact-panel__body,
+  .app-contact-panel__link {
+    max-width: 100%;
+  }
+
+  .app-contact-panel__heading {
+    font-family: "GDS Transport", Arial, sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 1.25;
+    padding-top: 10px;
+  }
+
+  .app-contact-panel__heading:first-child {
+    padding-top: 0;
+  }
+
+  .app-contact-panel__body:last-child {
+    margin-bottom: 0;
+  }
+</style>
+
+
+  
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+      
+    <a href="javascript:history.back()" class="govuk-back-link">Back</a>
+
+    
+    <h1 class="govuk-heading-xl">Enter the destination for the consignment</h1>
+
+    
+    <form method="post" action="/gamma/nmd/departure-destination">
+
+      
+<!-- Destination country -->
+<div class="govuk-form-group">
+  <div class="govuk-form-group govuk-!-width-two-thirds ">
+    <div style="position:relative">
+  <fieldset class="govuk-fieldset" aria-describedby="departure-destination-country-hint">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+      Select the destination country
+    </legend>
+
+    <div id="departure-destination-country-hint" class="govuk-hint">
+      Enter the main destination country for the export. Do not include countries the goods are passing through.
+    </div>
+    <div style="position: relative;">
+      <input name="departure-destination-country" type="text"
+  class="govuk-input govuk-!-width-full"
+        id="departure-destination-country" autocomplete="off"
+        aria-expanded="false" role="combobox" aria-autocomplete="list"
+        aria-owns="departure-destination-country-listbox" aria-activedescendant="">
+      <ul id="departure-destination-country-listbox" role="listbox"
+        class="govuk-list"
+        style="display: none; border: 1px solid #b1b4b6; padding: 0.5em; background: white; position: absolute; z-index: 1000; width: 94%;">
+      <script>
+const countries = [
+  "Belgium",
+  "China",
+  "Denmark",
+  "Estonia",
+  "Finland",
+  "France",
+  "Germany",
+  "Greece",
+  "Iceland",
+  "Ireland",
+  "Italy",
+  "Latvia",
+  "Lithuania",
+  "Netherlands",
+  "Norway",
+  "Northern Ireland",
+  "Poland",
+  "Portugal",
+  "Republic of Ireland",
+  "South Korea",
+  "Spain",
+  "Sweden",
+  "United Kingdom",
+  "United States",
+  "Vietnam"
+];
+
+
+
+  const input = document.getElementById("departure-destination-country");
+  const listbox = document.getElementById("departure-destination-country-listbox");
+
+  input.addEventListener("input", () => {
+    const value = input.value.toLowerCase();
+    listbox.innerHTML = "";
+
+    if (value.length < 2) {
+      listbox.style.display = "none";
+      return;
+    }
+
+    const matches = countries.filter(country => country.toLowerCase().includes(value));
+    if (matches.length === 0) {
+      listbox.style.display = "none";
+      return;
+    }
+
+    matches.forEach((country, index) => {
+      const option = document.createElement("li");
+      option.setAttribute("role", "option");
+      option.setAttribute("id", `departure-destination-country-option-${index}`);
+      option.textContent = country;
+      option.style.cursor = "pointer";
+      option.style.padding = "0.25em 0";
+      option.onclick = () => {
+        input.value = country;
+        listbox.style.display = "none";
+      };
+      listbox.appendChild(option);
+    });
+
+    listbox.style.display = "block";
+  });
+
+  // Optional: hide listbox when clicking outside
+  document.addEventListener("click", (e) => {
+    if (!input.contains(e.target) && !listbox.contains(e.target)) {
+      listbox.style.display = "none";
+    }
+  });
+</script>
+      </ul>
+    </div>
+
+            <!-- Form controls -->
+<div class="govuk-button-group">
+    <button type="submit" class="govuk-button" data-module="govuk-button" formaction="/gamma/nmd/departure-transport-type">
+    Save and continue
+  </button>
+  <button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button" formaction="/gamma/nmd/progress">
+    Save as draft
+  </button>
+</div>
+
+    
+    </div>
+  </fieldset>
+</div>
+
+      
+
+      
+    </form>
+    
+                <p class="govuk-body"><a href="../nmd/progress.html" class="govuk-link">Back to your progress</a></p>
+
+
+              <div class="app-contact-panel">
+                <h2 class="app-contact-panel__heading">Get help with your application</h2>
+
+                <p class="app-contact-panel__body">
+                  If you have a non-manipulation document unique reference number, have it with you when you call.
+                </p>
+
+                <ul class="govuk-list">
+                  <li>Phone: 0330 159 1989 </li>
+                  <li>Monday to Friday, 9am to 5pm (except public holidays)</li>
+                </ul>
+
+                <p class="govuk-body">
+                  <a class="govuk-link" href="#">Find out about call charges</a>
+                </p>
+
+                <p>Read the guidance on <a
+                    href="https://www.gov.uk/guidance/exporting-or-moving-fish-from-the-uk#get-help-with-fish-export-documents"
+                    class="govuk-link" rel="noreferrer noopener" target="_blank">exporting or moving fish from the UK
+                    (opens in new tab).</a>
+                </p>
+              </div>
+                 </div>
+</div>
+
+
+
+{% endblock %}
+

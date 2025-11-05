@@ -46,6 +46,15 @@ GOV.UK Prototype Kit
 
 <script>
 
+  const speciesList = [
+    "Atlantic Cod (COD)", "Haddock (HAD)", "Atlantic Mackerel (MAC)", "European Hake (HKE)",
+    "Atlantic Salmon (SAL)", "European Plaice (PLE)", "Common Sole (SOL)", "European Lobster (LBE)",
+    "Monkfish (MON)", "Edible crab (CRA)", "Herring (HER)", "Bluefin Tuna (BFT)", "Yellowfin Tuna (YFT)",
+    "Bigeye Tuna (BET)", "Swordfish (SWO)", "Anchovy (ANC)", "Sardine (SAR)", "Sprat (SPR)",
+    "Whiting (WHG)", "Pollock (POL)", "Red Mullet (MUL)", "Sea Bass (BSS)", "John Dory (DOR)",
+    "Turbot (TUR)", "Halibut (HAL)", "Ling (LIN)"
+
+  ];
 
   // FUNCTION: Edit a product
   function editProduct(btn) {
@@ -167,11 +176,136 @@ GOV.UK Prototype Kit
 
   }
 
+  document.addEventListener("DOMContentLoaded", () => {
+    // hook up listeners _after_ the DOM (page) is ready, otherwise they won't exist!
+    const speciesInput = document.getElementById("species");
+    const speciesListbox = document.getElementById("species-listbox");
+
+    speciesInput.addEventListener("input", () => {
+      const value = speciesInput.value.toLowerCase();
+      speciesListbox.innerHTML = "";
+
+      if (value.length < 2) {
+        speciesListbox.style.display = "none";
+        return;
+      }
+
+      const matches = speciesList.filter(item => item.toLowerCase().includes(value));
+      if (matches.length === 0) {
+        speciesListbox.style.display = "none";
+        return;
+      }
+
+      matches.forEach((item, index) => {
+        const option = document.createElement("li");
+        option.setAttribute("role", "option");
+        option.setAttribute("id", `species-option-${index}`);
+        option.textContent = item;
+        option.style.cursor = "pointer";
+        option.style.padding = "0.25em 0";
+        option.onclick = () => {
+          speciesInput.value = item;
+          speciesListbox.style.display = "none";
+        };
+        speciesListbox.appendChild(option);
+      });
+
+      speciesListbox.style.display = "block";
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!speciesInput.contains(e.target) && !speciesListbox.contains(e.target)) {
+        speciesListbox.style.display = "none";
+      }
+    });
+
+  });
+
 </script>
+
+<style>
+  .app-contact-panel {
+    margin-top: 60px;
+    /* govuk-responsive-margin(9, "top") equivalent */
+    padding-top: 20px;
+    /* govuk-spacing(3) equivalent */
+    border-top: 2px solid #1d70b8;
+    /* govuk-colour("blue") */
+  }
+
+  .app-contact-panel__heading,
+  .app-contact-panel__body,
+  .app-contact-panel__link {
+    max-width: 100%;
+  }
+
+  .app-contact-panel__heading {
+    font-family: "GDS Transport", Arial, sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 1.25;
+    padding-top: 10px;
+  }
+
+  .app-contact-panel__heading:first-child {
+    padding-top: 0;
+  }
+
+  .app-contact-panel__body:last-child {
+    margin-bottom: 0;
+  }
+</style>
+
+<style>
+  .secondary-button-style {
+    display: inline-block;
+    position: relative;
+    padding: 6px 10px 5px;
+    margin: 0 10px 20px 0;
+    /* Adds spacing between buttons */
+    min-width: 80px;
+    width: auto;
+    /* Prevents full-width stretching */
+    font-family: "GDS Transport", arial, sans-serif;
+    font-size: 1.1875rem;
+    font-weight: 400;
+    line-height: 1.3157894737;
+    color: #0b0c0c;
+    background: rgba(0, 0, 0, 0);
+    border: 1px solid #0b0c0c;
+    box-shadow: 0 3px 0 #0b0c0c;
+    text-align: center;
+    text-decoration: none;
+    vertical-align: top;
+    cursor: pointer;
+    border-radius: 0;
+    box-sizing: border-box;
+    -webkit-appearance: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
+  }
+
+  .secondary-button-style:hover {
+    background-color: #f3f2f1;
+    color: #0b0c0c;
+  }
+
+  .secondary-button-style:focus {
+    outline: 3px solid #fd0;
+    outline-offset: 0;
+    box-shadow: inset 0 0 0 1px #0b0c0c;
+  }
+
+  .secondary-button-style:active {
+    top: 2px;
+    box-shadow: 0 1px 0 #0b0c0c;
+  }
+</style>
 
 
 <div class="govuk-grid-row">
-  <div class="govuk-grid-column-full">
+  <div class="govuk-grid-column-two-thirds">
 
     <a href="upload-file.html" class="govuk-back-link">Back</a>
 
@@ -185,7 +319,7 @@ GOV.UK Prototype Kit
     </div>
 
 
-    <h1 class="govuk-heading-xl">What are you exporting?</h1>{{releaseVersion | log }}
+    <h1 class="govuk-heading-xl">What are you exporting?</h1>
 
     <div class="govuk-tabs" data-module="govuk-tabs">
       <ul class="govuk-tabs__list">
@@ -201,80 +335,41 @@ GOV.UK Prototype Kit
       <div class="govuk-tabs__panel" id="manual">
         <h2 class="govuk-heading-l">Add products</h2>
 
-        <form method="post" action="/gamma/add-landings">
+        <form method="post">
 
           <input class="govuk-input" id="pid" name="pid" type="hidden" value="">
 
           <!-- Species -->
-               <label class="govuk-label govuk-label--s" for="species">Common name or FAO code</label>
-  <input class="govuk-input govuk-!-width-one-half" id="species" name="species" type="text" autocomplete="off" aria-expanded="false" role="combobox" aria-autocomplete="list" aria-owns="species-listbox" aria-activedescendant="">
-<ul id="species-listbox" role="listbox" class="govuk-list" style="display: none; border: 1px solid #b1b4b6; padding: 0.5em; background: white; position: absolute; z-index: 1000; width: 50%;">
-</ul>
+          <label class="govuk-label govuk-label--s" for="species">FAO code or species name</label>
+          <input class="govuk-input govuk-!-width-two-thirds" id="species" name="species" type="text" autocomplete="off"
+            aria-expanded="false" role="combobox" aria-autocomplete="list" aria-owns="species-listbox"
+            aria-activedescendant="">
+          <ul id="species-listbox" role="listbox" class="govuk-list"
+            style="display: none; border: 1px solid #b1b4b6; padding: 0.5em; background: white; position: absolute; z-index: 1000; width: 21%;">
+          </ul>
 
-                    <details class="govuk-details">
-  <summary class="govuk-details__summary">
-    <span class="govuk-details__summary-text">
-      I cannot find the species
-    </span>
-  </summary>
-  <div class="govuk-details__text">
-    <p class="govuk-body">For best results, search for the common English name or the FAO code (if known) as species nicknames are not supported.</p>
-    <p class="govuk-body">Some species are exempt: <a href="https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:32011R0202&qid=1647522263758&from=EN">Species exempt from Catch Certificates (europa.eu)</a></p>
-   <p class="govuk-body">If you cannot find the species and it is not exempt, call 0330 159 1989.</p>
-  </div>
-</details>
 
-<script>
-  const speciesList = [
-    "Atlantic Cod (COD)", "Haddock (HAD)", "Atlantic Mackerel (MAC)", "European Hake (HKE)",
-    "Atlantic Salmon (SAL)", "European Plaice (PLE)", "Common Sole (SOL)", "European Lobster (LBE)",
-    "Monkfish (MON)", "Herring (HER)", "Bluefin Tuna (BFT)", "Yellowfin Tuna (YFT)",
-    "Bigeye Tuna (BET)", "Swordfish (SWO)", "Anchovy (ANC)", "Sardine (SAR)", "Sprat (SPR)",
-    "Whiting (WHG)", "Pollock (POL)", "Red Mullet (MUL)", "Sea Bass (BSS)", "John Dory (DOR)",
-    "Turbot (TUR)", "Halibut (HAL)", "Ling (LIN)"
-  ];
+          <div style="margin-bottom: 1rem;"></div>
 
-  const speciesInput = document.getElementById("species");
-  const speciesListbox = document.getElementById("species-listbox");
 
-  speciesInput.addEventListener("input", () => {
-    const value = speciesInput.value.toLowerCase();
-    speciesListbox.innerHTML = "";
+                 <details class="govuk-details">
+          <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+              Help with species name
+            </span>
+          </summary>
+          <div class="govuk-details__text">
+            <p class="govuk-body">Some species are exempt from this requirement.</p>
+            <p class="govuk-body">See the <a
+                href="https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:32011R0202&qid=1647522263758&from=EN"
+                class="govuk-link" rel="noreferrer noopener" target="_blank">list of exempt species on europa.eu (opens
+                in a new tab)</a>
 
-    if (value.length < 2) {
-      speciesListbox.style.display = "none";
-      return;
-    }
+            </p>
+          </div>
+        </details>
 
-    const matches = speciesList.filter(item => item.toLowerCase().includes(value));
-    if (matches.length === 0) {
-      speciesListbox.style.display = "none";
-      return;
-    }
-
-    matches.forEach((item, index) => {
-      const option = document.createElement("li");
-      option.setAttribute("role", "option");
-      option.setAttribute("id", `species-option-${index}`);
-      option.textContent = item;
-      option.style.cursor = "pointer";
-      option.style.padding = "0.25em 0";
-      option.onclick = () => {
-        speciesInput.value = item;
-        speciesListbox.style.display = "none";
-      };
-      speciesListbox.appendChild(option);
-    });
-
-    speciesListbox.style.display = "block";
-  });
-
-  document.addEventListener("click", (e) => {
-    if (!speciesInput.contains(e.target) && !speciesListbox.contains(e.target)) {
-      speciesListbox.style.display = "none";
-    }
-  });
-</script>
+       
 
 
 
@@ -282,7 +377,7 @@ GOV.UK Prototype Kit
           <!-- State -->
           <div class="govuk-form-group">
             <label class="govuk-label govuk-label--s" for="state">State</label>
-            <select class="govuk-select govuk-!-width-one-half" id="state" name="state">
+            <select class="govuk-select govuk-!-width-two-thirds" id="state" name="state">
               <option value="">Select ...</option>
               <option value="Alive">Alive</option>
               <option value="Fresh">Fresh</option>
@@ -294,7 +389,7 @@ GOV.UK Prototype Kit
           <!-- Presentation -->
           <div class="govuk-form-group">
             <label class="govuk-label govuk-label--s" for="presentation">Presentation</label>
-            <select class="govuk-select govuk-!-width-one-half" id="presentation" name="presentation">
+            <select class="govuk-select govuk-!-width-two-thirds" id="presentation" name="presentation">
               <option value="">Select ...</option>
               <option value="Filleted">Filleted</option>
               <option value="Whole">Whole</option>
@@ -305,24 +400,56 @@ GOV.UK Prototype Kit
           <!-- Commodity code -->
           <div class="govuk-form-group">
             <label class="govuk-label govuk-label--s" for="commodity-code">Commodity code</label>
-            <select class="govuk-select govuk-!-width-one-half" id="commodity-code" name="commodity-code">
+            <select class="govuk-select govuk-!-width-two-thirds" id="commodity-code" name="commodity-code">
               <option value="">Select ...</option>
-              <option value="03044490">03044490</option>
-              <option value="03022980">03022980</option>
-              <option value="16051000">16051000</option>
+              <option value="03021410">03021410 - Fresh or chilled Atlantic salmon (Salmo salar)</option>
+              <option value="03025400">03025400 - Fresh or chilled Atlantic mackerel (Scomber scombrus)</option>
+              <option value="03024310">03024310 - Fresh or chilled Atlantic cod (Gadus morhua)</option>
+              <option value="03024610">03024610 - Fresh or chilled Atlantic herring (Clupea harengus)</option>
+              <option value="03024530">03024530 - Fresh or chilled Chilean jack mackerel (Trachurus murphyi)</option>
+              <option value="03021900">03021900 - Fresh or chilled flatfish (excluding halibut, plaice, sole)</option>
+              <option value="03022400">03022400 - Fresh or chilled hake (Merluccius spp.)</option>
+              <option value="03025200">03025200 - Fresh or chilled haddock (Melanogrammus aeglefinus)</option>
+              <option value="03027400">03027400 - Fresh or chilled plaice (Pleuronectes platessa)</option>
+              <option value="03027200">03027200 - Fresh or chilled sole (Solea solea)</option>
+              <option value="03028910">03028910 - Fresh or chilled monkfish (Lophius spp.)</option>
+              <option value="03034400">03034400 - Frozen bigeye tuna (Thunnus obesus)</option>
+              <option value="03034501">03034501 - Frozen Atlantic bluefin tuna (Thunnus thynnus)</option>
+              <option value="03034200">03034200 - Frozen yellowfin tuna (Thunnus albacares)</option>
+              <option value="03048700">03048700 - Frozen tuna fillets (Thunnus spp.)</option>
+              <option value="03056300">03056300 - Anchovies (Engraulis spp.), salted or in brine</option>
+              <option value="16041310">16041310 - Smoked sardines in oil, not skinned/boned</option>
+              <option value="16041320">16041320 - Sardines, sardinella, sprats in oil, airtight containers</option>
+              <option value="16041330">16041330 - Sardines/sprats, skinned/boned, in oil, airtight containers</option>
+              <option value="16041390">16041390 - Sardines/sprats, not in oil, not airtight, ≥225g</option>
+              <option value="03055400">03055400 - Dried herrings, anchovies, sardines, sprats, mackerel</option>
+              <option value="03037900">03037900 - Frozen whiting (Merlangius merlangus)</option>
+              <option value="03037500">03037500 - Frozen pollock (Pollachius virens)</option>
+              <option value="03038900">03038900 - Frozen red mullet (Mullus spp.)</option>
+              <option value="03038910">03038910 - Frozen sea bass (Dicentrarchus spp.)</option>
+              <option value="03038920">03038920 - Frozen John Dory (Zeus faber)</option>
+              <option value="03022100">03022100 - Fresh or chilled halibut (Hippoglossus spp.)</option>
+              <option value="03022400">03022400 - Fresh or chilled turbot (Scophthalmus maximus)</option>
+              <option value="03022910">03022910 - Fresh or chilled European lobster (Homarus gammarus)</option>
+              <option value="03089000">03089000 – Other aquatic invertebrates (for lobster)</option>
+              <option value="03022900">03022900 - Fresh or chilled ling (Molva molva)</option>
+              <option value="03023200">03023200 - Fresh or chilled monkfish (Lophius spp.)</option>
+              <option value="03063310">03063310 - Edible crab (Cancer pagurus)</option>
             </select>
           </div>
 
-          <details class="govuk-details">
-  <summary class="govuk-details__summary">
-    <span class="govuk-details__summary-text">
-      I cannot find the commodity code
-    </span>
-  </summary>
-  <div class="govuk-details__text">
-    <p class="govuk-body"></p>Call 0330 159 1989 if the commodity code you need is not shown.
-  </div>
-</details>
+                 <details class="govuk-details">
+          <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+              Help with commodity code
+            </span>
+          </summary>
+          <div class="govuk-details__text">
+            <p class="govuk-body">You can use the <a href="https://www.gov.uk/trade-tariff" class="govuk-link"
+                rel="noreferrer noopener" target="_blank">UK Integrated Online Tariff
+                to find the correct commodity code (opens in new tab)</a></p>
+          </div>
+        </details>
 
           <!-- Add to favourites -->
           <div class="govuk-form-group">
@@ -336,21 +463,21 @@ GOV.UK Prototype Kit
 
           <!-- Form controls -->
           <div class="govuk-button-group">
-            <button class="govuk-button govuk-button--secondary" data-module="govuk-button" type="reset">Cancel</button>
-            <button class="govuk-button" data-module="govuk-button" id="add-button" onclick="return addProduct()">Add
-              product</button>
+            <button type="submit" class="govuk-button" data-module="govuk-button" id="add-button">Add product</button>
+            <button type="button" class="secondary-button-style govuk-!-margin-bottom-5" type="reset">Cancel</button>
             <button class="govuk-button" data-module="govuk-button" id="update-button"
               onclick="return updateProduct()">Update product</button>
           </div>
-       
+          </form>
+
       </div>
 
       <!-- Add products from favourites panel -->
       <div class="govuk-tabs__panel" id="favourites">
         <h2 class="govuk-heading-l">Add products from favourites</h2>
-        <form id="favourites-form" method="post">
+        <form id="favourites-form" method="post"></form>
           <!-- Placeholder for favourites functionality -->
-        
+
       </div>
     </div>
 
@@ -366,80 +493,66 @@ GOV.UK Prototype Kit
           <th scope="col" class="govuk-table__header">Action</th>
         </tr>
       </thead>
-      <tbody></tbody>
+            <tbody>
+        {% for product in data['products'] %}
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">{{product.species}}, {{product.state}}, {{product.presentation}}</td>
+          <td class="govuk-table__cell">{{product.commodityCode}}</td>
+          <td class="govuk-table__cell">
+            <form method="post" action="/gamma/delete-product/{{ loop.index }}">
+              <button type="submit" class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0">Remove</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
     </table>
 
-     <div class="govuk-button-group">
-  <button type="button"
-    class="dcx-button govuk-button govuk-button--secondary"
-    id="saveAsDraft"
-    data-module="govuk-button"
-    data-testid="save-draft-button"
-    onclick="location.href='progress.html'">
-    Save as draft
-  </button>
+        <form action="/gamma/direct-landing">
+    <div class="govuk-button-group">
+<button class="govuk-button" data-module="govuk-button" type="submit">
+        Save and continue
+      </button>
+              <button type="button" class="dcx-button govuk-button govuk-button--secondary" id="saveAsDraft"
+          data-module="govuk-button" data-testid="save-draft-button" onclick="location.href='progress.html'">
+        Save as draft
+      </button>
 
-        <button class="govuk-button" data-module="govuk-button" type="submit">
-          Save and continue
-        </button>
-</div>
- </form>
+      
+    </div>
+    </form>
 
-
-<p class="govuk-body">
-  <a href="../gamma/catch-certificates.html" class="govuk-link">Back to Your Progress</a>
-</p>
+    <p class="govuk-body">
+      <a href="../gamma/catch-certificates.html" class="govuk-link">Back to your progress</a>
+    </p>
 
 
-    <!-- JavaScript to handle adding products -->
-    <script>
-      function addProduct() {
-        const species = document.getElementById('species').value;
-        const state = document.getElementById('state').value;
-        const presentation = document.getElementById('presentation').value;
-        const commodityCode = document.getElementById('commodity-code').value;
+        <div class="app-contact-panel">
+                <h2 class="app-contact-panel__heading">Get help with your application</h2>
 
-        const tableBody = document.querySelector('#your-products tbody');
-        const newRow = document.createElement('tr');
-        newRow.className = 'govuk-table__row';
+                <p class="app-contact-panel__body">
+                  If you have a catch certificate unique reference number, have it with you when you call.
+                </p>
 
-        newRow.innerHTML = `
-      <td class="govuk-table__cell">${species}, ${state}, ${presentation}</td>
-      <td class="govuk-table__cell">${commodityCode}</td>
-      <td class="govuk-table__cell">
-        <button class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0" onclick="removeProduct(this)">Remove</button>
-      </td>
-    `;
+                <ul class="govuk-list">
+                  <li>Phone: 0330 159 1989 </li>
+                  <li>Monday to Friday, 9am to 5pm (except public holidays)</li>
+                </ul>
 
-        tableBody.appendChild(newRow);
-     
-        return false;
-      }
+                <p class="govuk-body">
+                  <a class="govuk-link" href="#">Find out about call charges</a>
+                </p>
 
-      function removeProduct(button) {
-        const row = button.closest('tr');
-        row.remove();
-      }
-    </script>
+                <p>Read the guidance on <a
+                    href="https://www.gov.uk/guidance/exporting-or-moving-fish-from-the-uk#get-help-with-fish-export-documents"
+                    class="govuk-link" rel="noreferrer noopener" target="_blank">exporting or moving fish from the UK
+                    (opens in new tab).</a>
+                </p>
 
-<script>
-
-  // Load products from localStorage into the table
- function saveProduct() {
-  const species = document.getElementById('species').value;
-  const state = document.getElementById('state').value;
-  const presentation = document.getElementById('presentation').value;
-  const code = document.getElementById('commodity-code').value;
-
-  const product = `${species}, ${state}, ${presentation}, ${code}`;
-  localStorage.setItem('selectedProduct', product); // ✅ Save as plain string
-  window.location.href = 'add-landings.html';
-}
-
-
-</script>
+              </div>
+		
 
 
 
-    {% include "../includes/help.html" %}
+
     {% endblock %}

@@ -8,23 +8,57 @@ Check your answers - GOV.UK
 
 {% include "../includes/phase.html" %}
 
-<div class="govuk-grid-row">
-    <main class="govuk-main-wrapper app-main-class" id="main-content" role="main">
+<style>
+  .app-contact-panel {
+    margin-top: 60px;
+    /* govuk-responsive-margin(9, "top") equivalent */
+    padding-top: 20px;
+    /* govuk-spacing(3) equivalent */
+    border-top: 2px solid #1d70b8;
+    /* govuk-colour("blue") */
+  }
 
-    <a href="javascript:history.back()" class="govuk-back-link">Back</a>
+  .app-contact-panel__heading,
+  .app-contact-panel__body,
+  .app-contact-panel__link {
+    max-width: 100%;
+  }
+
+  .app-contact-panel__heading {
+    font-family: "GDS Transport", Arial, sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 1.25;
+    padding-top: 10px;
+  }
+
+  .app-contact-panel__heading:first-child {
+    padding-top: 0;
+  }
+
+  .app-contact-panel__body:last-child {
+    margin-bottom: 0;
+  }
+</style>
+
+
+
 
 
       <div class="govuk-grid-row">
-        <div class="govuk-grid-column-full">
+        <div class="govuk-grid-column-two-thirds">
+
+              <a href="javascript:history.back()" class="govuk-back-link">Back</a>
+
           <div class="govuk-panel govuk-panel--confirmation">
             <h1 class="govuk-panel__title">The catch certificate has been created</h1>
             <div class="govuk-panel__body">Catch certificate number<br><strong>GBR-2025-CC-DB9443BBF</strong></div>
           </div>
-        </div>
-      </div>
+       
+      
       <div class="govuk-grid-row govuk-!-margin-top-8">
         <div class="govuk-grid-column-full">
-          <h2 class="govuk-heading-m">What you need to do next</h2>
+          <h3 class="govuk-heading-l">What you need to do next</h3>
           
           <h3 class="govuk-heading-m"><a class="govuk-link" href="https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/570855/uk-catch-certificate.pdf">1. Download the catch certificate</a></h3>
 
@@ -59,26 +93,36 @@ Check your answers - GOV.UK
   </a>
 </h3>
 
+  <div class="app-contact-panel">
+                <h2 class="app-contact-panel__heading">Get help with your application</h2>
+
+                <p class="app-contact-panel__body">
+                  If you have a catch certificate unique reference number, have it with you when you call.
+                </p>
+
+                <ul class="govuk-list">
+                  <li>Phone: 0330 159 1989 </li>
+                  <li>Monday to Friday, 9am to 5pm (except public holidays)</li>
+                </ul>
+
+                <p class="govuk-body">
+                  <a class="govuk-link" href="#">Find out about call charges</a>
+                </p>
+
+                <p>Read the guidance on <a
+                    href="https://www.gov.uk/guidance/exporting-or-moving-fish-from-the-uk#get-help-with-fish-export-documents"
+                    class="govuk-link" rel="noreferrer noopener" target="_blank">exporting or moving fish from the UK
+                    (opens in new tab).</a>
+                </p>
+
+              </div>
+
         </div>
       </div>
-      <div class="govuk-!-margin-bottom-6 govuk-!-margin-top-8 govuk-!-margin-bottom-6">
-        <hr class="horizontal-line">
-        <h2 class="govuk-heading-l">Need help?</h2><a data-testid="guidance-on-exporting-fish" class="govuk-link"
-          href="https://www.gov.uk/guidance/exporting-and-importing-fish-if-theres-no-brexit-deal" target="_blank"
-          rel="noopener noreferrer" aria-label="Get help exporting fish from the UK (gov.uk)">Get help exporting fish
-          from the UK (gov.uk)<span class="govuk-visually-hidden">(opens in new tab)</span></a><br><a
-          data-testid="eu-2026-changes-guidance" rel="noopener noreferrer"
-          href="https://www.gov.uk/guidance/eu-iuu-regulation-2026-changes" target="_blank" class="govuk-link">EU 2026
-          Changes Guidance (gov.uk)<span class="govuk-visually-hidden">(opens in new tab)</span></a>
+        </div>
       </div>
-      <div class="govuk-!-margin-bottom-6 govuk-!-margin-bottom-6">
-        <hr class="horizontal-line">
-        <h2 class="govuk-heading-l">Can you spare 2 minutes?</h2><a data-testid="surveylink-feedback" class="govuk-link"
-          href="https://defragroup.eu.qualtrics.com/jfe/form/SV_734LbtQfQMrBoEu" target="_blank"
-          rel="noopener noreferrer">Take a 2 minute survey<span class="govuk-visually-hidden">(opens in new
-            tab)</span></a> to help us improve this service
-      </div>
-    </main>
+      
+   
 
     {% endblock %}
 

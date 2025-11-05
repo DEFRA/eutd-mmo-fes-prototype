@@ -1,0 +1,157 @@
+{% set serviceName = "Create a UK storage document" %}
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+GOV.UK Prototype Kit
+{% endblock %}
+
+{% block content %}
+{% include "../../includes/phase.html" %}
+
+<style>
+  .app-contact-panel {
+    margin-top: 60px;
+    /* govuk-responsive-margin(9, "top") equivalent */
+    padding-top: 20px;
+    /* govuk-spacing(3) equivalent */
+    border-top: 2px solid #1d70b8;
+    /* govuk-colour("blue") */
+  }
+
+  .app-contact-panel__heading,
+  .app-contact-panel__body,
+  .app-contact-panel__link {
+    max-width: 100%;
+  }
+
+  .app-contact-panel__heading {
+    font-family: "GDS Transport", Arial, sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 1.25;
+    padding-top: 10px;
+  }
+
+  .app-contact-panel__heading:first-child {
+    padding-top: 0;
+  }
+
+  .app-contact-panel__body:last-child {
+    margin-bottom: 0;
+  }
+</style>
+
+<style>
+.custom-radio-style .govuk-radios__input {
+  background-color: white !important;
+}
+</style>
+
+
+
+
+
+
+
+
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+  <a href="javascript:history.back()" class="govuk-back-link">Back</a>
+
+  <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+      <div class="govuk-notification-banner__header">
+        <h3 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+          Important
+        </h3>
+      </div>
+      <div class="govuk-notification-banner__content">
+        <p class="govuk-notification-banner__heading">
+        Make sure the document is one of the following:
+        </p>
+        <h2 class="govuk-heading-m list govuk-list--bullet"><li>a catch certificate</li></h2>
+        <h2 class="govuk-heading-m list govuk-list--bullet"><li>a processing statement</li></h2>
+        <h2 class="govuk-heading-m list govuk-list--bullet"><li>a storage document</li></h2>
+      </div>
+    </div>
+
+
+    <h1 class="govuk-heading-xl">Confirm UK entry document details for a third country import<h1>
+
+      <form method="post" action="/gamma/sd/confirm-uk-document-2">
+
+<div class="govuk-warning-text">
+  <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+  <strong class="govuk-warning-text__text">
+    <span class="govuk-visually-hidden">Warning</span>
+     Provide details of when, where and how the product entered the UK. Include the last document used for entry.
+  </strong>
+</div>
+
+  <div id="document-fields">
+    <div class="govuk-form-group document-field" id="entry-document-reference">
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--s" for="entry-document-reference">Entry document reference</legend>
+      <div id="entry-document-reference-hint-1" class="govuk-hint">
+       Enter the document reference number of the catch certificate, processing statement or storage document. Include any hyphens, dashes or other characters. For example, GBR-2024-CC-BEFCD6036.
+      </div>
+      <input class="govuk-input govuk-input--width-20" id="entry-document-reference-2" name="entry-document-reference-2" type="text" aria-describedby="entry-document-reference-hint-1">
+    </div>
+  </div>
+
+ 
+
+                <div class="govuk-button-group">
+
+                  <button class="govuk-button" data-module="govuk-button" type="submit">
+                    Save and continue
+                  </button>
+
+                  <button type="button" class="dcx-button govuk-button govuk-button--secondary" id="saveAsDraft"
+                    data-module="govuk-button" data-testid="save-draft-button" onclick="location.href='progress.html'">
+                    Save as draft
+                  </button>
+
+                </div>
+              </form>
+
+
+
+              <p class="govuk-body">
+                <a href="../sd/progress.html" class="govuk-link">Back to your progress</a>
+              </p>
+
+              <div class="app-contact-panel">
+                <h2 class="app-contact-panel__heading">Get help with your application</h2>
+
+                <p class="app-contact-panel__body">
+                  If you have a storage document unique reference number, have it with you when you call.
+                </p>
+
+                <ul class="govuk-list">
+                  <li>Phone: 0330 159 1989 </li>
+                  <li>Monday to Friday, 9am to 5pm (except public holidays)</li>
+                </ul>
+
+                <p class="govuk-body">
+                  <a class="govuk-link" href="#">Find out about call charges</a>
+                </p>
+
+                <p>Read the guidance on <a
+                    href="https://www.gov.uk/guidance/exporting-or-moving-fish-from-the-uk#get-help-with-fish-export-documents"
+                    class="govuk-link" rel="noreferrer noopener" target="_blank">exporting or moving fish from the UK
+                    (opens in new tab).</a>
+                </p>
+              </div>
+                 </div>
+  </div>
+
+
+
+
+
+
+
+                  {% endblock %}
+
+              </div>

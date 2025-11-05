@@ -15,19 +15,56 @@
   .govuk-button-group {margin-top:50px;}
 </style>
 
-<script>
-		
 
-	
-</script>
+<style>
+  .app-contact-panel {
+    margin-top: 60px;
+    /* govuk-responsive-margin(9, "top") equivalent */
+    padding-top: 20px;
+    /* govuk-spacing(3) equivalent */
+    border-top: 2px solid #1d70b8;
+    /* govuk-colour("blue") */
+  }
+
+  .app-contact-panel__heading,
+  .app-contact-panel__body,
+  .app-contact-panel__link {
+    max-width: 100%;
+  }
+
+  .app-contact-panel__heading {
+    font-family: "GDS Transport", Arial, sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 1.25;
+    padding-top: 10px;
+  }
+
+  .app-contact-panel__heading:first-child {
+    padding-top: 0;
+  }
+
+  .app-contact-panel__body:last-child {
+    margin-bottom: 0;
+  }
+</style>
 
   
 <div class="govuk-grid-row">
-  <div class="govuk-grid-column-full">
+  <div class="govuk-grid-column-two-thirds">
       
 		<a href="catch-waters.html" class="govuk-back-link">Back</a>
 		
-		<h1 class="govuk-heading-xl">What journey does the export take?</h1>{{releaseVersion | log }}
+		<h1 class="govuk-heading-xl">What journey does the export take?</h1>
+
+      <div class="govuk-warning-text" style="margin-top: 1em;">
+      <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+      <strong class="govuk-warning-text__text">
+        <span class="govuk-warning-text__assistive"></span>
+        This information will not appear on the catch certificate.
+      </strong>
+      <br>
+      <br>
 		
     <form method="post" action="/gamma/export-journey">
 
@@ -72,7 +109,6 @@
     <div id="destination-country-hint" class="govuk-hint">
       Enter the main destination country for the export. Do not include countries the goods are passing through.
     </div>
-
     <div style="position: relative;">
       <input name="destination-country" type="text"
   class="govuk-input govuk-!-width-full"
@@ -81,7 +117,7 @@
         aria-owns="destination-country-listbox" aria-activedescendant="">
       <ul id="destination-country-listbox" role="listbox"
         class="govuk-list"
-        style="display: none; border: 1px solid #b1b4b6; padding: 0.5em; background: white; position: absolute; z-index: 1000; width: 100%;">
+        style="display: none; border: 1px solid #b1b4b6; padding: 0.5em; background: white; position: absolute; z-index: 1000; width: 97%;">
       <script>
 const countries = [
   "Belgium",
@@ -158,20 +194,13 @@ const countries = [
       </ul>
     </div>
 
-    <div class="govuk-warning-text" style="margin-top: 1em;">
-      <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
-      <strong class="govuk-warning-text__text">
-        <span class="govuk-warning-text__assistive"></span>
-        This information will not appear on the catch certificate.
-      </strong>
-
             <!-- Form controls -->
 <div class="govuk-button-group">
+    <button type="submit" class="govuk-button" data-module="govuk-button" formaction="/gamma/transport/transport-type">
+    Save and continue
+  </button>
   <button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button" formaction="/gamma/progress">
     Save as draft
-  </button>
-  <button type="submit" class="govuk-button" data-module="govuk-button" formaction="/gamma/transport/transport-type">
-    Save and continue
   </button>
 </div>
 
@@ -181,7 +210,29 @@ const countries = [
   </fieldset>
 </div>
 
-      
+       <div class="app-contact-panel">
+                <h2 class="app-contact-panel__heading">Get help with your application</h2>
+
+                <p class="app-contact-panel__body">
+                  If you have a catch certificate unique reference number, have it with you when you call.
+                </p>
+
+                <ul class="govuk-list">
+                  <li>Phone: 0330 159 1989 </li>
+                  <li>Monday to Friday, 9am to 5pm (except public holidays)</li>
+                </ul>
+
+                <p class="govuk-body">
+                  <a class="govuk-link" href="#">Find out about call charges</a>
+                </p>
+
+                <p>Read the guidance on <a
+                    href="https://www.gov.uk/guidance/exporting-or-moving-fish-from-the-uk#get-help-with-fish-export-documents"
+                    class="govuk-link" rel="noreferrer noopener" target="_blank">exporting or moving fish from the UK
+                    (opens in new tab).</a>
+                </p>
+
+              </div>
 
 			
 		</form>
@@ -191,7 +242,6 @@ const countries = [
 	 </div>
 </div>
 
-{% include "../includes/help.html" %}
 
 {% endblock %}
 

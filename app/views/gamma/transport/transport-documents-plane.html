@@ -9,7 +9,8 @@ GOV.UK Prototype Kit
 
 <style>
 
- 
+
+
   .govuk-table {
     margin-top: 30px;
   }
@@ -32,13 +33,46 @@ GOV.UK Prototype Kit
   }
 </style>
 
+  <style>
+  .app-contact-panel {
+    margin-top: 60px;
+    /* govuk-responsive-margin(9, "top") equivalent */
+    padding-top: 20px;
+    /* govuk-spacing(3) equivalent */
+    border-top: 2px solid #1d70b8;
+    /* govuk-colour("blue") */
+  }
+
+  .app-contact-panel__heading,
+  .app-contact-panel__body,
+  .app-contact-panel__link {
+    max-width: 100%;
+  }
+
+  .app-contact-panel__heading {
+    font-family: "GDS Transport", Arial, sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 1.25;
+    padding-top: 10px;
+  }
+
+  .app-contact-panel__heading:first-child {
+    padding-top: 0;
+  }
+
+  .app-contact-panel__body:last-child {
+    margin-bottom: 0;
+  }
+</style>
+
 <div class="govuk-grid-row">
-  <div class="govuk-grid-column-full">
+  <div class="govuk-grid-column-two-thirds">
     <a href="javascript:history.back()" class="govuk-back-link">Back</a>
 
     <h1 class="govuk-heading-xl">Plane documents</h1>
 
-<form id="document-form" method="post" action="/gamma/transport/transport-additional">
+<form method="post" action="/gamma/transport/transport-documents-plane">
   {% if editIndex is defined %}
     <input type="hidden" name="editIndex" value="{{ editIndex }}">
   {% endif %}
@@ -52,6 +86,8 @@ GOV.UK Prototype Kit
       </div>
       <input class="govuk-input govuk-input--width-20" id="document-name-1" name="documentName[]" type="text" aria-describedby="document-name-hint-1">
 
+     <div style="margin-bottom: 2rem;"></div>
+
       <legend class="govuk-fieldset__legend govuk-fieldset__legend--s" for="reference-number-1">Document reference</legend>
       <div id="reference-number-hint-1" class="govuk-hint">
         For example, INV00001
@@ -59,6 +95,8 @@ GOV.UK Prototype Kit
       <input class="govuk-input govuk-input--width-10" id="reference-number-1" name="referenceNumber[]" type="text" aria-describedby="reference-number-hint-1">
     </div>
   </div>
+
+
 
 
       <!-- "Add another" and "Delete document" Links -->
@@ -69,14 +107,42 @@ GOV.UK Prototype Kit
 
       <!-- Form controls -->
       <div class="govuk-button-group">
+                        <button class="govuk-button" data-module="govuk-button" type="submit">
+          Save and continue
+        </button>
         <button class="govuk-button govuk-button--secondary" data-module="govuk-button" formaction="/gamma/progress">Save as draft</button>
-        <button class="govuk-button" data-module="govuk-button" formaction="/gamma/transport/transport-additional-plane" type="submit">Save and continue</button>
       </div>
     </form>
+
+       <div class="app-contact-panel">
+                <h2 class="app-contact-panel__heading">Get help with your application</h2>
+
+                <p class="app-contact-panel__body">
+If you have a catch certificate unique reference number, have it with you when you call.
+                </p>
+
+                <ul class="govuk-list">
+                  <li>Phone: 0330 159 1989 </li>
+                  <li>Monday to Friday, 9am to 5pm (except public holidays)</li>
+                </ul>
+
+                <p class="govuk-body">
+                  <a class="govuk-link" href="#">Find out about call charges</a>
+                </p>
+
+                <p>Read the guidance on <a
+                    href="https://www.gov.uk/guidance/exporting-or-moving-fish-from-the-uk#get-help-with-fish-export-documents"
+                    class="govuk-link" rel="noreferrer noopener" target="_blank">exporting or moving fish from the UK
+                    (opens in new tab).</a>
+                </p>
+              </div>
+
   </div>
 </div>
 
-{% include "../../includes/help.html" %}
+       =
+
+
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
@@ -85,12 +151,18 @@ GOV.UK Prototype Kit
     const documentFieldsContainer = document.getElementById('document-fields');
     let fieldCount = documentFieldsContainer.querySelectorAll('.document-field').length;
 
+    // Hide delete button initially if only one field
+    if (fieldCount <= 1) {
+      deleteButton.style.display = 'none';
+    }
+
     addAnotherButton.addEventListener('click', function () {
       fieldCount++;
 
       const newDocumentField = document.createElement('div');
-      newDocumentField.classList.add('govuk-form-group', 'document-field');
+      newDocumentField.classList.add ('govuk-form-group', 'document-field');
       newDocumentField.id = `document-field-${fieldCount}`;
+   
 
       const newDocumentNameLabel = document.createElement('legend');
       newDocumentNameLabel.classList.add('govuk-fieldset__legend', 'govuk-fieldset__legend--s');
@@ -134,24 +206,29 @@ GOV.UK Prototype Kit
       newDocumentField.appendChild(newReferenceNumberInput);
 
       documentFieldsContainer.appendChild(newDocumentField);
+
+      // Show delete button if more than one field
+      if (fieldCount > 1) {
+        deleteButton.style.display = 'inline-block';
+      }
     });
 
-deleteButton.addEventListener('click', function (event) {
-  event.preventDefault();
-  const fields = documentFieldsContainer.querySelectorAll('.document-field');
-  if (fields.length > 1) {
-    const lastField = fields[fields.length - 1];
-    lastField.remove();
-    fieldCount = fields.length - 1;
-  }
-});
+    deleteButton.addEventListener('click', function (event) {
+      event.preventDefault();
+      if (fieldCount > 1) {
+        const lastField = document.getElementById(`document-field-${fieldCount}`);
+        if (lastField) {
+          lastField.remove();
+          fieldCount--;
+        }
+      }
 
+      // Hide delete button if only one field remains
+      if (fieldCount <= 1) {
+        deleteButton.style.display = 'none';
+      }
+    });
   });
 </script>
-
-
-
-
-
 
 {% endblock %}

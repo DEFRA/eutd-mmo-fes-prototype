@@ -1,0 +1,171 @@
+{% set serviceName = "Create a UK non-manipulation document" %}
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+GOV.UK Prototype Kit
+{% endblock %}
+
+{% block content %}
+{% include "../../includes/phase.html" %}
+
+<style>
+  .app-contact-panel {
+    margin-top: 60px;
+    /* govuk-responsive-margin(9, "top") equivalent */
+    padding-top: 20px;
+    /* govuk-spacing(3) equivalent */
+    border-top: 2px solid #1d70b8;
+    /* govuk-colour("blue") */
+  }
+
+  .app-contact-panel__heading,
+  .app-contact-panel__body,
+  .app-contact-panel__link {
+    max-width: 100%;
+  }
+
+  .app-contact-panel__heading {
+    font-family: "GDS Transport", Arial, sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 1.25;
+    padding-top: 10px;
+  }
+
+  .app-contact-panel__heading:first-child {
+    padding-top: 0;
+  }
+
+  .app-contact-panel__body:last-child {
+    margin-bottom: 0;
+  }
+</style>
+
+<style>
+.custom-radio-style .govuk-radios__input {
+  background-color: white !important;
+}
+</style>
+
+
+
+
+
+
+<div class="govuk-grid-row">
+
+  <div class="govuk-grid-column-two-thirds">
+
+    <a href="javascript:history.back()" class="govuk-back-link">Back</a>
+
+
+    <h1 class="govuk-heading-xl">Departure details<h1>
+
+      <form method="post" action="/gamma/nmd/departure-details">
+ 
+
+<div class="govuk-form-group">
+  <fieldset class="govuk-fieldset" role="group" aria-describedby="departure-date-uk-issued-hint">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+      Departure date
+    </legend>
+    <div id="departure-date-uk-hint" class="govuk-hint">
+      For example, 27/8/2025
+    </div>
+    <div class="govuk-date-input" id="departure-date-uk">
+      <div class="govuk-date-input__item">
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-date-input__label" for="departure-date-uk-day">
+            Day
+          </label>
+          <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="departure-date-uk-day" name="departure-date-uk-day" type="text" inputmode="numeric">
+        </div>
+      </div>
+      <div class="govuk-date-input__item">
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-date-input__label" for="departure-date-uk-month">
+            Month
+          </label>
+          <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="departure-date-uk-month" name="departure-date-uk-month" type="text" inputmode="numeric">
+        </div>
+      </div>
+      <div class="govuk-date-input__item">
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-date-input__label" for="departure-date-uk-year">
+            Year
+          </label>
+          <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="departure-date-uk-year" name="departure-date-uk-year" type="text" inputmode="numeric">
+        </div>
+      </div>
+    </div>
+  </fieldset>
+</div>
+
+        <!-- Last departure location description -->
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-label--s" for="departure-location">Last departure location in the UK</label>
+          <div class="govuk-form-group">
+            <div id="departure-location" class="govuk-hint" for="departure-location">
+              For example, a port, airport or departure point
+            </div>
+            <input class="govuk-input govuk-!-width-two-thirds" id="departure-location-uk" name="departure-location-uk" type="text">
+          </div>
+
+          </div>
+
+
+
+                <div class="govuk-button-group">
+
+                  <button class="govuk-button" data-module="govuk-button" type="submit">
+                    Save and continue
+                  </button>
+
+                  <button type="button" class="dcx-button govuk-button govuk-button--secondary" id="saveAsDraft"
+                    data-module="govuk-button" data-testid="save-draft-button" onclick="location.href='../non-manipulation-document.html.html'">
+                    Save as draft
+                  </button>
+
+                </div>
+              </form>
+
+
+
+              <p class="govuk-body">
+                <a href="../nmd/progress.html" class="govuk-link">Back to your progress</a>
+              </p>
+
+
+              <div class="app-contact-panel">
+                <h2 class="app-contact-panel__heading">Get help with your application</h2>
+
+                <p class="app-contact-panel__body">
+                  If you have a non-manipulation document unique reference number, have it with you when you call.
+                </p>
+
+                <ul class="govuk-list">
+                  <li>Phone: 0330 159 1989 </li>
+                  <li>Monday to Friday, 9am to 5pm (except public holidays)</li>
+                </ul>
+
+                <p class="govuk-body">
+                  <a class="govuk-link" href="#">Find out about call charges</a>
+                </p>
+
+                <p>Read the guidance on <a
+                    href="https://www.gov.uk/guidance/exporting-or-moving-fish-from-the-uk#get-help-with-fish-export-documents"
+                    class="govuk-link" rel="noreferrer noopener" target="_blank">exporting or moving fish from the UK
+                    (opens in new tab).</a>
+                </p>
+
+                     </div>
+            </div>
+            </div>
+
+
+
+
+
+                  {% endblock %}
+
+         

@@ -1,6 +1,10 @@
+{% set serviceName = "Fish Export Service" %}
+
 {% extends "layouts/main.html" %}
 
 {% block head %}
+
+
 
 {{ super() }}
 <link rel="stylesheet" href="/build-v2/_assets/govuk-frontend.min-5TZSCRBE.css">
@@ -108,7 +112,7 @@
           });
       
           if (selected) {
-            window.location.href = '../gamma/catch-certificates';
+            window.location.href = '../gamma/create-choice';
           } else {
             alert('Please select an organisation before continuing.');
           }

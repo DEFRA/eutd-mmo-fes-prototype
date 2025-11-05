@@ -1,0 +1,316 @@
+{% set serviceName = "Create a UK storage document" %}
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  GOV.UK Prototype Kit
+{% endblock %}
+
+{% block content %}
+  {% include "../../includes/phase.html" %}
+
+  <style>
+    .govuk-table {
+      margin-top: 30px;
+    }
+
+    .govuk-form-group {
+      margin-bottom: 20px;
+    }
+
+    .govuk-button-group {
+      margin-top: 30px;
+    }
+
+    .document-field {
+      position: relative;
+      padding-bottom: 20px;
+    }
+
+    .delete-link {
+      margin-left: 10px;
+    }
+
+    .govuk-label--m {
+      font-size: 16px; /* Adjusted font size */
+    }
+
+    .govuk-input {
+      font-size: 16px; /* Adjusted font size */
+    }
+  </style>
+
+  <style>
+  .app-contact-panel {
+    margin-top: 60px;
+    /* govuk-responsive-margin(9, "top") equivalent */
+    padding-top: 20px;
+    /* govuk-spacing(3) equivalent */
+    border-top: 2px solid #1d70b8;
+    /* govuk-colour("blue") */
+  }
+
+  .app-contact-panel__heading,
+  .app-contact-panel__body,
+  .app-contact-panel__link {
+    max-width: 100%;
+  }
+
+  .app-contact-panel__heading {
+    font-family: "GDS Transport", Arial, sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 1.25;
+    padding-top: 10px;
+  }
+
+  .app-contact-panel__heading:first-child {
+    padding-top: 0;
+  }
+
+  .app-contact-panel__body:last-child {
+    margin-bottom: 0;
+  }
+</style>
+
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <a href="javascript:history.back()" class="govuk-back-link">Back</a>
+
+      <h1 class="govuk-heading-xl">Truck arriving in the UK</h1>
+
+      <form id="details-form" method="post" action="/gamma/sd/transport-truck">
+
+            <div class="govuk-warning-text">
+  <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+  <strong class="govuk-warning-text__text">
+    <span class="govuk-visually-hidden">Warning</span>
+    This section is optional, except for the truck registration and place of unloading.  All fields  will become mandatory from 10 January 2026, under new
+EU regulations.
+  </strong>
+</div>
+
+
+        <div class="govuk-inset-text">
+  We need details about where the consignment started its journey, when it departed, and the truck transporting it.
+</div>
+
+      <div class="custom-radio-style" style="background-color: #f8f8f8; width: 100%; padding: 2rem; border-radius: 2;">
+
+    
+
+<!-- Country of departure -->
+<div class="govuk-form-group">
+  <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Country of departure</legend>
+            <div id="departure-country-hint" class="govuk-hint">
+            This is the country the consignment left before arriving in the UK
+          </div>
+  <div id="departure-country-wrapper" style="position: relative;">
+    <input name="departure-country" type="text" class="govuk-input govuk-!-width-two-thirds"
+      id="departure-country" autocomplete="off"
+      aria-expanded="false" role="combobox" aria-autocomplete="list"
+      aria-owns="departure-country-listbox" aria-activedescendant="">
+    <ul id="departure-country-listbox" role="listbox" class="govuk-list"
+      style="display: none; border: 1px solid #b1b4b6; padding: 0.5em; background: white; position: absolute; z-index: 1000; width: 63%;">
+    </ul>
+  </div>
+</div>
+
+ <div class="govuk-form-group">
+  <fieldset class="govuk-fieldset" role="group" aria-describedby="departure-date-issued-hint">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+      Departure date
+    </legend>
+    <div id="departure-date-hint" class="govuk-hint">
+      This is when the consignment left the country of departure. For example, 27/8/2025
+    </div>
+    <div class="govuk-date-input" id="departure-date">
+      <div class="govuk-date-input__item">
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-date-input__label" for="departure-date-day">
+            Day
+          </label>
+          <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="departure-date-day" name="departure-date-day" type="text" inputmode="numeric">
+        </div>
+      </div>
+      <div class="govuk-date-input__item">
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-date-input__label" for="departure-date-month">
+            Month
+          </label>
+          <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="departure-date-month" name="departure-date-month" type="text" inputmode="numeric">
+        </div>
+      </div>
+      <div class="govuk-date-input__item">
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-date-input__label" for="departure-date-year">
+            Year
+          </label>
+          <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="departure-date-year" name="departure-date-year" type="text" inputmode="numeric">
+        </div>
+      </div>
+    </div>
+  </fieldset>
+</div>
+
+
+
+
+           <div class="govuk-form-group">
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--s" for="export-place">Where the truck departs from</legend>
+          <div id="export-place-hint" class="govuk-hint">
+            For example, Calais port, Transmarck logistics hub, or the place where the consignment left by truck before arriving in the UK
+          </div>
+          <input class="govuk-input govuk-input--width-20" id="export-place" name="export-place" type="text" aria-describedby="export-place-hint">
+        </div>
+
+            <div class="govuk-form-group">
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--s" for="unloading-place">Place of unloading</legend>
+          <div id="export-place-hint" class="govuk-hint">
+            This is where the consignment was unloaded from the truck when arriving in the UK
+          </div>
+          <input class="govuk-input govuk-input--width-20" id="unloading-place" name="unloading" type="text" aria-describedby="unloading-place-hint">
+        </div>
+
+
+
+        <!-- Truck nationality -->
+<div class="govuk-form-group">
+  <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Truck nationality</legend>
+  <div id="truck-nationality-wrapper" style="position: relative;">
+    <input name="truck-nationality" type="text" class="govuk-input govuk-!-width-two-thirds"
+      id="truck-nationality" autocomplete="off"
+      aria-expanded="false" role="combobox" aria-autocomplete="list"
+      aria-owns="truck-nationality-listbox" aria-activedescendant="">
+    <ul id="truck-nationality-listbox" role="listbox" class="govuk-list"
+      style="display: none; border: 1px solid #b1b4b6; padding: 0.5em; background: white; position: absolute; z-index: 1000; width: 63%;">
+    </ul>
+  </div>
+</div>
+
+
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-label--s" for="registration-number">Registration number</label>
+          <div id="registration-number-hint" class="govuk-hint">
+            For example, A123 4567 or BD51SMR. This field is required now to help prepare for new EU regulations coming into force on 10 January 2026
+          </div>
+          <input class="govuk-input govuk-input--width-10" id="registration-number" name="registration-number" type="text" aria-describedby="registration-number-hint">
+        </div>
+
+
+
+     
+
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-label--s" for="freight-number">Freight bill number</label>
+          <div id="freight-number-hint" class="govuk-hint">
+            For example, AA1234567
+          </div>
+          <input class="govuk-input govuk-input--width-10" id="freight-number" name="freight-number" type="text" aria-describedby="freight-number-hint">
+        </div>
+
+
+        </div>
+
+        <!-- Form controls -->
+        <div class="govuk-button-group">
+                    <button class="govuk-button" data-module="govuk-button" type="submit">
+            Save and continue
+          </button>
+          <button class="govuk-button govuk-button--secondary" data-module="govuk-button" formaction="/gamma/storage-document" type="submit">
+            Save as draft
+          </button>
+        </div>
+      </form>
+
+       <p class="govuk-body">
+      <a href="../sd/progress.html" class="govuk-link">Back to your progress</a>
+    </p>
+    
+
+                <div class="app-contact-panel">
+                <h2 class="app-contact-panel__heading">Get help with your application</h2>
+
+                <p class="app-contact-panel__body">
+                  If you have a storage document unique reference number, have it with you when you call.
+                </p>
+
+                <ul class="govuk-list">
+                  <li>Phone: 0330 159 1989 </li>
+                  <li>Monday to Friday, 9am to 5pm (except public holidays)</li>
+                </ul>
+
+                <p class="govuk-body">
+                  <a class="govuk-link" href="#">Find out about call charges</a>
+                </p>
+
+                <p>Read the guidance on <a
+                    href="https://www.gov.uk/guidance/exporting-or-moving-fish-from-the-uk#get-help-with-fish-export-documents"
+                    class="govuk-link" rel="noreferrer noopener" target="_blank">exporting or moving fish from the UK
+                    (opens in new tab).</a>
+                </p>
+              </div>
+
+               </div>
+  </div>
+
+  <script>
+  const countries = [
+    "Belgium", "China", "Denmark", "Estonia", "Finland", "France", "Germany", "Greece",
+    "Iceland", "Ireland", "Italy", "Latvia", "Lithuania", "Netherlands", "Norway",
+    "Northern Ireland", "Poland", "Portugal", "Republic of Ireland", "South Korea",
+    "Spain", "Sweden", "United Kingdom", "United States", "Vietnam"
+  ];
+
+  function setupAutocomplete(inputId, listboxId) {
+    const input = document.getElementById(inputId);
+    const listbox = document.getElementById(listboxId);
+
+    input.addEventListener("input", () => {
+      const value = input.value.toLowerCase();
+      listbox.innerHTML = "";
+
+      if (value.length < 2) {
+        listbox.style.display = "none";
+        return;
+      }
+
+      const matches = countries.filter(country => country.toLowerCase().includes(value));
+      if (matches.length === 0) {
+        listbox.style.display = "none";
+        return;
+      }
+
+      matches.forEach((country, index) => {
+        const option = document.createElement("li");
+        option.setAttribute("role", "option");
+        option.setAttribute("id", `${inputId}-option-${index}`);
+        option.textContent = country;
+        option.style.cursor = "pointer";
+        option.style.padding = "0.25em 0";
+        option.onclick = () => {
+          input.value = country;
+          listbox.style.display = "none";
+        };
+        listbox.appendChild(option);
+      });
+
+      listbox.style.display = "block";
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!input.contains(e.target) && !listbox.contains(e.target)) {
+        listbox.style.display = "none";
+      }
+    });
+  }
+
+  setupAutocomplete("departure-country", "departure-country-listbox");
+  setupAutocomplete("truck-nationality", "truck-nationality-listbox");
+</script>
+
+
+{% endblock %}
+
+
+

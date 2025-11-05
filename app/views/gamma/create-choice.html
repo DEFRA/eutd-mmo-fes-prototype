@@ -1,27 +1,35 @@
+{% set serviceName = "Fish Export Service" %}
+
+
 {% extends "layouts/main.html" %}
 
-{% block head %}
 
-
-
-{{ super() }}
-<link rel="stylesheet" href="/build-v2/_assets/govuk-frontend.min-5TZSCRBE.css">
-<link rel="stylesheet" href="/build-v2/_assets/language-MWHIHAGR.css">
-<link rel="stylesheet" href="/build-v2/_assets/help-link-B3BPNIA5.css">
-<link rel="stylesheet" href="/build-v2/_assets/banner-7FVKMX46.css">
-<link rel="stylesheet" href="/build-v2/_assets/dashboard-PJVMVE46.css">
-<link rel="stylesheet" href="/build-v2/_assets/app-task-GZRNR5JK.css">
-<link rel="stylesheet" href="/build-v2/_assets/autocomplete-LSXXNNXN.css">
-<link rel="stylesheet" href="/build-v2/_assets/upload-guidance-AP3HH7Z6.css">
-<link rel="stylesheet" href="/build-v2/_assets/directLanding-5P6VBAUJ.css">
-<link rel="stylesheet" href="/build-v2/_assets/react-datepicker-TBH2VA4Q.css">
-<link rel="stylesheet" href="/build-v2/_assets/utils-QP7FJSJ4.css">
-{% endblock %}
 
 {% block content %}
 <main class="govuk-main-wrapper app-main-class" id="main-content" role="main">
   <div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
+    <div class="govuk-grid-column-two-thirds">
+
+      <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+  <div class="govuk-notification-banner__header">
+    <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+      Important
+    </h2>
+  </div>
+  <div class="govuk-notification-banner__content">
+    <p class="govuk-notification-banner__heading">
+      From 10 January 2026 under new EU regulations, the document previously known as the storage document will be renamed to the non-manipulation document.
+    </p>
+  </div>
+</div>
+
+     
+
+
+
+
+
+
       <form method="post" action="../gamma/catch-certificates.html">
         <fieldset class="govuk-fieldset">
           <legend class="govuk-fieldset__legend govuk-fieldset__legend govuk-!-margin-bottom-0">
@@ -30,7 +38,11 @@
           <div class="govuk-radios__item"><input id="createCatchCertificate" type="radio" role="radio"
               name="journeySelection" class="govuk-radios__input" checked="" value="catchCertificate"><label
               for="createCatchCertificate" class="govuk-label govuk-radios__label">Create a UK catch certificate
-              (Including links to direct landing documents)</label></div>
+              </label>
+                <div id="createStorageDocument" class="govuk-hint govuk-radios__hint">
+          Including links to direct landing documents.
+        </div>
+            </div>
           <div class="govuk-radios__item"><input id="createProcessingStatement" type="radio" role="radio"
               name="journeySelection" class="govuk-radios__input" value="processingStatement"><label
               for="createProcessingStatement" class="govuk-label govuk-radios__label">Create a UK processing
@@ -39,6 +51,9 @@
               name="journeySelection" class="govuk-radios__input" value="storageNotes"><label
               for="createStorageDocument" class="govuk-label govuk-radios__label">Create a UK storage document</label>
           </div>
+                  <div id="createStorageDocument" class="govuk-hint govuk-radios__hint">
+          This will be renamed to the ‘non-manipulation document’.
+        </div>
         </fieldset><br><button type="submit" class="dcx-button govuk-button" id="continue"
           data-module="govuk-button">Continue</button>
       </form>
