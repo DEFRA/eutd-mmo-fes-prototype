@@ -1,0 +1,46 @@
+{% extends "layouts/layout-defra-v2.html" %}
+
+{% block pageTitle %}Deactivate {{ profileUser.name }} - Web Admin Portal{% endblock %}
+
+{% set serviceName %}
+Web Admin Portal
+{% endset %}
+
+{% set activeNavSection = "users" %}
+
+{% block beforeContent %}
+<a class="govuk-back-link" href="{{ profileUrl }}">Back to {{ profileUser.name }}'s profile</a>
+{% endblock %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <p class="govuk-caption-l">User account</p>
+    <h1 class="govuk-heading-xl">Deactivate {{ profileUser.name }}?</h1>
+    <p class="govuk-body">They will no longer be able to access the service. Their user record, vessel links and trip history will be kept.</p>
+
+    <dl class="govuk-summary-list govuk-!-margin-bottom-6">
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Name</dt>
+        <dd class="govuk-summary-list__value">{{ profileUser.name }}</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">User ID</dt>
+        <dd class="govuk-summary-list__value">{{ profileUser.userId }}</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Current status</dt>
+        <dd class="govuk-summary-list__value">{{ profileUser.status | capitalize }}</dd>
+      </div>
+    </dl>
+
+    <form action="/catch-records-v2/deactivate-user" method="post">
+      <input type="hidden" name="user-id" value="{{ profileUser.userId }}">
+      <div class="govuk-button-group">
+        <button class="govuk-button govuk-button--warning" type="submit">Deactivate user</button>
+        <a class="govuk-button govuk-button--secondary" href="{{ profileUrl }}" role="button">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

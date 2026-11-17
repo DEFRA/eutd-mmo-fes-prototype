@@ -1,0 +1,479 @@
+{% set serviceName = "Create a UK processing statement" %}
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+GOV.UK Prototype Kit
+{% endblock %}
+
+{% block content %}
+{% include "../../includes/phase.html" %}
+
+<style>
+        /* Visually indicate readonly input (match product-details.html) */
+        .desc-flex-row .govuk-input[readonly] {
+          background-color: #e8effe;
+          border-color: #0b0c0c;
+          color: #0b0c0c;
+          cursor: not-allowed;
+        }
+/* Force the radio circle to be white */
+.govuk-radios__input:checked + .govuk-radios__label::before,
+.govuk-radios__input + .govuk-radios__label::before {
+  background-color: #ffffff !important;
+}
+</style>
+
+<style>
+  .app-contact-panel {
+    margin-top: 60px;
+    /* govuk-responsive-margin(9, "top") equivalent */
+    padding-top: 20px;
+    /* govuk-spacing(3) equivalent */
+    border-top: 2px solid #1d70b8;
+    /* govuk-colour("blue") */
+  }
+
+  .app-contact-panel__heading,
+  .app-contact-panel__body,
+  .app-contact-panel__link {
+    max-width: 100%;
+  }
+
+  .app-contact-panel__heading {
+    font-family: "GDS Transport", Arial, sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 1.25;
+    padding-top: 10px;
+  }
+
+  .app-contact-panel__heading:first-child {
+    padding-top: 0;
+  }
+
+  .app-contact-panel__body:last-child {
+    margin-bottom: 0;
+  }
+</style>
+
+<style>
+  .custom-radio-style .govuk-radios__input {
+    background-color: white !important;
+  }
+</style>
+
+
+
+<script>
+  const speciesList = [
+    "Atlantic Cod (COD)", "Haddock (HAD)", "Atlantic Mackerel (MAC)", "European Hake (HKE)",
+    "Atlantic Salmon (SAL)", "European Plaice (PLE)", "Common Sole (SOL)", "European Lobster (LBE)",
+    "Monkfish (MON)", "Edible crab (CRA)", "Herring (HER)", "Bluefin Tuna (BFT)", "Yellowfin Tuna (YFT)",
+    "Bigeye Tuna (BET)", "Swordfish (SWO)", "Anchovy (ANC)", "Sardine (SAR)", "Sprat (SPR)",
+    "Whiting (WHG)", "Pollock (POL)", "Red Mullet (MUL)", "Sea Bass (BSS)", "John Dory (DOR)",
+    "Turbot (TUR)", "Halibut (HAL)", "Ling (LIN)"
+
+  ];
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const speciesInput = document.getElementById("species-input");
+    const speciesListbox = document.getElementById("species-listbox");
+
+    speciesInput.addEventListener("input", () => {
+      const value = speciesInput.value.toLowerCase();
+      speciesListbox.innerHTML = "";
+
+      if (value.length < 2) {
+        speciesListbox.style.display = "none";
+        return;
+      }
+
+      const matches = speciesList.filter(item => {
+        const lowerItem = item.toLowerCase();
+        const faoCode = item.match(/\(([^)]+)\)/);
+        return lowerItem.includes(value) || (faoCode && faoCode[1].toLowerCase().includes(value));
+      });
+
+      if (matches.length === 0) {
+        speciesListbox.style.display = "none";
+        return;
+      }
+
+      matches.forEach((item, index) => {
+        const option = document.createElement("li");
+        option.setAttribute("role", "option");
+        option.setAttribute("id", `species-option-${index}`);
+        option.textContent = item;
+        option.style.cursor = "pointer";
+        option.style.padding = "0.25em 0";
+        option.onclick = () => {
+          speciesInput.value = item;
+          speciesListbox.style.display = "none";
+        };
+        speciesListbox.appendChild(option);
+      });
+
+      speciesListbox.style.display = "block";
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!speciesInput.contains(e.target) && !speciesListbox.contains(e.target)) {
+        speciesListbox.style.display = "none";
+      }
+    });
+  });
+</script>
+
+
+
+
+
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <a href="javascript:history.back()" class="govuk-back-link">Back</a>
+
+
+    <h1 class="govuk-heading-xl"> {% if removeMode %}Remove your processed product{% else %}Add your processed product{% endif %}</h1>
+
+
+
+    <form method="post" action="product-description">
+
+
+    <div class="govuk-warning-text" id="add-warning">
+      <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+      <strong class="govuk-warning-text__text">
+        <span class="govuk-visually-hidden"></span>
+        You must add one processed product at a time.
+      </strong>
+    </div>
+
+    <!-- Product description (editable, GOV.UK style) -->
+    <div class="govuk-form-group">
+      <label class="govuk-label govuk-label--s" for="description">
+        Product description
+      </label>
+      <div id="description-hint" class="govuk-hint">
+        The details entered here will appear on your document and must be legible in English. For example Battered cod fillets
+      </div>
+        <style>
+          .desc-flex-row {
+            display: flex;
+            align-items: baseline;
+            gap: 1em;
+          }
+          .desc-flex-row .govuk-input {
+            margin-bottom: 0;
+          }
+          .desc-flex-row .govuk-button-group {
+            margin-bottom: 0;
+          }
+          .desc-flex-row .govuk-button,
+          .desc-flex-row .govuk-link {
+            vertical-align: baseline;
+          }
+        </style>
+        <div class="desc-flex-row">
+          <input class="govuk-input govuk-!-width-two-thirds" id="description" name="description" type="text"
+            value="{{ data.description }}" autocomplete="off">
+          <div class="govuk-button-group" id="desc-action-group" style="display: none;">
+            <button type="button" id="change-description" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+              Change<span class="govuk-visually-hidden"> product description</span>
+            </button>
+            <a href="#" id="remove-description" class="govuk-link govuk-link--destructive">
+              {% if removeMode %}
+              Remove<span class="govuk-visually-hidden"> this processed product</span>
+              {% else %}
+              Remove<span class="govuk-visually-hidden"> product description</span>
+              {% endif %}
+            </a>
+          </div>
+        </div>
+      <script>
+        document.addEventListener('DOMContentLoaded', function () {
+          var descInput = document.getElementById('description');
+          var changeBtn = document.getElementById('change-description');
+          var actionGroup = document.getElementById('desc-action-group');
+          var removeBtn = document.getElementById('remove-description');
+          var removeMode = {% if removeMode %}true{% else %}false{% endif %};
+          var removeIndex = {% if removeIndex is defined %}{{ removeIndex }}{% else %}undefined{% endif %};
+
+          function toggleButtons() {
+            if (descInput.value && descInput.value.trim().length > 0) {
+              actionGroup.style.display = 'flex';
+            } else {
+              actionGroup.style.display = 'none';
+            }
+          }
+          // Make input readonly after blur if it has content
+          descInput.addEventListener('blur', function () {
+            if (descInput.value && descInput.value.trim().length > 0) {
+              descInput.setAttribute('readonly', true);
+            }
+          });
+          // Make input editable again when Change is clicked (only if not in removeMode)
+          changeBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            if (!removeMode) {
+              descInput.removeAttribute('readonly');
+              descInput.focus();
+            }
+          });
+          // Redirect to confirmation page on Remove
+          removeBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            if (removeMode && typeof removeIndex !== 'undefined') {
+              window.location.href ='../ps/confirm-remove-product/' + removeIndex;
+            }
+          });
+          descInput.addEventListener('input', toggleButtons);
+          // Show on load if prefilled
+          toggleButtons();
+          // Make input readonly on page load if it has content
+          if (descInput.value && descInput.value.trim().length > 0) {
+            descInput.setAttribute('readonly', true);
+          }
+          // If in removeMode, hide the change button and ensure action group is visible
+          if (removeMode) {
+            changeBtn.style.display = 'none';
+            actionGroup.style.display = 'flex';
+          }
+        });
+      </script>
+    </div>
+
+                <!-- Commodity code -->
+        <div class="govuk-form-group">
+          <fieldset class="govuk-fieldset" aria-describedby="commodity-code-hint">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+              Commodity code
+            </legend>
+
+            <div id="commodity-code-hint" class="govuk-hint">
+              Start typing to search for the correct commodity code for your fish product.
+            </div>
+
+            <div class="govuk-form-group govuk-!-width-two-thirds" style="position: relative;">
+              <input name="commodity-code-autocomplete" type="text" class="govuk-input govuk-!-width-full"
+                id="commodity-code-autocomplete" autocomplete="off" aria-expanded="false" role="combobox"
+                aria-autocomplete="list" aria-owns="commodity-code-listbox" aria-activedescendant="">
+              <ul id="commodity-code-listbox" role="listbox" class="govuk-list"
+                style="display: none; border: 1px solid #b1b4b6; padding: 0.5em; background: white; position: absolute; z-index: 1000; width: 95%;">
+              </ul>
+              <input type="hidden" id="commodity-code" name="commodity-code">
+            </div>
+          </fieldset>
+        </div>
+
+        <script>
+          const commodityOptions = [
+  "03021410 - Fresh or chilled Atlantic salmon (Salmo salar)",
+  "03025400 - Fresh or chilled Atlantic mackerel (Scomber scombrus)",
+  "03024310 - Fresh or chilled Atlantic cod (Gadus morhua)",
+  "03024610 - Fresh or chilled Atlantic herring (Clupea harengus)",
+  "03024530 - Fresh or chilled Chilean jack mackerel (Trachurus murphyi)",
+  "03021900 - Fresh or chilled flatfish (excluding halibut, plaice, sole)",
+  "03022400 - Fresh or chilled hake (Merluccius spp.)",
+  "03025200 - Fresh or chilled haddock (Melanogrammus aeglefinus)",
+  "03027400 - Fresh or chilled plaice (Pleuronectes platessa)",
+  "03027200 - Fresh or chilled sole (Solea solea)",
+  "03028910 - Fresh or chilled monkfish (Lophius spp.)",
+  "03034400 - Frozen bigeye tuna (Thunnus obesus)",
+  "03034501 - Frozen Atlantic bluefin tuna (Thunnus thynnus)",
+  "03034200 - Frozen yellowfin tuna (Thunnus albacares)",
+  "03048700 - Frozen tuna fillets (Thunnus spp.)",
+  "03056300 - Anchovies (Engraulis spp.), salted or in brine",
+  "16041310 - Smoked sardines in oil, not skinned/boned",
+  "16041320 - Sardines, sardinella, sprats in oil, airtight containers",
+  "16041330 - Sardines/sprats, skinned/boned, in oil, airtight containers",
+  "16041390 - Sardines/sprats, not in oil, not airtight, ≥225g",
+  "03055400 - Dried herrings, anchovies, sardines, sprats, mackerel",
+  "03037900 - Frozen whiting (Merlangius merlangus)",
+  "03037500 - Frozen pollock (Pollachius virens)",
+  "03038900 - Frozen red mullet (Mullus spp.)",
+  "03038910 - Frozen sea bass (Dicentrarchus spp.)",
+  "03038920 - Frozen John Dory (Zeus faber)",
+  "03022100 - Fresh or chilled halibut (Hippoglossus spp.)",
+  "03022400 - Fresh or chilled turbot (Scophthalmus maximus)",
+  "03022910 - Fresh or chilled European lobster (Homarus gammarus)",
+  "03063310 - Edible crab (Cancer pagurus)", // <-- new line
+  "03089000 – Other aquatic invertebrates (for lobster)",
+  "03022900 - Fresh or chilled ling (Molva molva)"
+ ];
+
+          const input = document.getElementById("commodity-code-autocomplete");
+          const listbox = document.getElementById("commodity-code-listbox");
+          const hiddenInput = document.getElementById("commodity-code");
+
+          input.addEventListener("input", () => {
+            const value = input.value.toLowerCase();
+            listbox.innerHTML = "";
+
+            if (value.length < 2) {
+              listbox.style.display = "none";
+              return;
+            }
+
+            const matches = commodityOptions.filter(option => option.toLowerCase().includes(value));
+            if (matches.length === 0) {
+              listbox.style.display = "none";
+              return;
+            }
+
+            matches.forEach((optionText, index) => {
+              const option = document.createElement("li");
+              option.setAttribute("role", "option");
+              option.setAttribute("id", `commodity-code-option-${index}`);
+              option.textContent = optionText;
+              option.style.cursor = "pointer";
+              option.style.padding = "0.25em 0";
+              option.onclick = () => {
+                input.value = optionText;
+                hiddenInput.value = optionText.split(" ")[0]; // Extract code
+                listbox.style.display = "none";
+              };
+              listbox.appendChild(option);
+            });
+
+            listbox.style.display = "block";
+          });
+
+          document.addEventListener("click", (e) => {
+            if (!input.contains(e.target) && !listbox.contains(e.target)) {
+              listbox.style.display = "none";
+            }
+          });
+        </script>
+
+        <details class="govuk-details">
+          <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+              Help with commodity code
+            </span>
+          </summary>
+          <div class="govuk-details__text">
+            <p class="govuk-body">You can use the <a href="https://www.gov.uk/trade-tariff" class="govuk-link"
+                rel="noreferrer noopener" target="_blank">UK Integrated Online Tariff
+                to find the correct commodity code (opens in new tab)</a></p>
+          </div>
+        </details>
+
+
+        <div class="govuk-button-group">
+
+          <button class="govuk-button" data-module="govuk-button" type="submit">
+            Save and continue
+          </button>
+
+          <button type="button" class="dcx-button govuk-button govuk-button--secondary" id="saveAsDraft"
+            data-module="govuk-button" data-testid="save-draft-button" onclick="location.href='progress.html'">
+            Save as draft
+          </button>
+
+        </div>
+    </form>
+
+
+
+    <p class="govuk-body">
+      <a href="../ps/progress.html" class="govuk-link">Back to your progress</a>
+    </p>
+
+
+    <div class="app-contact-panel">
+      <h2 class="app-contact-panel__heading">Get help with your application</h2>
+
+      <p class="app-contact-panel__body">
+        If you have a processing statement unique reference number, have it with you when you call.
+      </p>
+
+      <ul class="govuk-list">
+        <li>Phone: 0330 159 1989 </li>
+        <li>Monday to Friday, 9am to 5pm (except public holidays)</li>
+      </ul>
+
+      <p class="govuk-body">
+        <a class="govuk-link" href="#">Find out about call charges</a>
+      </p>
+
+      <p>Read the guidance on <a
+          href="https://www.gov.uk/guidance/exporting-or-moving-fish-from-the-uk#get-help-with-fish-export-documents"
+          class="govuk-link" rel="noreferrer noopener" target="_blank">exporting or moving fish from the UK
+          (opens in new tab).</a>
+      </p>
+
+
+
+
+      <script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const addAnotherButton = document.getElementById('add-another-button');
+    const deleteButton = document.getElementById('delete-button');
+    const documentFieldsContainer = document.getElementById('document-fields');
+    let fieldCount = documentFieldsContainer.querySelectorAll('.document-field').length;
+
+    // Hide delete button initially if only one field
+    if (fieldCount <= 1) {
+      deleteButton.style.display = 'none';
+    }
+
+    addAnotherButton.addEventListener('click', function () {
+      fieldCount++;
+
+      const newDocumentField = document.createElement('div');
+      newDocumentField.classList.add('govuk-form-group', 'document-field');
+      newDocumentField.id = `document-field-${fieldCount}`;
+
+      const newReferenceNumberLabel = document.createElement('legend');
+      newReferenceNumberLabel.classList.add('govuk-fieldset__legend', 'govuk-fieldset__legend--s');
+      newReferenceNumberLabel.setAttribute('for', `product-reference-number-${fieldCount}`);
+      newReferenceNumberLabel.textContent = 'Catch certificate';
+
+      const newReferenceNumberHint = document.createElement('div');
+      newReferenceNumberHint.id = `reference-number-hint-${fieldCount}`;
+      newReferenceNumberHint.classList.add('govuk-hint');
+      newReferenceNumberHint.textContent = 'Enter the catch certificate reference number, including any hyphens, dashes or other characters. For example, GBR-2024-CC-BEFCD6036.';
+
+      const newReferenceNumberInput = document.createElement('input');
+      newReferenceNumberInput.classList.add('govuk-input', 'govuk-!-width-two-thirds');
+      newReferenceNumberInput.id = `product-reference-number-${fieldCount}`;
+      newReferenceNumberInput.name = 'productReferenceNumber[]';
+      newReferenceNumberInput.type = 'text';
+      newReferenceNumberInput.setAttribute('aria-describedby', `reference-number-hint-${fieldCount}`);
+
+      newDocumentField.appendChild(newReferenceNumberLabel);
+      newDocumentField.appendChild(newReferenceNumberHint);
+      newDocumentField.appendChild(newReferenceNumberInput);
+
+      documentFieldsContainer.appendChild(newDocumentField);
+
+      if (fieldCount > 1) {
+        deleteButton.style.display = 'inline-block';
+      }
+    });
+
+    deleteButton.addEventListener('click', function (event) {
+      event.preventDefault();
+      if (fieldCount > 1) {
+        const lastField = document.getElementById(`document-field-${fieldCount}`);
+        if (lastField) {
+          lastField.remove();
+          fieldCount--;
+        }
+      }
+
+      if (fieldCount <= 1) {
+        deleteButton.style.display = 'none';
+      }
+    });
+  });
+</script>
+
+
+    </div>
+  </div>
+</div>
+
+{% endblock %}

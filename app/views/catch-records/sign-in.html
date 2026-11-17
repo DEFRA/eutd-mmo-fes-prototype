@@ -1,0 +1,80 @@
+{% extends "layouts/layout-defra.html" %}
+
+{% block pageTitle %}Sign in - Web Administration Portal{% endblock %}
+
+{% block content %}
+<style>
+  .govuk-template__body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background: #fff;
+  }
+
+  .govuk-template__body > .govuk-width-container {
+    flex: 1 0 auto;
+    width: calc(100% - 30px);
+  }
+
+  @media (min-width: 40.0625em) {
+    .govuk-template__body > .govuk-width-container {
+      width: calc(100% - 60px);
+    }
+  }
+
+  .govuk-footer {
+    padding-top: 15px;
+    padding-bottom: 10px;
+  }
+
+  .govuk-footer__licence-logo {
+    display: none;
+  }
+
+  .catch-records-sign-in {
+    max-width: 700px;
+  }
+</style>
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds catch-records-sign-in">
+    {% if errors.length %}
+      <div class="govuk-error-summary" data-module="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1">
+        <h2 class="govuk-error-summary__title" id="error-summary-title">There is a problem</h2>
+        <div class="govuk-error-summary__body">
+          <ul class="govuk-list govuk-error-summary__list">
+            {% for error in errors %}
+              <li><a href="#{{ error.field }}">{{ error.text }}</a></li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    {% endif %}
+
+    {% set emailError = "" %}
+    {% set passwordError = "" %}
+    {% for error in errors %}
+      {% if error.field == 'email' %}{% set emailError = error.text %}{% endif %}
+      {% if error.field == 'password' %}{% set passwordError = error.text %}{% endif %}
+    {% endfor %}
+
+    <h1 class="govuk-heading-xl">Sign in</h1>
+    <p class="govuk-body">Use a test email address and password for this prototype. Do not use your real sign-in details.</p>
+
+    <form action="/catch-records/sign-in" method="post" novalidate>
+      <div class="govuk-form-group{% if emailError %} govuk-form-group--error{% endif %}">
+        <label class="govuk-label govuk-label--s" for="email">Email address</label>
+        {% if emailError %}<p class="govuk-error-message" id="email-error"><span class="govuk-visually-hidden">Error:</span> {{ emailError }}</p>{% endif %}
+        <input class="govuk-input govuk-!-width-two-thirds{% if emailError %} govuk-input--error{% endif %}" id="email" name="catch-records-sign-in-email" type="email" autocomplete="username" value="{{ email }}"{% if emailError %} aria-describedby="email-error"{% endif %}>
+      </div>
+
+      <div class="govuk-form-group{% if passwordError %} govuk-form-group--error{% endif %}">
+        <label class="govuk-label govuk-label--s" for="password">Password</label>
+        {% if passwordError %}<p class="govuk-error-message" id="password-error"><span class="govuk-visually-hidden">Error:</span> {{ passwordError }}</p>{% endif %}
+        <input class="govuk-input govuk-!-width-two-thirds{% if passwordError %} govuk-input--error{% endif %}" id="password" name="catch-records-sign-in-password" type="password" autocomplete="current-password"{% if passwordError %} aria-describedby="password-error"{% endif %}>
+      </div>
+
+      <button class="govuk-button" data-module="govuk-button" type="submit">Sign in</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

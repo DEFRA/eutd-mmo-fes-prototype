@@ -1,4 +1,4 @@
-{% set serviceName = "Create a UK storage document" %}
+{% set serviceName = "Create a UK non-manipulation document" %}
 {% extends "layouts/main.html" %}
 
 {% block pageTitle %}
@@ -15,11 +15,18 @@ Check your answers - GOV.UK
 
     <a href="javascript:history.back()" class="govuk-back-link">Back</a>
 
-    <h1 class="govuk-heading-l">Check your answers before you create the storage document</h1>
+    <h1 class="govuk-heading-l">Check your answers before you create the non-manipulation document</h1>
 
     <!-- Exporter -->
     <h2 class="govuk-heading-m">Exporter</h2>
     <dl class="govuk-summary-list govuk-!-margin-bottom-7">
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Your reference</dt>
+        <dd class="govuk-summary-list__value">{{ data['your-reference'] or 'Not provided' }}</dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="../sd/your-reference.html">Change<span class="govuk-visually-hidden"> your reference</span></a>
+        </dd>
+      </div>
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">Company name</dt>
         <dd class="govuk-summary-list__value">{{ data['company-name'] or 'Not provided' }}</dd>
@@ -199,6 +206,10 @@ Check your answers - GOV.UK
         <dt class="govuk-summary-list__key">Freight number</dt>
         <dd class="govuk-summary-list__value">{{ data['freight-number'] or 'Not provided' }}</dd>
       </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Container identification number(s)</dt>
+        <dd class="govuk-summary-list__value">{{ entries[0].containerIdentification or data['container-identification-truck'] or 'Not provided' }}</dd>
+      </div>
 
 
 
@@ -261,6 +272,10 @@ Check your answers - GOV.UK
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">Freight bill</dt>
         <dd class="govuk-summary-list__value">{{ data['freight-bill'] or 'Not provided' }}</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Container identification number(s)</dt>
+        <dd class="govuk-summary-list__value">{{ entries[0].containerIdentification or data['container-identification-train'] or 'Not provided' }}</dd>
       </div>
       {% elif transportType == 'Container vessel' %}
       <div class="govuk-summary-list__row">
@@ -372,6 +387,13 @@ Check your answers - GOV.UK
         </dd>
       </div>
       <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Destination point</dt>
+        <dd class="govuk-summary-list__value">{{ data['destination-point-truck'] or 'Not provided' }}</dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href=></a>
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">Departure date from the UK</dt>
         <dd class="govuk-summary-list__value">{{ data['departure-date-uk'] or 'Not provided' }}</dd>
       </div>
@@ -395,6 +417,13 @@ Check your answers - GOV.UK
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">Destination country</dt>
         <dd class="govuk-summary-list__value">{{ data['plane-departure-destination-country'] or 'Not provided' }}</dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href=></a>
+        </dd>
+      </div>
+            <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Destination point</dt>
+        <dd class="govuk-summary-list__value">{{ data['destination-point-plane'] or 'Not provided' }}</dd>
         <dd class="govuk-summary-list__actions">
           <a class="govuk-link" href=></a>
         </dd>
@@ -427,6 +456,13 @@ Check your answers - GOV.UK
           <a class="govuk-link" href=></a>
         </dd>
       </div>
+            <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Destination point</dt>
+        <dd class="govuk-summary-list__value">{{ data['destination-point-train'] or 'Not provided' }}</dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href=></a>
+        </dd>
+      </div>
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">Departure date from the UK</dt>
         <dd class="govuk-summary-list__value">{{ data['train-departure-date'] or 'Not provided' }}</dd>
@@ -448,6 +484,13 @@ Check your answers - GOV.UK
         <dt class="govuk-summary-list__key">Destination country</dt>
         <dd class="govuk-summary-list__value">{{ data['container-vessel-departure-destination-country'] or 'Not
           provided' }}</dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href=></a>
+        </dd>
+      </div>
+            <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Destination point</dt>
+        <dd class="govuk-summary-list__value">{{ data['destination-point-vessel'] or 'Not provided' }}</dd>
         <dd class="govuk-summary-list__actions">
           <a class="govuk-link" href=></a>
         </dd>
@@ -487,9 +530,9 @@ Check your answers - GOV.UK
     </div>
 
     <!-- Final submission -->
-    <h2 class="govuk-heading-m">Now create your storage document</h2>
+    <h2 class="govuk-heading-m">Now create your non-manipulation document</h2>
 
-    <p class="govuk-body">By submitting this storage document, you confirm that:</p>
+    <p class="govuk-body">By submitting this non-manipulation document, you confirm that:</p>
     <ul class="govuk-list govuk-list--bullet">
       <li>you understand that you are under a duty not to knowingly submit information that is false or otherwise
         inaccurate</li>
@@ -503,7 +546,7 @@ Check your answers - GOV.UK
     <br>
     <a href="../sd/non-manipulation-document-complete.html" role="button" draggable="false"
       class="govuk-button govuk-button--start" data-module="govuk-button">
-      Accept and storage document
+      Accept and non-manipulation document
     </a>
 
     </form>
@@ -516,7 +559,7 @@ Check your answers - GOV.UK
   <h2 class="app-contact-panel__heading">Get help with your application</h2>
 
   <p class="app-contact-panel__body">
-    If you have a storage document unique reference number, have it with you when you call.
+    If you have a non-manipulation document unique reference number, have it with you when you call.
   </p>
 
   <ul class="govuk-list">

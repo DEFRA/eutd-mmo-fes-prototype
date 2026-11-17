@@ -1,0 +1,188 @@
+{% set serviceName = "Create a UK non-manipulation document" %}
+
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+GOV.UK Prototype Kit
+{% endblock %}
+
+{% block content %}
+{% include "../../includes/phase.html" %}
+
+<style>
+  .govuk-fieldset {
+    margin-bottom: 30px;
+  }
+
+  .govuk-fieldset__legend {
+    font-weight: bold;
+  }
+
+  #cmr-hint {
+    margin-bottom: 50px;
+  }
+
+  .black {
+    color: #0b0c0c;
+  }
+
+  .govuk-button-group {
+    margin-top: 50px;
+  }
+</style>
+
+<style>
+  .app-contact-panel {
+    margin-top: 60px;
+    /* govuk-responsive-margin(9, "top") equivalent */
+    padding-top: 20px;
+    /* govuk-spacing(3) equivalent */
+    border-top: 2px solid #1d70b8;
+    /* govuk-colour("blue") */
+  }
+
+  .app-contact-panel__heading,
+  .app-contact-panel__body,
+  .app-contact-panel__link {
+    max-width: 100%;
+  }
+
+  .app-contact-panel__heading {
+    font-family: "GDS Transport", Arial, sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 1.25;
+    padding-top: 10px;
+  }
+
+  .app-contact-panel__heading:first-child {
+    padding-top: 0;
+  }
+
+  .app-contact-panel__body:last-child {
+    margin-bottom: 0;
+  }
+</style>
+
+
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <a href="javascript:history.back()" class="govuk-back-link">Back</a>
+
+   <h1 class="govuk-heading-xl">
+  You have added {{ data.productEntries.length }} product{% if data.productEntries.length > 1 %}s{% endif %} to this consignment
+</h1>
+
+
+
+    <form method="post" action="/delta/sd/product-summary">
+
+
+     <table class="govuk-table">
+  <thead class="govuk-table__head">
+    <tr class="govuk-table__row">
+      <th scope="col" class="govuk-table__header">Product</th>
+      <th scope="col" class="govuk-table__header">Document reference</th>
+      <th scope="col" class="govuk-table__header"></th> <!-- ✅ Add this -->
+    </tr>
+  </thead>
+  <tbody class="govuk-table__body">
+    {% for entry in data.productEntries %}
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">{{ entry.species }}</td>
+        <td class="govuk-table__cell">
+          {{ entry.entryDocumentReference }}
+          {% if entry.productReferenceNumber %}
+            , {{ entry.productReferenceNumber }}
+          {% endif %}
+        </td>
+        <td class="govuk-table__cell">
+          <a class="govuk-link" href="/delta/sd/edit-product/{{ loop.index0 }}">Edit</a><br>
+          <a href="/delta/sd/remove-product/{{ loop.index0 }}" class="govuk-link govuk-link--destructive remove-row">Remove</a>
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+
+
+      <div class="govuk-form-group">
+        <fieldset class="govuk-fieldset" aria-describedby="more-products">
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+            Do you need to add another product?
+          </legend>
+
+
+          <div class="govuk-radios govuk-radios--inline">
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="more-products-yes" name="more-products" type="radio" value="Yes">
+              <label class="govuk-label govuk-radios__label" for="more-products-yes">Yes</label>
+            </div>
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="more-products-no" name="more-products" type="radio" value="No">
+              <label class="govuk-label govuk-radios__label" for="more-products-no">No</label>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+
+        <details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Why add another product?
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+    You may need to add another product if your UK entry document covers multiple species or product types.
+  </div>
+</details>
+
+
+      <div class="govuk-button-group">
+        <button class="govuk-button" data-module="govuk-button" type="submit">
+          Save and continue
+        </button>
+        <button class="govuk-button govuk-button--secondary" data-module="govuk-button"
+          formaction="../storage-document.html">
+          Save as draft
+        </button>
+
+      </div>
+    </form>
+
+
+    <p class="govuk-body">
+      <a href="../sd/progress.html" class="govuk-link">Back to your progress</a>
+    </p>
+
+
+
+    <div class="app-contact-panel">
+      <h2 class="app-contact-panel__heading">Get help with your application</h2>
+
+      <p class="app-contact-panel__body">
+        If you have a non-manipulation document unique reference number, have it with you when you call.
+      </p>
+
+      <ul class="govuk-list">
+        <li>Phone: 0330 159 1989 </li>
+        <li>Monday to Friday, 9am to 5pm (except public holidays)</li>
+      </ul>
+
+      <p class="govuk-body">
+        <a class="govuk-link" href="#">Find out about call charges</a>
+      </p>
+
+      <p>Read the guidance on <a
+          href="https://www.gov.uk/guidance/exporting-or-moving-fish-from-the-uk#get-help-with-fish-export-documents"
+          class="govuk-link" rel="noreferrer noopener" target="_blank">exporting or moving fish from the UK
+          (opens in new tab).</a>
+      </p>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}

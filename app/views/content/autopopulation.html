@@ -1,0 +1,107 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Auto-population opportunities — CC, PS, NMD/SD
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+
+    <h1 class="govuk-heading-xl">Auto-population opportunities</h1>
+    <p class="govuk-body">Fields that could be pre-populated across the three export document journeys: Catch Certificate (CC), Processing Statement (PS), and Non-Manipulation Document / Storage Document (NMD/SD).</p>
+    <p class="govuk-body">Users complete these journeys in order: CC first, then PS, then NMD/SD. Data entered in an earlier journey could be carried forward to reduce re-entry and errors.</p>
+
+    <table class="govuk-table">
+      <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+          <th scope="col" class="govuk-table__header">#</th>
+          <th scope="col" class="govuk-table__header">Field pre-populated</th>
+          <th scope="col" class="govuk-table__header">Source journey and field</th>
+          <th scope="col" class="govuk-table__header">Target journey and field</th>
+          <th scope="col" class="govuk-table__header">Benefit</th>
+          <th scope="col" class="govuk-table__header">Priority</th>
+        </tr>
+      </thead>
+      <tbody class="govuk-table__body">
+
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">1</td>
+          <td class="govuk-table__cell"><strong>Catch certificate reference</strong></td>
+          <td class="govuk-table__cell">CC — the certificate's own unique reference number, generated on submission</td>
+          <td class="govuk-table__cell">PS — "Catch certificate" reference field</td>
+          <td class="govuk-table__cell">Users currently copy the CC reference manually into PS. Pre-filling removes a transcription step and reduces the risk of entering the wrong reference number.</td>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--red">High</strong></td>
+        </tr>
+
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">2</td>
+          <td class="govuk-table__cell"><strong>Species weight on catch certificate</strong></td>
+          <td class="govuk-table__cell">CC — "Export weight (kg)"</td>
+          <td class="govuk-table__cell">PS — "Species weight on catch certificate"</td>
+          <td class="govuk-table__cell">The CC export weight is exactly what PS asks for. Users currently look this up from their CC and re-enter it. Pre-filling reduces errors and effort.</td>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--red">High</strong></td>
+        </tr>
+
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">3</td>
+          <td class="govuk-table__cell"><strong>Entry document reference</strong></td>
+          <td class="govuk-table__cell">PS — the processing statement's own unique reference number, generated on submission</td>
+          <td class="govuk-table__cell">NMD/SD — "Entry document" reference field</td>
+          <td class="govuk-table__cell">The PS reference is what NMD/SD asks for as the entry document. Pre-filling removes a manual look-up and copy step.</td>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--red">High</strong></td>
+        </tr>
+
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">4</td>
+          <td class="govuk-table__cell"><strong>Weight on entry document</strong></td>
+          <td class="govuk-table__cell">PS — "Export weight after processing"</td>
+          <td class="govuk-table__cell">NMD/SD — "Weight on entry document"</td>
+          <td class="govuk-table__cell">The weight leaving PS is the same weight arriving at NMD/SD. Pre-filling this directly links the two documents and reduces the chance of inconsistencies.</td>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--red">High</strong></td>
+        </tr>
+
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">5</td>
+          <td class="govuk-table__cell"><strong>Species</strong></td>
+          <td class="govuk-table__cell">CC — "FAO code or species name"</td>
+          <td class="govuk-table__cell">PS — "Species" field</td>
+          <td class="govuk-table__cell">The same species travels from CC into PS. Pre-filling avoids re-entry and ensures consistency between the two documents.</td>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--orange">Medium</strong></td>
+        </tr>
+
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">6</td>
+          <td class="govuk-table__cell"><strong>Commodity code</strong></td>
+          <td class="govuk-table__cell">CC — "Commodity code"</td>
+          <td class="govuk-table__cell">PS — "Commodity code" / NMD/SD — commodity code</td>
+          <td class="govuk-table__cell">The commodity code may change between journeys if the fish is processed into a different product, so pre-filling should be editable. Still reduces effort when the code does not change.</td>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--orange">Medium</strong></td>
+        </tr>
+
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">7</td>
+          <td class="govuk-table__cell"><strong>Exporter details</strong></td>
+          <td class="govuk-table__cell">CC — company name and address</td>
+          <td class="govuk-table__cell">PS — exporter name and address / NMD/SD — exporter name and address</td>
+          <td class="govuk-table__cell">The same business is the exporter across all three documents. Pre-filling avoids re-entering the same company details three times.</td>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--orange">Medium</strong></td>
+        </tr>
+
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">8</td>
+          <td class="govuk-table__cell"><strong>Destination country</strong></td>
+          <td class="govuk-table__cell">CC — destination country (transport section)</td>
+          <td class="govuk-table__cell">PS — destination country / NMD/SD — destination country</td>
+          <td class="govuk-table__cell">If the fish is going to the same destination throughout the chain, this field repeats across all three journeys. Should be editable in case the destination changes.</td>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--blue">Low</strong></td>
+        </tr>
+
+      </tbody>
+    </table>
+
+  </div>
+</div>
+
+{% endblock %}

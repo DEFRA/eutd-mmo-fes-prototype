@@ -1,0 +1,64 @@
+{% set serviceName = "Record your catch" %}
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Catch retention
+{% endblock %}
+
+{% block content %}
+  {% include "../includes/phase.html" %}
+
+<style>
+  .govuk-fieldset {margin-bottom:30px;}
+  .govuk-button-group {margin-top:50px;}
+</style>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+
+    <a href="javascript:history.back()" class="govuk-back-link">Back</a>
+
+    <h1 class="govuk-heading-xl">Is there any catch from this trip that you will not be landing straight away?</h1>
+
+    <div class="govuk-hint" style="margin-bottom:20px;">
+      For example, keeping white fish onboard for bait or storing shellfish in keep pots.
+    </div>
+
+    <form method="post" action="/mobile-app/retained-species">
+
+      <div class="govuk-form-group govuk-!-width-two-thirds">
+        <fieldset class="govuk-fieldset">
+          <div class="govuk-radios">
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="retention-yes" name="catch-retained" type="radio" value="yes">
+              <label class="govuk-label govuk-radios__label" for="retention-yes">
+                Yes
+              </label>
+            </div>
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="retention-no" name="catch-retained" type="radio" value="no">
+              <label class="govuk-label govuk-radios__label" for="retention-no">
+                No
+              </label>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+
+      <div class="govuk-hint">
+        <strong>If Yes:</strong> You'll be asked to enter the species and quantities retained.
+        <br><strong>If No:</strong> You'll be taken to the final screen to confirm details for your trip.
+      </div>
+
+      <div class="govuk-button-group">
+        <button type="submit" class="govuk-button govuk-button--primary" data-module="govuk-button">
+          Save and continue
+        </button>
+      </div>
+
+    </form>
+
+  </div>
+</div>
+
+{% endblock %}

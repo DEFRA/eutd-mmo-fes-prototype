@@ -1,0 +1,409 @@
+{% extends "layouts/layout-defra-previous.html" %}
+
+{% block pageTitle %}
+Web Admin Portal: Trip A12345202606151302
+{% endblock %}
+
+{% set serviceName %}
+Web Admin Portal
+{% endset %}
+
+{% set activeNavSection = "fishing-trips" %}
+
+{% block beforeContent %}
+<a class="govuk-back-link" href="fishing-trips">Back to fishing trips</a>
+{% endblock %}
+
+{% block content %}
+<style>
+  .catch-records-tab-actions {
+    margin-top: 1rem;
+  }
+
+  .catch-records-tab-actions .govuk-button {
+    margin-right: 1rem;
+  }
+
+  .catch-records-note {
+    padding: 1rem 0;
+    border-bottom: 1px solid #b1b4b6;
+  }
+
+  .catch-records-note__meta {
+    color: #505a5f;
+  }
+
+  .catch-records-note__edit {
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+  }
+</style>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <p class="govuk-caption-l">Trip details</p>
+    <h1 class="govuk-heading-xl" id="trip-heading">Trip A12345202606151302</h1>
+
+    <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Trip reference</dt>
+        <dd class="govuk-summary-list__value">A12345202606151302</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">PLN</dt>
+        <dd class="govuk-summary-list__value">PZ1</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Trip start date</dt>
+        <dd class="govuk-summary-list__value">14 June 2026</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Trip end date</dt>
+        <dd class="govuk-summary-list__value">14 June 2026</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Status</dt>
+        <dd class="govuk-summary-list__value"><strong class="govuk-tag govuk-tag--blue" id="trip-status">Amended</strong></dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Late submission</dt>
+        <dd class="govuk-summary-list__value" id="late-submission">No</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Created on</dt>
+        <dd class="govuk-summary-list__value">15 June 2026, 13:02</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Received on</dt>
+        <dd class="govuk-summary-list__value">14 June 2026</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Retained catch</dt>
+        <dd class="govuk-summary-list__value">No</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Admin port</dt>
+        <dd class="govuk-summary-list__value">Newlyn</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Port code</dt>
+        <dd class="govuk-summary-list__value">GBNLY</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Submission method</dt>
+        <dd class="govuk-summary-list__value">Automated service</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Amendment reason</dt>
+        <dd class="govuk-summary-list__value">Corrected catch weight for lemon sole</dd>
+      </div>
+    </dl>
+
+    <a class="govuk-button govuk-button--start" data-module="govuk-button" href="#" role="button" draggable="false">
+      Access catch record
+      <svg class="govuk-button__start-icon" xmlns="http://www.w3.org/2000/svg" width="17.5" height="19" viewBox="0 0 33 40" aria-hidden="true" focusable="false">
+        <path fill="currentColor" d="M0 0h13l20 20-20 20H0l20-20z" />
+      </svg>
+    </a>
+
+    <div class="govuk-tabs" data-module="govuk-tabs">
+      <h2 class="govuk-tabs__title">Contents</h2>
+      <ul class="govuk-tabs__list">
+        <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
+          <a class="govuk-tabs__tab" href="#vessel">Vessel</a>
+        </li>
+        <li class="govuk-tabs__list-item">
+          <a class="govuk-tabs__tab" href="#user">User</a>
+        </li>
+        <li class="govuk-tabs__list-item">
+          <a class="govuk-tabs__tab" href="#catch-breakdown">Catch breakdown</a>
+        </li>
+        <li class="govuk-tabs__list-item">
+          <a class="govuk-tabs__tab" href="#history">History</a>
+        </li>
+        <li class="govuk-tabs__list-item">
+          <a class="govuk-tabs__tab" href="#notes">Notes</a>
+        </li>
+      </ul>
+
+      <div class="govuk-tabs__panel" id="vessel">
+        <h2 class="govuk-heading-l">Vessel</h2>
+        <table class="govuk-table">
+          <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+              <th class="govuk-table__header" scope="col">Vessel</th>
+              <th class="govuk-table__header" scope="col">PLN</th>
+              <th class="govuk-table__header" scope="col">Departure port</th>
+              <th class="govuk-table__header" scope="col">Return port</th>
+              <th class="govuk-table__header" scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="govuk-table__body">
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">Lady Jane</td>
+              <td class="govuk-table__cell">PZ1</td>
+              <td class="govuk-table__cell">Newlyn</td>
+              <td class="govuk-table__cell">Newlyn</td>
+              <td class="govuk-table__cell"><a class="govuk-link" href="vessel-profile">View vessel</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="user">
+        <h2 class="govuk-heading-l">User</h2>
+        <table class="govuk-table">
+          <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+              <th class="govuk-table__header" scope="col">Name</th>
+              <th class="govuk-table__header" scope="col">Role</th>
+              <th class="govuk-table__header" scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="govuk-table__body">
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">John Smith</td>
+              <td class="govuk-table__cell">Owner</td>
+              <td class="govuk-table__cell"><a class="govuk-link" href="user-profile">View user</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="catch-breakdown">
+        <h2 class="govuk-heading-l">Catch breakdown</h2>
+        <table class="govuk-table">
+          <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+              <th class="govuk-table__header" scope="col">Species</th>
+              <th class="govuk-table__header" scope="col">Species FAO code</th>
+              <th class="govuk-table__header" scope="col">Weight (kg)</th>
+              <th class="govuk-table__header" scope="col">Retained weight (kg)</th>
+            </tr>
+          </thead>
+          <tbody class="govuk-table__body">
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">Common sole</td>
+              <td class="govuk-table__cell">SOL</td>
+              <td class="govuk-table__cell">6.70</td>
+              <td class="govuk-table__cell">&ndash;</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">John Dory</td>
+              <td class="govuk-table__cell">JOD</td>
+              <td class="govuk-table__cell">18.00</td>
+              <td class="govuk-table__cell">&ndash;</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">Lemon sole</td>
+              <td class="govuk-table__cell">LEM</td>
+              <td class="govuk-table__cell">22.00</td>
+              <td class="govuk-table__cell">&ndash;</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">European plaice</td>
+              <td class="govuk-table__cell">PLE</td>
+              <td class="govuk-table__cell">19.00</td>
+              <td class="govuk-table__cell">&ndash;</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">Megrim</td>
+              <td class="govuk-table__cell">MEG</td>
+              <td class="govuk-table__cell">9.50</td>
+              <td class="govuk-table__cell">&ndash;</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="history">
+        <h2 class="govuk-heading-l">History</h2>
+        <table class="govuk-table">
+          <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+              <th class="govuk-table__header" scope="col">Date and time</th>
+              <th class="govuk-table__header" scope="col">Action</th>
+              <th class="govuk-table__header" scope="col">Performed by</th>
+            </tr>
+          </thead>
+          <tbody class="govuk-table__body">
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">14 June 2026</td>
+              <td class="govuk-table__cell">Trip created</td>
+              <td class="govuk-table__cell">John Smith</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">14 June 2026</td>
+              <td class="govuk-table__cell">Trip received</td>
+              <td class="govuk-table__cell">Lucy Harper</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">15 June 2026, 13:02</td>
+              <td class="govuk-table__cell">Trip submitted via automated service</td>
+              <td class="govuk-table__cell">John Smith</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">15 June 2026, 13:02</td>
+              <td class="govuk-table__cell">Amendment reason added</td>
+              <td class="govuk-table__cell">John Smith</td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="govuk-body"><a class="govuk-link" href="audit-log?s=CR10234">View all history for this trip</a></p>
+      </div>
+
+      <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="notes">
+        <h2 class="govuk-heading-l">Notes</h2>
+        <div id="notes-list">
+          <div class="catch-records-note" data-note-id="1">
+            <p class="govuk-body-s govuk-!-margin-bottom-1 catch-records-note__meta"><strong>Lucy Harper</strong> &mdash; 15 June 2026, 13:10</p>
+            <p class="govuk-body catch-records-note__text">Queried amendment reason with John Smith by phone; confirmed correction was needed.</p>
+            <button class="govuk-link catch-records-note__edit" type="button" data-note-id="1">Edit</button>
+          </div>
+        </div>
+        <form class="govuk-!-margin-top-6" id="add-note-form">
+          <div class="govuk-form-group">
+            <label class="govuk-label govuk-label--s" for="new-note">Add a note</label>
+            <textarea class="govuk-textarea" id="new-note" name="new-note" rows="4"></textarea>
+          </div>
+          <button class="govuk-button" type="submit">Save note</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="catch-records-tab-actions">
+      <a class="govuk-button govuk-button--secondary" href="#">View original record</a>
+      <a class="govuk-button govuk-button--secondary" href="#">View amended record</a>
+      <a class="govuk-button govuk-button--secondary" href="#">Download PDF</a>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block pageScripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var tabs = Array.prototype.slice.call(document.querySelectorAll('.govuk-tabs__tab'))
+    var panels = Array.prototype.slice.call(document.querySelectorAll('.govuk-tabs__panel'))
+
+    function showTab(targetId) {
+      tabs.forEach(function (tab) {
+        var selected = tab.getAttribute('href') === '#' + targetId
+        tab.parentElement.classList.toggle('govuk-tabs__list-item--selected', selected)
+        tab.setAttribute('aria-selected', selected ? 'true' : 'false')
+        tab.setAttribute('tabindex', selected ? '0' : '-1')
+      })
+
+      panels.forEach(function (panel) {
+        panel.classList.toggle('govuk-tabs__panel--hidden', panel.id !== targetId)
+      })
+    }
+
+    tabs.forEach(function (tab) {
+      tab.addEventListener('click', function (event) {
+        event.preventDefault()
+        var targetId = tab.getAttribute('href').substring(1)
+        showTab(targetId)
+        window.history.replaceState(null, '', '#' + targetId)
+      })
+    })
+
+    var initialTab = window.location.hash ? window.location.hash.substring(1) : 'vessel'
+    showTab(document.getElementById(initialTab) ? initialTab : 'vessel')
+
+    var tripParams = new URLSearchParams(window.location.search)
+    var tripStatus = tripParams.get('status')
+    var tripStatusDetails = {
+      submitted: { label: 'Submitted', colour: 'green', late: 'No' },
+      amended: { label: 'Amended', colour: 'blue', late: 'No' },
+      late: { label: 'Late', colour: 'red', late: 'Yes' }
+    }
+    if (tripParams.get('trip')) document.querySelector('#trip-heading').textContent = 'Trip ' + tripParams.get('trip')
+    if (tripStatusDetails[tripStatus]) {
+      var statusDetails = tripStatusDetails[tripStatus]
+      var statusTag = document.querySelector('#trip-status')
+      statusTag.textContent = statusDetails.label
+      statusTag.className = 'govuk-tag govuk-tag--' + statusDetails.colour
+      document.querySelector('#late-submission').textContent = statusDetails.late
+    }
+
+    var notesList = document.querySelector('#notes-list')
+    var addNoteForm = document.querySelector('#add-note-form')
+    var nextNoteId = 2
+
+    function attachEditHandler(button) {
+      button.addEventListener('click', function () {
+        var note = button.closest('.catch-records-note')
+        var textEl = note.querySelector('.catch-records-note__text')
+        var currentText = textEl.textContent
+
+        var textarea = document.createElement('textarea')
+        textarea.className = 'govuk-textarea'
+        textarea.rows = 4
+        textarea.value = currentText
+
+        var saveButton = document.createElement('button')
+        saveButton.className = 'govuk-button govuk-button--secondary govuk-!-margin-bottom-0'
+        saveButton.type = 'button'
+        saveButton.textContent = 'Save'
+
+        textEl.replaceWith(textarea)
+        button.replaceWith(saveButton)
+
+        saveButton.addEventListener('click', function () {
+          var newTextEl = document.createElement('p')
+          newTextEl.className = 'govuk-body catch-records-note__text'
+          newTextEl.textContent = textarea.value
+          textarea.replaceWith(newTextEl)
+
+          var newEditButton = document.createElement('button')
+          newEditButton.className = 'govuk-link catch-records-note__edit'
+          newEditButton.type = 'button'
+          newEditButton.textContent = 'Edit'
+          saveButton.replaceWith(newEditButton)
+          attachEditHandler(newEditButton)
+        })
+      })
+    }
+
+    Array.prototype.slice.call(document.querySelectorAll('.catch-records-note__edit')).forEach(attachEditHandler)
+
+    addNoteForm.addEventListener('submit', function (event) {
+      event.preventDefault()
+      var textarea = document.querySelector('#new-note')
+      var text = textarea.value.trim()
+      if (!text) return
+
+      var note = document.createElement('div')
+      note.className = 'catch-records-note'
+      note.dataset.noteId = nextNoteId
+
+      var now = new Date()
+      var meta = document.createElement('p')
+      meta.className = 'govuk-body-s govuk-!-margin-bottom-1 catch-records-note__meta'
+      meta.innerHTML = '<strong>Sam Smith</strong> &mdash; ' + now.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) + ', ' + now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })
+
+      var textEl = document.createElement('p')
+      textEl.className = 'govuk-body catch-records-note__text'
+      textEl.textContent = text
+
+      var editButton = document.createElement('button')
+      editButton.className = 'govuk-link catch-records-note__edit'
+      editButton.type = 'button'
+      editButton.textContent = 'Edit'
+      editButton.dataset.noteId = nextNoteId
+      attachEditHandler(editButton)
+
+      note.appendChild(meta)
+      note.appendChild(textEl)
+      note.appendChild(editButton)
+      notesList.insertBefore(note, notesList.firstChild)
+
+      nextNoteId += 1
+      textarea.value = ''
+    })
+  })
+</script>
+{% endblock %}

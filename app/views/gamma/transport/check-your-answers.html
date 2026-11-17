@@ -54,6 +54,14 @@ Check your answers - GOV.UK
     <dl class="govuk-summary-list govuk-!-margin-bottom-7">
 
       <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Your reference</dt>
+        <dd class="govuk-summary-list__value">{{ data['your-reference'] or 'Not provided' }}</dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="../your-reference.html">Change<span class="govuk-visually-hidden"> your reference</span></a>
+        </dd>
+      </div>
+
+      <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">Full name of responsible person for the export</dt>
         <dd class="govuk-summary-list__value">{{ data['exporter-name'] or 'Not provided' }}</dd>
         <dd class="govuk-summary-list__actions">
@@ -243,6 +251,26 @@ Check your answers - GOV.UK
 
     <!-- Export Details -->
     <h2 class="govuk-heading-m">Transportation</h2>
+    
+    <dl class="govuk-summary-list govuk-!-margin-bottom-7">
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Departure country</dt>
+        <dd class="govuk-summary-list__value">{{ data['departure-country'] or 'Not provided' }}</dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="../export-journey.html">Change<span class="govuk-visually-hidden"> departure country</span></a>
+        </dd>
+      </div>
+
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Destination country</dt>
+        <dd class="govuk-summary-list__value">{{ data['destination-country'] or 'Not provided' }}</dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="../export-journey.html">Change<span class="govuk-visually-hidden"> destination country</span></a>
+        </dd>
+      </div>
+    </dl>
+
+    
     <dl class="govuk-summary-list govuk-!-margin-bottom-9">
       {% if groupedTransportTypes %}
       {% for type, entries in groupedTransportTypes %}
@@ -276,11 +304,27 @@ Check your answers - GOV.UK
             href="../transport/transport-truck.html?edit={{ entries[0]._originalIndex }}">Change</a></dd>
       </div>
       <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">Departure country</dt>
+        <dt class="govuk-summary-list__key">Place export leaves the UK</dt>
         <dd class="govuk-summary-list__value">{{ entries[0].exportPlace or data['export-place'] or 'Not provided' }}
         </dd>
         <dd class="govuk-summary-list__actions"><a class="govuk-link"
             href="../transport/transport-truck.html?edit={{ entries[0]._originalIndex }}">Change</a></dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Destination point</dt>
+        <dd class="govuk-summary-list__value">{{ entries[0].destinationPoint or data['destination-point-truck'] or
+          'Not provided' }}</dd>
+        <dd class="govuk-summary-list__actions"><a class="govuk-link"
+            href="../transport/transport-truck.html?edit={{ entries[0]._originalIndex }}">Change</a></dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Container identification number(s)</dt>
+        <dd class="govuk-summary-list__value">
+          {{ entries[0].containerIdentification or data['container-identification-truck'] or 'Not provided' }}
+        </dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="../transport/transport-truck.html?edit={{ entries[0]._originalIndex }}">Change</a>
+        </dd>
       </div>
       {% elif type == 'Plane' %}
       <div class="govuk-summary-list__row">
@@ -303,6 +347,13 @@ Check your answers - GOV.UK
         <dd class="govuk-summary-list__actions"><a class="govuk-link"
             href="../transport/transport-plane.html?edit={{ entries[0]._originalIndex }}">Change</a></dd>
       </div>
+            <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Destination point</dt>
+        <dd class="govuk-summary-list__value">{{ entries[0].destinationPoint or data['destination-point-plane'] or
+          'Not provided' }}</dd>
+        <dd class="govuk-summary-list__actions"><a class="govuk-link"
+            href="../transport/transport-plane.html?edit={{ entries[0]._originalIndex }}">Change</a></dd>
+      </div>
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">Container identification number(s)</dt>
         <dd class="govuk-summary-list__value">
@@ -312,8 +363,6 @@ Check your answers - GOV.UK
           <a class="govuk-link" href="../transport/transport-plane.html?edit={{ entries[0]._originalIndex }}">Change</a>
         </dd>
       </div>
-
-
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">Freight bill number</dt>
         <dd class="govuk-summary-list__value">{{ entries[0].freightBillNumber or data['freight-bill'] or 'Not provided'
@@ -329,6 +378,20 @@ Check your answers - GOV.UK
         <dd class="govuk-summary-list__actions"><a class="govuk-link"
             href="../transport/transport-train.html?edit={{ entries[0]._originalIndex }}">Change</a></dd>
       </div>
+            <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Place export leaves the UK</dt>
+        <dd class="govuk-summary-list__value">{{ entries[0].trainDeparture or data['train-departure'] or 'Not provided'
+          }}</dd>
+        <dd class="govuk-summary-list__actions"><a class="govuk-link"
+            href="../transport/transport-train.html?edit={{ entries[0]._originalIndex }}">Change</a></dd>
+      </div>
+            <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Destination point</dt>
+        <dd class="govuk-summary-list__value">{{ entries[0].destinationPoint or data['destination-point-train'] or
+          'Not provided' }}</dd>
+        <dd class="govuk-summary-list__actions"><a class="govuk-link"
+            href="../transport/transport-train.html?edit={{ entries[0]._originalIndex }}">Change</a></dd>
+      </div>
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">Freight bill number</dt>
         <dd class="govuk-summary-list__value">{{ entries[0].freightBillNumber or data['freight-bill'] or 'Not provided'
@@ -337,11 +400,13 @@ Check your answers - GOV.UK
             href="../transport/transport-train.html?edit={{ entries[0]._originalIndex }}">Change</a></dd>
       </div>
       <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">Departure country</dt>
-        <dd class="govuk-summary-list__value">{{ entries[0].trainDeparture or data['train-departure'] or 'Not provided'
-          }}</dd>
-        <dd class="govuk-summary-list__actions"><a class="govuk-link"
-            href="../transport/transport-train.html?edit={{ entries[0]._originalIndex }}">Change</a></dd>
+        <dt class="govuk-summary-list__key">Container identification number(s)</dt>
+        <dd class="govuk-summary-list__value">
+          {{ entries[0].containerIdentification or data['container-identification-train'] or 'Not provided' }}
+        </dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="../transport/transport-train.html?edit={{ entries[0]._originalIndex }}">Change</a>
+        </dd>
       </div>
       {% elif type == 'Container vessel' %}
       <div class="govuk-summary-list__row">
@@ -367,6 +432,13 @@ Check your answers - GOV.UK
         <dt class="govuk-summary-list__key">Place export leaves the UK</dt>
         <dd class="govuk-summary-list__value">{{ entries[0].containerVesselDeparture or
           data['container-vessel-departure'] or 'Not provided' }}</dd>
+        <dd class="govuk-summary-list__actions"><a class="govuk-link"
+            href="../transport/transport-container-vessel.html?edit={{ entries[0]._originalIndex }}">Change</a></dd>
+      </div>
+            <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Destination point</dt>
+        <dd class="govuk-summary-list__value">{{ entries[0].destinationPoint or data['destination-point-vessel'] or
+          'Not provided' }}</dd>
         <dd class="govuk-summary-list__actions"><a class="govuk-link"
             href="../transport/transport-container-vessel.html?edit={{ entries[0]._originalIndex }}">Change</a></dd>
       </div>

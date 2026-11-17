@@ -1,0 +1,47 @@
+{% set serviceName = "Create a UK catch certificate" %}
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+GOV.UK Prototype Kit
+{% endblock %}
+
+{% block content %}
+{% include "../../includes/phase.html" %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <a href="javascript:history.back()" class="govuk-back-link">Back</a>
+
+    <h1 class="govuk-heading-xl">You may also need to create a processing statement</h1>
+
+    <p class="govuk-body">Because you have confirmed that the fish has been processed in the UK after landing, you will also need to complete a processing statement.</p>
+
+    <h2 class="govuk-heading-m">You will need to provide:</h2>
+
+    <ul class="govuk-list govuk-list--bullet">
+      <li>Details of the UK processing company</li>
+      <li>The weight of the raw fish before processing</li>
+      <li>The weight of the product after processing</li>
+    </ul>
+
+    <div class="govuk-button-group">
+      <button class="govuk-button" data-module="govuk-button" onclick="handleProceedClick()">
+        Yes, create statement
+      </button>
+      <a href="check-your-answers.html" class="govuk-button govuk-button--secondary">
+        No, not needed
+      </a>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  function handleProceedClick() {
+    // Redirect to the processing statement service
+    window.location.href = '../ps/product-details.html';
+  }
+</script>
+
+{% endblock %}

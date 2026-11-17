@@ -1,0 +1,633 @@
+{% extends "layouts/layout-defra-previous.html" %}
+
+{% block pageTitle %}
+Web Admin Portal: Catch records
+{% endblock %}
+
+{% set serviceName %}
+Web Admin Portal
+{% endset %}
+
+{% set activeNavSection = "users" %}
+
+{% block content %}
+<style>
+  .search-container {
+    max-width: none;
+  }
+
+  .search-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 0.5rem;
+  }
+
+  .search-controls .form-search {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .form-search {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+    width: 100%;
+  }
+
+  .search-input-wrapper {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.5em;
+    width: 100%;
+  }
+
+  input[type="search"] {
+    flex: 1;
+    width: 100%;
+    height: 44px;
+    font-family: "GDS Transport", arial, sans-serif;
+    border-radius: 0;
+    padding: 5px;
+    border: 2px solid #0b0c0c;
+    margin-bottom: 0;
+    appearance: none;
+    -webkit-appearance: none;
+    box-sizing: border-box;
+    font-weight: 400;
+    font-size: 1.1875rem;
+    line-height: 1.3157894737;
+    color: #0b0c0c;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  input[type="search"]:focus {
+    outline: 3px solid #fd0;
+    box-shadow: inset 0 0 0 2px #0b0c0c;
+    z-index: 1;
+  }
+
+  .btn {
+    flex: 0 0 auto;
+    width: 52px;
+    height: 44px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    background-color: #1d70b8;
+    color: white;
+    border: none;
+    padding: 0.5em 1em;
+    font-size: 1.1875rem;
+    font-family: "GDS Transport", arial, sans-serif;
+    cursor: pointer;
+    line-height: 1.3157894737;
+    border-radius: 0;
+  }
+
+  .btn .gem-c-search__icon {
+    width: 28px;
+    height: 28px;
+    flex: 0 0 28px;
+  }
+
+  .btn:hover {
+    background-color: #1d70b8;
+  }
+
+  .btn:focus {
+    outline: 3px solid #fd0;
+    box-shadow: inset 0 0 0 4px #0b0c0c;
+    z-index: 1;
+  }
+
+  .catch-records-filters {
+    margin-top: 1.5rem;
+    padding: 1.5rem;
+    background-color: #f3f2f1;
+    border-top: 1px solid #b1b4b6;
+  }
+
+  .catch-records-filter-form {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem 2rem;
+  }
+
+  .catch-records-filter-form > h2,
+  .catch-records-filter-form > button {
+    grid-column: 1 / -1;
+  }
+
+  .catch-records-filter-form .govuk-form-group {
+    margin-bottom: 0;
+    min-width: 0;
+    align-self: start;
+  }
+
+  .catch-records-filter-form .govuk-fieldset,
+  .catch-records-filter-form .govuk-date-input,
+  .catch-records-filter-form .catch-records-typeahead {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .catch-records-filter-form__start-date {
+    grid-column: 1;
+  }
+
+  .catch-records-filter-form__end-date {
+    grid-column: 2;
+  }
+
+  .catch-records-filter-form__vessel {
+    grid-column: 1;
+  }
+
+  .catch-records-filter-form__user {
+    grid-column: 2;
+  }
+
+  .catch-records-filter-form__status {
+    grid-column: 1;
+  }
+
+  .catch-records-filter-form__assisted-digital {
+    grid-column: 2;
+  }
+
+  .catch-records-filter-form .govuk-checkboxes {
+    columns: 2;
+  }
+
+  .catch-records-filter-form .govuk-checkboxes__item {
+    break-inside: avoid;
+  }
+
+  .catch-records-filter-form .govuk-checkboxes__input {
+    background-color: #fff;
+  }
+
+  .catch-records-filter-form .govuk-checkboxes__input + .govuk-checkboxes__label::before {
+    background-color: #fff;
+  }
+
+  .catch-records-filter-form #vessel,
+  .catch-records-filter-form #user {
+    width: 100%;
+    max-width: none;
+    box-sizing: border-box;
+  }
+
+  .catch-records-typeahead {
+    position: relative;
+  }
+
+  .catch-records-typeahead__listbox {
+    display: none;
+    position: absolute;
+    z-index: 1000;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0.5em;
+    border: 1px solid #b1b4b6;
+    background: #fff;
+    box-sizing: border-box;
+    list-style: none;
+  }
+
+  .catch-records-typeahead__option {
+    padding: 0.25em 0;
+    cursor: pointer;
+  }
+
+  .catch-records-typeahead__option:hover,
+  .catch-records-typeahead__option:focus {
+    background: #f3f2f1;
+    outline: 3px solid #fd0;
+  }
+
+  .catch-records-filter-toggle {
+    display: contents;
+  }
+
+  .catch-records-filters {
+    flex: 0 0 100%;
+    position: relative;
+  }
+
+  .catch-records-filter-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: #0b0c0c;
+    font-family: Arial, sans-serif;
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .catch-records-filter-close:hover {
+    background: #dbdad9;
+  }
+
+  .catch-records-filter-close:focus {
+    outline: 3px solid #fd0;
+    box-shadow: inset 0 0 0 2px #0b0c0c;
+  }
+
+  .catch-records-filter-summary {
+    display: inline-block;
+    white-space: nowrap;
+    margin-bottom: 0;
+    padding: 0.5em 1em;
+    background-color: #f3f2f1;
+    color: #0b0c0c;
+    font-family: "GDS Transport", arial, sans-serif;
+    font-size: 1.1875rem;
+    line-height: 1.3157894737;
+    border: 1px solid #b1b4b6;
+    height: 44px;
+    box-sizing: border-box;
+    cursor: pointer;
+  }
+
+  .catch-records-filter-summary:hover {
+    background-color: #dbdad9;
+  }
+
+  .catch-records-filter-summary:focus {
+    outline: 3px solid #fd0;
+    box-shadow: inset 0 0 0 2px #0b0c0c;
+  }
+
+  .catch-records-filter-summary::-webkit-details-marker {
+    margin-right: 0.35em;
+  }
+
+  .catch-records-pagination {
+    margin-top: 2rem;
+  }
+
+  .catch-records-table-wrapper {
+    overflow-x: auto;
+    margin-bottom: 1rem;
+  }
+
+  .catch-records-table-wrapper .govuk-table {
+    margin-bottom: 0;
+  }
+
+  .catch-records-table-wrapper .govuk-table__cell,
+  .catch-records-table-wrapper .govuk-table__header {
+    white-space: nowrap;
+  }
+
+  @media (max-width: 40.0625em) {
+    .search-controls {
+      display: block;
+    }
+
+    .catch-records-filter-toggle {
+      margin-top: 0.75rem;
+      display: block;
+    }
+
+    .catch-records-filter-form {
+      grid-template-columns: 1fr;
+    }
+
+    .catch-records-filter-form__start-date,
+    .catch-records-filter-form__end-date,
+    .catch-records-filter-form__vessel,
+    .catch-records-filter-form__user,
+    .catch-records-filter-form__status,
+    .catch-records-filter-form__assisted-digital {
+      grid-column: 1;
+    }
+
+    .catch-records-filter-form .govuk-checkboxes {
+      columns: 1;
+    }
+  }
+
+</style>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+    <h1 class="govuk-heading-xl">Users</h1>
+
+    <a class="govuk-button" data-module="govuk-button" href="#">Create a new user</a>
+
+    <div class="bottom search-container">
+      <div class="search-controls">
+        <form action="landing-page" class="form-search" id="searchform" method="get" role="search">
+        <label class="govuk-label govuk-label--s" for="s">Search users</label>
+        <div class="govuk-hint" id="trip-search-hint">
+          Search by name, email or telephone number
+        </div>
+        <div class="search-input-wrapper">
+          <input class="search-query" enterkeyhint="search" id="s" name="s" title="Search" type="search" value="">
+          <button class="btn" type="submit" aria-label="Search users">
+            <svg aria-hidden="true" class="gem-c-search__icon" fill="none" focusable="false" height="28" viewbox="0 0 27 27" width="28" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12.0161" cy="11.0161" r="8.51613" stroke="currentColor" stroke-width="3"></circle>
+              <line stroke="currentColor" stroke-width="3" x1="17.8668" x2="26.4475" y1="17.3587" y2="25.9393"></line>
+            </svg>
+          </button>
+        </div>
+        </form>
+
+        <details class="catch-records-filter-toggle">
+          <summary class="catch-records-filter-summary">Filters</summary>
+          <div class="catch-records-filters">
+            <button class="catch-records-filter-close" type="button" aria-label="Close filters">x</button>
+            <form action="landing-page" class="catch-records-filter-form" method="get">
+              <h2 class="govuk-heading-m">Filters</h2>
+
+      <div class="govuk-form-group catch-records-filter-form__status">
+        <fieldset class="govuk-fieldset">
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Status</legend>
+          <div class="govuk-checkboxes">
+            {% for status in ["Created", "Invited", "Accepted"] %}
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="status-{{ status | lower }}" name="status" type="checkbox" value="{{ status | lower }}">
+              <label class="govuk-label govuk-checkboxes__label" for="status-{{ status | lower }}">{{ status }}</label>
+            </div>
+            {% endfor %}
+          </div>
+        </fieldset>
+      </div>
+
+      <div class="govuk-form-group catch-records-filter-form__assisted-digital">
+        <fieldset class="govuk-fieldset">
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Assisted digital</legend>
+          <div class="govuk-checkboxes">
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="assisted-digital-yes" name="assisted-digital" type="checkbox" value="yes">
+              <label class="govuk-label govuk-checkboxes__label" for="assisted-digital-yes">Yes</label>
+            </div>
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="assisted-digital-no" name="assisted-digital" type="checkbox" value="no">
+              <label class="govuk-label govuk-checkboxes__label" for="assisted-digital-no">No</label>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+
+      <div class="govuk-form-group catch-records-filter-form__administration">
+        <fieldset class="govuk-fieldset">
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Administration</legend>
+          <div class="govuk-checkboxes">
+            {% for administration in ["England", "Northern Ireland", "Scotland", "Wales", "Isle of Man"] %}
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="administration-{{ administration | lower | replace(' ', '-') }}" name="administration" type="checkbox" value="{{ administration | lower }}">
+              <label class="govuk-label govuk-checkboxes__label" for="administration-{{ administration | lower | replace(' ', '-') }}">{{ administration }}</label>
+            </div>
+            {% endfor %}
+          </div>
+        </fieldset>
+      </div>
+
+              <button class="govuk-button" type="submit">Apply filters</button>
+            </form>
+          </div>
+        </details>
+      </div>
+    </div>
+<br>
+    <div class="catch-records-table-wrapper" role="region" aria-label="Users table, scroll to see more columns" tabindex="0">
+    <table class="govuk-table govuk-table--m" data-module="moj-sortable-table">
+      <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+          <th class="govuk-table__header" scope="col">Name</th>
+          <th class="govuk-table__header" scope="col">Email</th>
+          <th class="govuk-table__header" scope="col">Telephone number</th>
+          <th class="govuk-table__header" scope="col">Administration</th>
+          <th class="govuk-table__header" scope="col">Status</th>
+          <th class="govuk-table__header" scope="col">Assisted digital</th>
+          <th class="govuk-table__header" scope="col">Created on</th>
+          <th class="govuk-table__header" scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="govuk-table__body">
+        {% set statusTags = { accepted: "turquoise", invited: "pink", created: "grey" } %}
+        {% set users = [
+          { name: "John Smith", email: "John.Smith@email.com", telephone: "1234567890", administration: "England", status: "accepted", assistedDigital: "no", vessel: "Lady Jane", created: "2026-06-01", createdDisplay: "1 June 2026", createdVia: "Web", href: "user-profile" },
+          { name: "Joe Bloggs", email: "Joe.Bloggs@email.com", telephone: "7123456321", administration: "Wales", status: "accepted", assistedDigital: "no", vessel: "Gone Fishin'", created: "2026-06-02", createdDisplay: "2 June 2026", createdVia: "Web" },
+          { name: "Paul Smith", email: "Paul.Smith@email.com", telephone: "7341059275", administration: "Isle of Man", status: "accepted", assistedDigital: "no", vessel: "Wallaby Way", created: "2026-06-03", createdDisplay: "3 June 2026", createdVia: "App" },
+          { name: "Frank Castle", email: "Frank.Castle@email.com", telephone: "1563098743", administration: "England", status: "invited", assistedDigital: "yes", vessel: "Tigger", created: "2026-06-10", createdDisplay: "10 June 2026", createdVia: "Helpline" },
+          { name: "Peter Petrelli", email: "Peter.Petrelli@email.com", telephone: "7564152086", administration: "England", status: "accepted", assistedDigital: "no", vessel: "Quatro", created: "2026-06-05", createdDisplay: "5 June 2026", createdVia: "App" },
+          { name: "Bob Jones", email: "Bob.Jones@email.com", telephone: "1285092657", administration: "Wales", status: "created", assistedDigital: "no", vessel: "", created: "2026-06-18", createdDisplay: "18 June 2026", createdVia: "Web" },
+          { name: "Alice Wilson", email: "Alice.Wilson@email.com", telephone: "7700900101", administration: "Scotland", status: "accepted", assistedDigital: "no", vessel: "", created: "2026-06-06", createdDisplay: "6 June 2026", createdVia: "Web" },
+          { name: "Grace Turner", email: "Grace.Turner@email.com", telephone: "7700900102", administration: "Northern Ireland", status: "invited", assistedDigital: "yes", vessel: "", created: "2026-06-07", createdDisplay: "7 June 2026", createdVia: "Helpline" },
+          { name: "Emma Hughes", email: "Emma.Hughes@email.com", telephone: "7700900103", administration: "England", status: "accepted", assistedDigital: "no", vessel: "", created: "2026-06-08", createdDisplay: "8 June 2026", createdVia: "App" },
+          { name: "Liam Baker", email: "Liam.Baker@email.com", telephone: "7700900104", administration: "Wales", status: "created", assistedDigital: "no", vessel: "", created: "2026-06-09", createdDisplay: "9 June 2026", createdVia: "Web" },
+          { name: "Noah Evans", email: "Noah.Evans@email.com", telephone: "7700900105", administration: "Scotland", status: "accepted", assistedDigital: "no", vessel: "", created: "2026-06-11", createdDisplay: "11 June 2026", createdVia: "App" },
+          { name: "Olivia Roberts", email: "Olivia.Roberts@email.com", telephone: "7700900106", administration: "England", status: "invited", assistedDigital: "yes", vessel: "", created: "2026-06-12", createdDisplay: "12 June 2026", createdVia: "Helpline" },
+          { name: "Ava Walker", email: "Ava.Walker@email.com", telephone: "7700900107", administration: "Isle of Man", status: "accepted", assistedDigital: "no", vessel: "", created: "2026-06-13", createdDisplay: "13 June 2026", createdVia: "Web" },
+          { name: "Sophia Wright", email: "Sophia.Wright@email.com", telephone: "7700900108", administration: "Northern Ireland", status: "created", assistedDigital: "no", vessel: "", created: "2026-06-14", createdDisplay: "14 June 2026", createdVia: "App" },
+          { name: "Mia Green", email: "Mia.Green@email.com", telephone: "7700900109", administration: "England", status: "accepted", assistedDigital: "no", vessel: "", created: "2026-06-15", createdDisplay: "15 June 2026", createdVia: "Web" },
+          { name: "Ethan Adams", email: "Ethan.Adams@email.com", telephone: "7700900110", administration: "Wales", status: "invited", assistedDigital: "yes", vessel: "", created: "2026-06-16", createdDisplay: "16 June 2026", createdVia: "Helpline" },
+          { name: "Lucas Nelson", email: "Lucas.Nelson@email.com", telephone: "7700900111", administration: "Scotland", status: "accepted", assistedDigital: "no", vessel: "", created: "2026-06-17", createdDisplay: "17 June 2026", createdVia: "App" },
+          { name: "Mason Carter", email: "Mason.Carter@email.com", telephone: "7700900112", administration: "England", status: "created", assistedDigital: "no", vessel: "", created: "2026-06-19", createdDisplay: "19 June 2026", createdVia: "Web" },
+          { name: "Logan Mitchell", email: "Logan.Mitchell@email.com", telephone: "7700900113", administration: "England", status: "accepted", assistedDigital: "no", vessel: "", created: "2026-06-20", createdDisplay: "20 June 2026", createdVia: "App" },
+          { name: "Charlotte Perez", email: "Charlotte.Perez@email.com", telephone: "7700900114", administration: "Wales", status: "invited", assistedDigital: "yes", vessel: "", created: "2026-06-21", createdDisplay: "21 June 2026", createdVia: "Helpline" },
+          { name: "Amelia Rivera", email: "Amelia.Rivera@email.com", telephone: "7700900115", administration: "Isle of Man", status: "accepted", assistedDigital: "no", vessel: "", created: "2026-06-22", createdDisplay: "22 June 2026", createdVia: "Web" },
+          { name: "Harper Cooper", email: "Harper.Cooper@email.com", telephone: "7700900116", administration: "Northern Ireland", status: "created", assistedDigital: "no", vessel: "", created: "2026-06-23", createdDisplay: "23 June 2026", createdVia: "App" },
+          { name: "Evelyn Reed", email: "Evelyn.Reed@email.com", telephone: "7700900117", administration: "Scotland", status: "accepted", assistedDigital: "no", vessel: "", created: "2026-06-24", createdDisplay: "24 June 2026", createdVia: "Web" },
+          { name: "Abigail Bailey", email: "Abigail.Bailey@email.com", telephone: "7700900118", administration: "England", status: "invited", assistedDigital: "yes", vessel: "", created: "2026-06-25", createdDisplay: "25 June 2026", createdVia: "Helpline" },
+          { name: "Ella Cook", email: "Ella.Cook@email.com", telephone: "7700900119", administration: "Wales", status: "accepted", assistedDigital: "no", vessel: "", created: "2026-06-26", createdDisplay: "26 June 2026", createdVia: "Web" }
+        ] %}
+        {% for user in users %}
+        <tr class="govuk-table__row" data-name="{{ user.name }}" data-status="{{ user.status }}" data-assisted-digital="{{ user.assistedDigital }}" data-vessel="{{ user.vessel }}" data-user="{{ user.name }}" data-created="{{ user.created }}" data-administration="{{ user.administration | lower }}" data-email="{{ user.email }}" data-telephone="{{ user.telephone }}">
+          <td class="govuk-table__cell">{{ user.name }}</td>
+          <td class="govuk-table__cell">{{ user.email }}</td>
+          <td class="govuk-table__cell">{{ user.telephone }}</td>
+          <td class="govuk-table__cell">{{ user.administration }}</td>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--{{ statusTags[user.status] }}">{{ user.status | capitalize }}</strong></td>
+          <td class="govuk-table__cell">{{ "Yes" if user.assistedDigital == "yes" else "No" }}</td>
+          <td class="govuk-table__cell">{{ user.createdVia }}<br><span class="govuk-hint govuk-!-margin-bottom-0">{{ user.createdDisplay }}</span></td>
+          <td class="govuk-table__cell"><a class="govuk-link" href="{{ user.href | default('#') }}?user={{ user.name | replace(' ', '+') }}&status={{ user.status }}">View records</a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    </div>
+    <nav aria-label="Pagination" class="govuk-pagination catch-records-pagination">
+      <ul class="govuk-pagination__list" id="pagination-list"></ul>
+    </nav>
+    <p class="govuk-body" id="no-results" hidden>No catch records match your search or filters.</p>
+  </div>
+</div>
+{% endblock %}
+
+{% block pageScripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    function setupTypeahead(inputId, listId, options) {
+      var input = document.querySelector('#' + inputId)
+      var listbox = document.querySelector('#' + listId)
+
+      input.addEventListener('input', function () {
+        var value = input.value.trim().toLowerCase()
+        listbox.innerHTML = ''
+        input.setAttribute('aria-expanded', 'false')
+
+        if (value.length < 2) {
+          listbox.style.display = 'none'
+          return
+        }
+
+        options.filter(function (option) {
+          return option.toLowerCase().indexOf(value) !== -1
+        }).forEach(function (option, index) {
+          var item = document.createElement('li')
+          item.className = 'catch-records-typeahead__option'
+          item.id = inputId + '-option-' + index
+          item.setAttribute('role', 'option')
+          item.setAttribute('tabindex', '0')
+          item.textContent = option
+          item.addEventListener('click', function () {
+            input.value = option
+            listbox.style.display = 'none'
+            input.setAttribute('aria-expanded', 'false')
+          })
+          listbox.appendChild(item)
+        })
+
+        if (listbox.children.length) {
+          listbox.style.display = 'block'
+          input.setAttribute('aria-expanded', 'true')
+        }
+      })
+
+      document.addEventListener('click', function (event) {
+        if (!input.contains(event.target) && !listbox.contains(event.target)) {
+          listbox.style.display = 'none'
+          input.setAttribute('aria-expanded', 'false')
+        }
+      })
+    }
+
+    var searchForm = document.querySelector('#searchform')
+    var filterForm = document.querySelector('.catch-records-filter-form')
+    var filterDetails = document.querySelector('.catch-records-filter-toggle')
+    var filterClose = document.querySelector('.catch-records-filter-close')
+    var rows = Array.prototype.slice.call(document.querySelectorAll('tbody .govuk-table__row[data-name]'))
+    var noResults = document.querySelector('#no-results')
+    var paginationList = document.querySelector('#pagination-list')
+    var currentPage = 1
+    var pageSize = 10
+
+    function renderPagination(matchingRows) {
+      var pageCount = Math.ceil(matchingRows.length / pageSize)
+      paginationList.innerHTML = ''
+
+      if (pageCount < 2) return
+
+      if (currentPage > 1) {
+        var previousItem = document.createElement('li')
+        previousItem.className = 'govuk-pagination__item govuk-pagination__prev'
+        previousItem.innerHTML = '<a class="govuk-link govuk-pagination__link" href="#" rel="prev"><span class="govuk-pagination__link-title">Previous<span class="govuk-visually-hidden"> page</span></span></a>'
+        previousItem.querySelector('a').dataset.page = currentPage - 1
+        paginationList.appendChild(previousItem)
+      }
+
+      for (var page = 1; page <= pageCount; page += 1) {
+        var pageItem = document.createElement('li')
+        pageItem.className = 'govuk-pagination__item' + (page === currentPage ? ' govuk-pagination__item--current' : '')
+        pageItem.innerHTML = '<a class="govuk-link govuk-pagination__link" href="#" aria-label="Page ' + page + '">' + page + '</a>'
+        var pageLink = pageItem.querySelector('a')
+        pageLink.dataset.page = page
+        if (page === currentPage) pageLink.setAttribute('aria-current', 'page')
+        paginationList.appendChild(pageItem)
+      }
+
+      if (currentPage < pageCount) {
+        var nextItem = document.createElement('li')
+        nextItem.className = 'govuk-pagination__item govuk-pagination__next'
+        nextItem.innerHTML = '<a class="govuk-link govuk-pagination__link" href="#" rel="next"><span class="govuk-pagination__link-title">Next<span class="govuk-visually-hidden"> page</span></span></a>'
+        nextItem.querySelector('a').dataset.page = currentPage + 1
+        paginationList.appendChild(nextItem)
+      }
+    }
+
+    function renderPage(matchingRows) {
+      var start = (currentPage - 1) * pageSize
+      var visibleRows = matchingRows.slice(start, start + pageSize)
+
+      rows.forEach(function (row) {
+        row.hidden = visibleRows.indexOf(row) === -1
+      })
+
+      renderPagination(matchingRows)
+    }
+
+    function applyFilters(resetPage) {
+      if (resetPage) currentPage = 1
+      var query = document.querySelector('#s').value.trim().toLowerCase()
+      var statuses = Array.prototype.slice.call(document.querySelectorAll('input[name="status"]:checked')).map(function (input) {
+        return input.value
+      })
+      var assistedDigital = Array.prototype.slice.call(document.querySelectorAll('input[name="assisted-digital"]:checked')).map(function (input) {
+        return input.value
+      })
+      var administrations = Array.prototype.slice.call(document.querySelectorAll('input[name="administration"]:checked')).map(function (input) {
+        return input.value
+      })
+      var matchingRows = []
+
+      rows.forEach(function (row) {
+        var searchableText = row.dataset.name.toLowerCase() + ' ' + row.dataset.email.toLowerCase() + ' ' + row.dataset.telephone.toLowerCase()
+        var matches = (!query || searchableText.indexOf(query) !== -1) &&
+          (!statuses.length || statuses.indexOf(row.dataset.status) !== -1) &&
+          (!assistedDigital.length || assistedDigital.indexOf(row.dataset.assistedDigital) !== -1) &&
+          (!administrations.length || administrations.indexOf(row.dataset.administration) !== -1)
+
+        row.dataset.matchesFilters = matches
+        if (matches) matchingRows.push(row)
+      })
+
+      noResults.hidden = matchingRows.length !== 0
+      renderPage(matchingRows)
+    }
+
+    searchForm.addEventListener('submit', function (event) {
+      event.preventDefault()
+      applyFilters(true)
+    })
+
+    filterForm.addEventListener('submit', function (event) {
+      event.preventDefault()
+      applyFilters(true)
+    })
+
+    paginationList.addEventListener('click', function (event) {
+      var pageLink = event.target.closest('a[data-page]')
+      if (!pageLink) return
+      event.preventDefault()
+      currentPage = Number(pageLink.dataset.page)
+      var matchingRows = rows.filter(function (row) {
+        return row.dataset.matchesFilters === 'true'
+      })
+      renderPage(matchingRows)
+    })
+
+    filterClose.addEventListener('click', function () {
+      filterDetails.removeAttribute('open')
+      document.querySelector('.catch-records-filter-summary').focus()
+    })
+
+    applyFilters(true)
+  })
+</script>
+{% endblock %}

@@ -1,0 +1,151 @@
+
+{% set serviceName = "Create a UK processing statement" %}
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  GOV.UK Prototype Kit
+{% endblock %}
+
+{% block content %}
+  {% include "../../includes/phase.html" %}
+
+<style>
+  .govuk-button-group {margin-top:50px;}
+</style>
+
+<style>
+  .app-contact-panel {
+    margin-top: 60px;
+    /* govuk-responsive-margin(9, "top") equivalent */
+    padding-top: 20px;
+    /* govuk-spacing(3) equivalent */
+    border-top: 2px solid #1d70b8;
+    /* govuk-colour("blue") */
+  }
+
+  .app-contact-panel__heading,
+  .app-contact-panel__body,
+  .app-contact-panel__link {
+    max-width: 100%;
+  }
+
+  .app-contact-panel__heading {
+    font-family: "GDS Transport", Arial, sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 1.25;
+    padding-top: 10px;
+  }
+
+  .app-contact-panel__heading:first-child {
+    padding-top: 0;
+  }
+
+  .app-contact-panel__body:last-child {
+    margin-bottom: 0;
+  }
+</style>
+
+
+
+  
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      
+    <a href="javascript:history.back()" class="govuk-back-link">Back</a>
+    
+    <h1 class="govuk-heading-xl">What is the processing plant address?</h1>
+    
+    <form method="post" action="/delta/ps/plant-address-2">
+
+      
+      <!-- Your address -->
+<fieldset class="govuk-fieldset">
+  <div class="govuk-form-group">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Building number</legend>
+    <input class="govuk-input" id="building-number" name="building-number" type="text" autocomplete="address-line1">
+  </div>
+
+  <div class="govuk-form-group">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Building name</legend>
+    <input class="govuk-input" id="building-name" name="building-name" type="text" autocomplete="address-line1">
+  </div>
+
+  <div class="govuk-form-group">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Sub-building name (optional)</legend>
+    <div class="govuk-hint" id="storage-location-hint">
+      For example, the processing plant or business unit
+    </div>
+    <input class="govuk-input" id="sub-building-name" name="sub-building-name" type="text" autocomplete="address-line1" aria-describedby="storage-location-hint">
+  </div>
+
+  <div class="govuk-form-group">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Street name</legend>
+    <input class="govuk-input" id="street-name" name="street-name" type="text" autocomplete="address-line2">
+  </div>
+
+  <div class="govuk-form-group">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Town or city</legend>
+    <input class="govuk-input govuk-!-width-two-thirds" id="town-city" name="town-city" type="text" autocomplete="address-level2">
+  </div>
+
+  <div class="govuk-form-group">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">County, state or province (optional)</legend>
+    <input class="govuk-input govuk-!-width-two-thirds" id="county" name="county" type="text" autocomplete="address-level1">
+  </div>
+
+  <div class="govuk-form-group">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Postcode</legend>
+    <input class="govuk-input govuk-input--width-10" id="postcode" name="postcode" type="text" type="text"
+          value="{{ data['postcode'] or '' }}"></div>
+
+  <div class="govuk-form-group">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Country (optional)</legend>
+    <input class="govuk-input govuk-input--width-10" id="country" name="country" type="text" autocomplete="country-name">
+  </div>
+</fieldset>
+
+      
+      <!-- Form controls -->
+      <div class="govuk-button-group">
+         <button type="submit" class="govuk-button" data-module="govuk-button">
+          Continue
+        </button>
+        <button class="govuk-button govuk-button--secondary" data-module="govuk-button" formaction="progress">Cancel</button>
+      </div>
+
+            <p class="govuk-body">
+                <a href="../ps/progress.html" class="govuk-link">Back to your progress</a>
+              </p>			
+    </form>
+
+                  <div class="app-contact-panel">
+                <h2 class="app-contact-panel__heading">Get help with your application</h2>
+
+                <p class="app-contact-panel__body">
+                  If you have a processing statement unique reference number, have it with you when you call.
+                </p>
+
+                <ul class="govuk-list">
+                  <li>Phone: 0330 159 1989 </li>
+                  <li>Monday to Friday, 9am to 5pm (except public holidays)</li>
+                </ul>
+
+                <p class="govuk-body">
+                  <a class="govuk-link" href="#">Find out about call charges</a>
+                </p>
+
+                <p>Read the guidance on <a
+                    href="https://www.gov.uk/guidance/exporting-or-moving-fish-from-the-uk#get-help-with-fish-export-documents"
+                    class="govuk-link" rel="noreferrer noopener" target="_blank">exporting or moving fish from the UK
+                    (opens in new tab).</a>
+                </p>
+
+
+
+    </div>
+  </div>
+
+  
+{% endblock %}
+

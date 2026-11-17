@@ -1,0 +1,649 @@
+{% extends "layouts/layout-defra-previous.html" %}
+
+{% block pageTitle %}
+Web Admin Portal: Fishing trips
+{% endblock %}
+
+{% set serviceName %}
+Web Admin Portal
+{% endset %}
+
+{% set activeNavSection = "fishing-trips" %}
+
+{% block content %}
+<style>
+  .search-container {
+    max-width: none;
+  }
+
+  .search-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 0.5rem;
+  }
+
+  .search-controls .form-search {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .form-search {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+    width: 100%;
+  }
+
+  .search-input-wrapper {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.5em;
+    width: 100%;
+  }
+
+  input[type="search"] {
+    flex: 1;
+    width: 100%;
+    height: 44px;
+    font-family: "GDS Transport", arial, sans-serif;
+    border-radius: 0;
+    padding: 5px;
+    border: 2px solid #0b0c0c;
+    margin-bottom: 0;
+    appearance: none;
+    -webkit-appearance: none;
+    box-sizing: border-box;
+    font-weight: 400;
+    font-size: 1.1875rem;
+    line-height: 1.3157894737;
+    color: #0b0c0c;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  input[type="search"]:focus {
+    outline: 3px solid #fd0;
+    box-shadow: inset 0 0 0 2px #0b0c0c;
+    z-index: 1;
+  }
+
+  .btn {
+    flex: 0 0 auto;
+    width: 52px;
+    height: 44px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    background-color: #1d70b8;
+    color: white;
+    border: none;
+    font-size: 1.1875rem;
+    font-family: "GDS Transport", arial, sans-serif;
+    cursor: pointer;
+    line-height: 1.3157894737;
+    border-radius: 0;
+  }
+
+  .btn .gem-c-search__icon {
+    width: 28px;
+    height: 28px;
+    flex: 0 0 28px;
+  }
+
+  .btn:hover {
+    background-color: #1d70b8;
+  }
+
+  .btn:focus {
+    outline: 3px solid #fd0;
+    box-shadow: inset 0 0 0 4px #0b0c0c;
+    z-index: 1;
+  }
+
+  .catch-records-pagination {
+    margin-top: 2rem;
+  }
+
+  .catch-records-table-wrapper {
+    overflow-x: auto;
+    margin-bottom: 1rem;
+  }
+
+  .catch-records-table-wrapper .govuk-table {
+    margin-bottom: 0;
+  }
+
+  .catch-records-table-wrapper .govuk-table__cell,
+  .catch-records-table-wrapper .govuk-table__header {
+    white-space: nowrap;
+  }
+
+  .catch-records-filters {
+    margin-top: 1.5rem;
+    padding: 1.5rem;
+    background-color: #f3f2f1;
+    border-top: 1px solid #b1b4b6;
+    position: relative;
+  }
+
+  .catch-records-filter-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: #0b0c0c;
+    font-family: Arial, sans-serif;
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .catch-records-filter-close:hover {
+    background: #dbdad9;
+  }
+
+  .catch-records-filter-close:focus {
+    outline: 3px solid #fd0;
+    box-shadow: inset 0 0 0 2px #0b0c0c;
+  }
+
+  .catch-records-filter-form {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem 2rem;
+  }
+
+  .catch-records-filter-form > h2,
+  .catch-records-filter-form > button {
+    grid-column: 1 / -1;
+  }
+
+  .catch-records-filter-form .govuk-form-group {
+    margin-bottom: 0;
+    min-width: 0;
+    align-self: start;
+  }
+
+  .catch-records-filter-form .govuk-fieldset,
+  .catch-records-filter-form .govuk-date-input,
+  .catch-records-typeahead {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .catch-records-filter-form .govuk-checkboxes {
+    columns: 2;
+  }
+
+  .catch-records-filter-form .govuk-checkboxes__item {
+    break-inside: avoid;
+  }
+
+  .catch-records-filter-form .govuk-checkboxes__input {
+    background-color: #fff;
+  }
+
+  .catch-records-filter-form .govuk-checkboxes__input + .govuk-checkboxes__label::before {
+    background-color: #fff;
+  }
+
+  .catch-records-typeahead {
+    position: relative;
+  }
+
+  .catch-records-typeahead__listbox {
+    display: none;
+    position: absolute;
+    z-index: 1000;
+    width: 100%;
+    margin: 0;
+    padding: 0.5em;
+    border: 1px solid #b1b4b6;
+    background: #fff;
+    box-sizing: border-box;
+    list-style: none;
+  }
+
+  .catch-records-typeahead__option {
+    padding: 0.25em 0;
+    cursor: pointer;
+  }
+
+  .catch-records-typeahead__option:hover,
+  .catch-records-typeahead__option:focus {
+    background: #f3f2f1;
+    outline: 3px solid #fd0;
+  }
+
+  .catch-records-filter-toggle {
+    display: contents;
+  }
+
+  .catch-records-filter-summary {
+    display: inline-block;
+    white-space: nowrap;
+    margin-bottom: 0;
+    padding: 0.5em 1em;
+    background-color: #f3f2f1;
+    color: #0b0c0c;
+    font-family: "GDS Transport", arial, sans-serif;
+    font-size: 1.1875rem;
+    line-height: 1.3157894737;
+    border: 1px solid #b1b4b6;
+    height: 44px;
+    box-sizing: border-box;
+    cursor: pointer;
+  }
+
+  .catch-records-filter-summary:hover {
+    background-color: #dbdad9;
+  }
+
+  .catch-records-filter-summary:focus {
+    outline: 3px solid #fd0;
+    box-shadow: inset 0 0 0 2px #0b0c0c;
+  }
+
+  @media (max-width: 40.0625em) {
+    .catch-records-filter-form {
+      grid-template-columns: 1fr;
+    }
+
+    .catch-records-filter-form .govuk-checkboxes {
+      columns: 1;
+    }
+  }
+</style>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+    <h1 class="govuk-heading-xl">Fishing trips</h1>
+
+    <p class="govuk-body"><a class="govuk-link" href="trip-breakdown">View trip breakdown (catch by species)</a></p>
+
+    <div class="bottom search-container">
+      <div class="search-controls">
+        <form action="fishing-trips" class="form-search" id="searchform" method="get" role="search">
+        <label class="govuk-label govuk-label--s" for="s">Search fishing trips</label>
+        <div class="govuk-hint" id="trip-search-hint">
+          Search by vessel or status
+        </div>
+        <div class="search-input-wrapper">
+          <input class="search-query" enterkeyhint="search" id="s" name="s" title="Search" type="search" value="">
+          <button class="btn" type="submit" aria-label="Search fishing trips">
+            <svg aria-hidden="true" class="gem-c-search__icon" fill="none" focusable="false" height="28" viewbox="0 0 27 27" width="28" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12.0161" cy="11.0161" r="8.51613" stroke="currentColor" stroke-width="3"></circle>
+              <line stroke="currentColor" stroke-width="3" x1="17.8668" x2="26.4475" y1="17.3587" y2="25.9393"></line>
+            </svg>
+          </button>
+        </div>
+        </form>
+
+    <details class="catch-records-filter-toggle">
+      <summary class="catch-records-filter-summary">Filters</summary>
+      <div class="catch-records-filters">
+        <button class="catch-records-filter-close" type="button" aria-label="Close filters">x</button>
+        <form action="fishing-trips" class="catch-records-filter-form" method="get">
+          <h2 class="govuk-heading-m">Filters</h2>
+
+          <div class="govuk-form-group">
+            <fieldset class="govuk-fieldset">
+              <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Trip start date</legend>
+              <div class="govuk-date-input" id="trip-start-date">
+                <div class="govuk-date-input__item">
+                  <label class="govuk-label govuk-date-input__label" for="trip-start-date-day">Day</label>
+                  <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="trip-start-date-day" name="trip-start-date-day" type="text" inputmode="numeric">
+                </div>
+                <div class="govuk-date-input__item">
+                  <label class="govuk-label govuk-date-input__label" for="trip-start-date-month">Month</label>
+                  <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="trip-start-date-month" name="trip-start-date-month" type="text" inputmode="numeric">
+                </div>
+                <div class="govuk-date-input__item">
+                  <label class="govuk-label govuk-date-input__label" for="trip-start-date-year">Year</label>
+                  <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="trip-start-date-year" name="trip-start-date-year" type="text" inputmode="numeric">
+                </div>
+              </div>
+            </fieldset>
+          </div>
+
+          <div class="govuk-form-group">
+            <fieldset class="govuk-fieldset">
+              <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Trip end date</legend>
+              <div class="govuk-date-input" id="trip-end-date">
+                <div class="govuk-date-input__item">
+                  <label class="govuk-label govuk-date-input__label" for="trip-end-date-day">Day</label>
+                  <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="trip-end-date-day" name="trip-end-date-day" type="text" inputmode="numeric">
+                </div>
+                <div class="govuk-date-input__item">
+                  <label class="govuk-label govuk-date-input__label" for="trip-end-date-month">Month</label>
+                  <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="trip-end-date-month" name="trip-end-date-month" type="text" inputmode="numeric">
+                </div>
+                <div class="govuk-date-input__item">
+                  <label class="govuk-label govuk-date-input__label" for="trip-end-date-year">Year</label>
+                  <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="trip-end-date-year" name="trip-end-date-year" type="text" inputmode="numeric">
+                </div>
+              </div>
+            </fieldset>
+          </div>
+
+          <div class="govuk-form-group">
+            <label class="govuk-label govuk-label--s" for="vessel">Vessel</label>
+            <div class="catch-records-typeahead">
+              <input class="govuk-input" id="vessel" name="vessel" type="text" minlength="2" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="vessel-listbox">
+              <ul class="catch-records-typeahead__listbox" id="vessel-listbox" role="listbox"></ul>
+            </div>
+          </div>
+
+          <div class="govuk-form-group">
+            <label class="govuk-label govuk-label--s" for="created-by">Created by</label>
+            <div class="catch-records-typeahead">
+              <input class="govuk-input" id="created-by" name="created-by" type="text" minlength="2" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="created-by-listbox">
+              <ul class="catch-records-typeahead__listbox" id="created-by-listbox" role="listbox"></ul>
+            </div>
+          </div>
+
+          <div class="govuk-form-group">
+            <fieldset class="govuk-fieldset">
+              <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Status</legend>
+              <div class="govuk-checkboxes">
+                {% for status in ["Submitted", "Amended", "Late"] %}
+                <div class="govuk-checkboxes__item">
+                  <input class="govuk-checkboxes__input" id="status-{{ status | lower }}" name="status" type="checkbox" value="{{ status | lower }}">
+                  <label class="govuk-label govuk-checkboxes__label" for="status-{{ status | lower }}">{{ status }}</label>
+                </div>
+                {% endfor %}
+              </div>
+            </fieldset>
+          </div>
+
+          <div class="govuk-form-group">
+            <fieldset class="govuk-fieldset">
+              <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Submission method</legend>
+              <div class="govuk-checkboxes">
+                {% for method in ["Helpline", "Web", "App", "Automated service"] %}
+                <div class="govuk-checkboxes__item">
+                  <input class="govuk-checkboxes__input" id="submission-method-{{ method | lower | replace(' ', '-') }}" name="submission-method" type="checkbox" value="{{ method | lower }}">
+                  <label class="govuk-label govuk-checkboxes__label" for="submission-method-{{ method | lower | replace(' ', '-') }}">{{ method }}</label>
+                </div>
+                {% endfor %}
+              </div>
+            </fieldset>
+          </div>
+
+          <button class="govuk-button" type="submit">Apply filters</button>
+        </form>
+      </div>
+    </details>
+      </div>
+    </div>
+<br>
+    <div class="catch-records-table-wrapper" role="region" aria-label="Fishing trips table, scroll to see more columns" tabindex="0">
+    <table class="govuk-table govuk-table--m" data-module="moj-sortable-table">
+      <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+          <th class="govuk-table__header" scope="col">End date</th>
+          <th class="govuk-table__header" scope="col">Trip ID</th>
+          <th class="govuk-table__header" scope="col">PLN</th>
+          <th class="govuk-table__header" scope="col">Vessel</th>
+          <th class="govuk-table__header" scope="col">Created by</th>
+          <th class="govuk-table__header" scope="col">Created on</th>
+          <th class="govuk-table__header" scope="col">Received on</th>
+          <th class="govuk-table__header" scope="col">Retained catch</th>
+          <th class="govuk-table__header" scope="col">Admin port</th>
+          <th class="govuk-table__header" scope="col">Port code</th>
+          <th class="govuk-table__header" scope="col">Submission method</th>
+          <th class="govuk-table__header" scope="col">Status</th>
+          <th class="govuk-table__header" scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="govuk-table__body">
+        {% set statusTags = { submitted: "green", amended: "blue", late: "red" } %}
+        {% set methodTags = { helpline: "orange", web: "turquoise", app: "purple", "automated service": "grey" } %}
+        {% set trips = [
+          { endDate: "2026-06-16", endDisplay: "16 June 2026", tripId: "A12345202606171701", pln: "PZ1", vessel: "Lady Jane", createdBy: "John Smith", createdOnDisplay: "17 June 2026, 17:01", receivedOnDisplay: "17 June 2026", retainedCatch: "No", adminPort: "Newlyn", portCode: "GBNLY", method: "helpline", status: "late" },
+          { endDate: "2026-06-16", endDisplay: "16 June 2026", tripId: "B43254202606161654", pln: "RX5", vessel: "Gone Fishin'", createdBy: "Joe Bloggs", createdOnDisplay: "16 June 2026, 16:54", receivedOnDisplay: "16 June 2026", retainedCatch: "No", adminPort: "Hastings", portCode: "GBHTG", method: "web", status: "submitted" },
+          { endDate: "2026-06-15", endDisplay: "15 June 2026", tripId: "C54235202606161532", pln: "SW123", vessel: "Wallaby Way", createdBy: "Paul Smith", createdOnDisplay: "16 June 2026, 15:32", receivedOnDisplay: "16 June 2026", retainedCatch: "Yes", adminPort: "Milford Haven", portCode: "GBMLF", method: "app", status: "late" },
+          { endDate: "2026-06-15", endDisplay: "15 June 2026", tripId: "B23441202606151456", pln: "NS22", vessel: "Susie", createdBy: "John Smith", createdOnDisplay: "15 June 2026, 14:56", receivedOnDisplay: "16 June 2026", retainedCatch: "No", adminPort: "Newlyn", portCode: "GBNLY", method: "app", status: "submitted" },
+          { endDate: "2026-06-15", endDisplay: "15 June 2026", tripId: "A45352202606151201", pln: "WY43", vessel: "Quatro", createdBy: "Peter Petrelli", createdOnDisplay: "15 June 2026, 12:01", receivedOnDisplay: "15 June 2026", retainedCatch: "No", adminPort: "Milford Haven", portCode: "GBMLF", method: "app", status: "amended" },
+          { endDate: "2026-06-14", endDisplay: "14 June 2026", tripId: "C34245202608171402", pln: "M23", vessel: "Tigger", createdBy: "Frank Castle", createdOnDisplay: "14 June 2026, 14:02", receivedOnDisplay: "16 June 2026", retainedCatch: "Yes", adminPort: "Douglas", portCode: "IMDGS", method: "app", status: "submitted" },
+          { endDate: "2026-06-14", endDisplay: "14 June 2026", tripId: "A12345202606151302", pln: "PZ1", vessel: "Lady Jane", createdBy: "John Smith", createdOnDisplay: "15 June 2026, 13:02", receivedOnDisplay: "14 June 2026", retainedCatch: "No", adminPort: "Newlyn", portCode: "GBNLY", method: "automated service", status: "amended", href: "trip-profile" },
+          { endDate: "2026-06-13", endDisplay: "13 June 2026", tripId: "A10001202606131200", pln: "PZ45", vessel: "Northern Star", createdBy: "Alice Wilson", createdOnDisplay: "13 June 2026, 12:00", receivedOnDisplay: "13 June 2026", retainedCatch: "No", adminPort: "Newlyn", portCode: "GBNLY", method: "web", status: "submitted" },
+          { endDate: "2026-06-12", endDisplay: "12 June 2026", tripId: "B10002202606121100", pln: "FR12", vessel: "Sea Spray", createdBy: "Grace Turner", createdOnDisplay: "12 June 2026, 11:00", receivedOnDisplay: "12 June 2026", retainedCatch: "Yes", adminPort: "Fraserburgh", portCode: "FR", method: "helpline", status: "late" },
+          { endDate: "2026-06-11", endDisplay: "11 June 2026", tripId: "C10003202606111000", pln: "GY67", vessel: "Kingfisher", createdBy: "Emma Hughes", createdOnDisplay: "11 June 2026, 10:00", receivedOnDisplay: "11 June 2026", retainedCatch: "No", adminPort: "Grimsby", portCode: "GY", method: "app", status: "submitted" },
+          { endDate: "2026-06-10", endDisplay: "10 June 2026", tripId: "D10004202606100900", pln: "LT34", vessel: "Golden Dawn", createdBy: "Liam Baker", createdOnDisplay: "10 June 2026, 09:00", receivedOnDisplay: "10 June 2026", retainedCatch: "No", adminPort: "Lowestoft", portCode: "LT", method: "web", status: "amended" },
+          { endDate: "2026-06-09", endDisplay: "9 June 2026", tripId: "E10005202606090800", pln: "MH89", vessel: "Celtic Star", createdBy: "Noah Evans", createdOnDisplay: "9 June 2026, 08:00", receivedOnDisplay: "9 June 2026", retainedCatch: "Yes", adminPort: "Milford Haven", portCode: "MH", method: "app", status: "submitted" },
+          { endDate: "2026-06-08", endDisplay: "8 June 2026", tripId: "F10006202606080700", pln: "BA23", vessel: "Ocean Voyager", createdBy: "Olivia Roberts", createdOnDisplay: "8 June 2026, 07:00", receivedOnDisplay: "8 June 2026", retainedCatch: "No", adminPort: "Kilkeel", portCode: "KL", method: "helpline", status: "late" },
+          { endDate: "2026-06-07", endDisplay: "7 June 2026", tripId: "G10007202606070600", pln: "FR78", vessel: "Bonnie Lass", createdBy: "Ava Walker", createdOnDisplay: "7 June 2026, 06:00", receivedOnDisplay: "7 June 2026", retainedCatch: "No", adminPort: "Fraserburgh", portCode: "FR", method: "web", status: "submitted" },
+          { endDate: "2026-06-06", endDisplay: "6 June 2026", tripId: "H10008202606060500", pln: "PZ56", vessel: "Harvest Moon", createdBy: "Sophia Wright", createdOnDisplay: "6 June 2026, 05:00", receivedOnDisplay: "6 June 2026", retainedCatch: "Yes", adminPort: "Newlyn", portCode: "GBNLY", method: "automated service", status: "amended" },
+          { endDate: "2026-06-05", endDisplay: "5 June 2026", tripId: "I10009202606050400", pln: "RX09", vessel: "Sea Otter", createdBy: "Mia Green", createdOnDisplay: "5 June 2026, 04:00", receivedOnDisplay: "5 June 2026", retainedCatch: "No", adminPort: "Hastings", portCode: "GBHTG", method: "web", status: "submitted" },
+          { endDate: "2026-06-04", endDisplay: "4 June 2026", tripId: "J10010202606040300", pln: "SW45", vessel: "Fair Wind", createdBy: "Ethan Adams", createdOnDisplay: "4 June 2026, 03:00", receivedOnDisplay: "4 June 2026", retainedCatch: "No", adminPort: "Swansea", portCode: "GBSWA", method: "helpline", status: "late" },
+          { endDate: "2026-06-03", endDisplay: "3 June 2026", tripId: "K10011202606030200", pln: "NS78", vessel: "Sunbeam", createdBy: "Lucas Nelson", createdOnDisplay: "3 June 2026, 02:00", receivedOnDisplay: "3 June 2026", retainedCatch: "Yes", adminPort: "Newlyn", portCode: "GBNLY", method: "app", status: "submitted" },
+          { endDate: "2026-06-02", endDisplay: "2 June 2026", tripId: "L10012202606020100", pln: "WY12", vessel: "Moonlight", createdBy: "Mason Carter", createdOnDisplay: "2 June 2026, 01:00", receivedOnDisplay: "2 June 2026", retainedCatch: "No", adminPort: "Milford Haven", portCode: "MH", method: "web", status: "amended" },
+          { endDate: "2026-06-01", endDisplay: "1 June 2026", tripId: "M10013202606010000", pln: "M56", vessel: "Atlantic Rose", createdBy: "Logan Mitchell", createdOnDisplay: "1 June 2026, 00:00", receivedOnDisplay: "1 June 2026", retainedCatch: "No", adminPort: "Douglas", portCode: "IMDGS", method: "automated service", status: "submitted" },
+          { endDate: "2026-06-17", endDisplay: "17 June 2026", tripId: "N10014202606172300", pln: "PZ89", vessel: "Cornish Maid", createdBy: "Charlotte Perez", createdOnDisplay: "17 June 2026, 23:00", receivedOnDisplay: "17 June 2026", retainedCatch: "Yes", adminPort: "Newlyn", portCode: "GBNLY", method: "web", status: "submitted" },
+          { endDate: "2026-06-18", endDisplay: "18 June 2026", tripId: "O10015202606182200", pln: "FR34", vessel: "Highland Piper", createdBy: "Amelia Rivera", createdOnDisplay: "18 June 2026, 22:00", receivedOnDisplay: "18 June 2026", retainedCatch: "No", adminPort: "Fraserburgh", portCode: "FR", method: "helpline", status: "late" },
+          { endDate: "2026-06-19", endDisplay: "19 June 2026", tripId: "P10016202606192100", pln: "GY12", vessel: "Ocean Drifter", createdBy: "Harper Cooper", createdOnDisplay: "19 June 2026, 21:00", receivedOnDisplay: "19 June 2026", retainedCatch: "No", adminPort: "Grimsby", portCode: "GY", method: "app", status: "submitted" },
+          { endDate: "2026-06-20", endDisplay: "20 June 2026", tripId: "Q10017202606202000", pln: "LT67", vessel: "Sea Fever", createdBy: "Evelyn Reed", createdOnDisplay: "20 June 2026, 20:00", receivedOnDisplay: "20 June 2026", retainedCatch: "Yes", adminPort: "Lowestoft", portCode: "LT", method: "web", status: "amended" },
+          { endDate: "2026-06-21", endDisplay: "21 June 2026", tripId: "R10018202606211900", pln: "MH34", vessel: "Welsh Dragon", createdBy: "Abigail Bailey", createdOnDisplay: "21 June 2026, 19:00", receivedOnDisplay: "21 June 2026", retainedCatch: "No", adminPort: "Milford Haven", portCode: "MH", method: "automated service", status: "submitted" }
+        ] %}
+        {% for trip in trips %}
+        <tr class="govuk-table__row" data-trip-start-date="{{ trip.endDate }}" data-trip-end-date="{{ trip.endDate }}" data-vessel="{{ trip.vessel }}" data-status="{{ trip.status }}" data-trip-id="{{ trip.tripId }}" data-created-by="{{ trip.createdBy }}" data-submission-method="{{ trip.method }}">
+          <td class="govuk-table__cell">{{ trip.endDisplay }}</td>
+          <td class="govuk-table__cell">{{ trip.tripId }}</td>
+          <td class="govuk-table__cell">{{ trip.pln }}</td>
+          <td class="govuk-table__cell">{{ trip.vessel }}</td>
+          <td class="govuk-table__cell">{{ trip.createdBy }}</td>
+          <td class="govuk-table__cell">{{ trip.createdOnDisplay }}</td>
+          <td class="govuk-table__cell">{{ trip.receivedOnDisplay }}</td>
+          <td class="govuk-table__cell">{{ trip.retainedCatch }}</td>
+          <td class="govuk-table__cell">{{ trip.adminPort }}</td>
+          <td class="govuk-table__cell">{{ trip.portCode }}</td>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--{{ methodTags[trip.method] }}">{{ trip.method | capitalize }}</strong></td>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--{{ statusTags[trip.status] }}">{{ trip.status | capitalize }}</strong></td>
+          <td class="govuk-table__cell">{% if trip.href %}<a class="govuk-link" href="{{ trip.href }}?trip={{ trip.tripId }}&status={{ trip.status }}">View trip</a>{% else %}&ndash;{% endif %}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    </div>
+    <nav aria-label="Pagination" class="govuk-pagination catch-records-pagination">
+      <ul class="govuk-pagination__list" id="pagination-list"></ul>
+    </nav>
+    <p class="govuk-body" id="no-results" hidden>No fishing trips match your filters.</p>
+  </div>
+</div>
+{% endblock %}
+
+{% block pageScripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    function setupTypeahead(inputId, listId, options) {
+      var input = document.querySelector('#' + inputId)
+      var listbox = document.querySelector('#' + listId)
+
+      input.addEventListener('input', function () {
+        var value = input.value.trim().toLowerCase()
+        listbox.innerHTML = ''
+        input.setAttribute('aria-expanded', 'false')
+
+        if (value.length < 2) {
+          listbox.style.display = 'none'
+          return
+        }
+
+        options.filter(function (option) {
+          return option.toLowerCase().indexOf(value) !== -1
+        }).forEach(function (option, index) {
+          var item = document.createElement('li')
+          item.className = 'catch-records-typeahead__option'
+          item.id = inputId + '-option-' + index
+          item.setAttribute('role', 'option')
+          item.setAttribute('tabindex', '0')
+          item.textContent = option
+          item.addEventListener('click', function () {
+            input.value = option
+            listbox.style.display = 'none'
+            input.setAttribute('aria-expanded', 'false')
+          })
+          listbox.appendChild(item)
+        })
+
+        if (listbox.children.length) {
+          listbox.style.display = 'block'
+          input.setAttribute('aria-expanded', 'true')
+        }
+      })
+
+      document.addEventListener('click', function (event) {
+        if (!input.contains(event.target) && !listbox.contains(event.target)) {
+          listbox.style.display = 'none'
+          input.setAttribute('aria-expanded', 'false')
+        }
+      })
+    }
+
+    setupTypeahead('vessel', 'vessel-listbox', ['Lady Jane', "Gone Fishin'", 'Wallaby Way', 'Susie', 'Quatro', 'Tigger', 'Northern Star', 'Sea Spray', 'Kingfisher', 'Golden Dawn', 'Celtic Star', 'Ocean Voyager', 'Bonnie Lass', 'Harvest Moon', 'Sea Otter', 'Fair Wind', 'Sunbeam', 'Moonlight', 'Atlantic Rose', 'Cornish Maid', 'Highland Piper', 'Ocean Drifter', 'Sea Fever', 'Welsh Dragon'])
+    setupTypeahead('created-by', 'created-by-listbox', ['John Smith', 'Joe Bloggs', 'Paul Smith', 'Frank Castle', 'Peter Petrelli', 'Alice Wilson', 'Grace Turner', 'Emma Hughes', 'Liam Baker', 'Noah Evans', 'Olivia Roberts', 'Ava Walker', 'Sophia Wright', 'Mia Green', 'Ethan Adams', 'Lucas Nelson', 'Mason Carter', 'Logan Mitchell', 'Charlotte Perez', 'Amelia Rivera', 'Harper Cooper', 'Evelyn Reed', 'Abigail Bailey'])
+
+    var searchForm = document.querySelector('#searchform')
+    var filterForm = document.querySelector('.catch-records-filter-form')
+    var filterDetails = document.querySelector('.catch-records-filter-toggle')
+    var filterClose = document.querySelector('.catch-records-filter-close')
+    var rows = Array.prototype.slice.call(document.querySelectorAll('tbody .govuk-table__row[data-trip-end-date]'))
+    var noResults = document.querySelector('#no-results')
+    var paginationList = document.querySelector('#pagination-list')
+    var currentPage = 1
+    var pageSize = 10
+
+    function getDateValue(prefix) {
+      var day = document.querySelector('#' + prefix + '-day').value
+      var month = document.querySelector('#' + prefix + '-month').value
+      var year = document.querySelector('#' + prefix + '-year').value
+
+      if (!day || !month || !year) return null
+      return new Date(Date.UTC(Number(year), Number(month) - 1, Number(day)))
+    }
+
+    function renderPagination(matchingRows) {
+      var pageCount = Math.ceil(matchingRows.length / pageSize)
+      paginationList.innerHTML = ''
+
+      if (pageCount < 2) return
+
+      if (currentPage > 1) {
+        var previousItem = document.createElement('li')
+        previousItem.className = 'govuk-pagination__item govuk-pagination__prev'
+        previousItem.innerHTML = '<a class="govuk-link govuk-pagination__link" href="#" rel="prev"><span class="govuk-pagination__link-title">Previous<span class="govuk-visually-hidden"> page</span></span></a>'
+        previousItem.querySelector('a').dataset.page = currentPage - 1
+        paginationList.appendChild(previousItem)
+      }
+
+      for (var page = 1; page <= pageCount; page += 1) {
+        var pageItem = document.createElement('li')
+        pageItem.className = 'govuk-pagination__item' + (page === currentPage ? ' govuk-pagination__item--current' : '')
+        pageItem.innerHTML = '<a class="govuk-link govuk-pagination__link" href="#" aria-label="Page ' + page + '">' + page + '</a>'
+        var pageLink = pageItem.querySelector('a')
+        pageLink.dataset.page = page
+        if (page === currentPage) pageLink.setAttribute('aria-current', 'page')
+        paginationList.appendChild(pageItem)
+      }
+
+      if (currentPage < pageCount) {
+        var nextItem = document.createElement('li')
+        nextItem.className = 'govuk-pagination__item govuk-pagination__next'
+        nextItem.innerHTML = '<a class="govuk-link govuk-pagination__link" href="#" rel="next"><span class="govuk-pagination__link-title">Next<span class="govuk-visually-hidden"> page</span></span></a>'
+        nextItem.querySelector('a').dataset.page = currentPage + 1
+        paginationList.appendChild(nextItem)
+      }
+    }
+
+    function renderPage(matchingRows) {
+      var start = (currentPage - 1) * pageSize
+      var visibleRows = matchingRows.slice(start, start + pageSize)
+
+      rows.forEach(function (row) {
+        row.hidden = visibleRows.indexOf(row) === -1
+      })
+
+      renderPagination(matchingRows)
+    }
+
+    function applyFilters(resetPage) {
+      if (resetPage) currentPage = 1
+
+      var query = document.querySelector('#s').value.trim().toLowerCase()
+      var vesselValue = document.querySelector('#vessel').value.trim().toLowerCase()
+      var createdByValue = document.querySelector('#created-by').value.trim().toLowerCase()
+      var statuses = Array.prototype.slice.call(document.querySelectorAll('input[name="status"]:checked')).map(function (checkbox) {
+        return checkbox.value
+      })
+      var submissionMethods = Array.prototype.slice.call(document.querySelectorAll('input[name="submission-method"]:checked')).map(function (checkbox) {
+        return checkbox.value
+      })
+      var tripStartDate = getDateValue('trip-start-date')
+      var tripEndDate = getDateValue('trip-end-date')
+      var matchingRows = []
+
+      rows.forEach(function (row) {
+        var rowStartDate = new Date(row.dataset.tripStartDate + 'T00:00:00Z')
+        var rowEndDate = new Date(row.dataset.tripEndDate + 'T00:00:00Z')
+        var searchableText = row.dataset.vessel.toLowerCase() + ' ' + row.dataset.status.toLowerCase() + ' ' + row.dataset.tripId.toLowerCase() + ' ' + row.dataset.createdBy.toLowerCase()
+        var matches = (!query || searchableText.indexOf(query) !== -1) &&
+          (!vesselValue || row.dataset.vessel.toLowerCase().indexOf(vesselValue) !== -1) &&
+          (!createdByValue || row.dataset.createdBy.toLowerCase().indexOf(createdByValue) !== -1) &&
+          (!statuses.length || statuses.indexOf(row.dataset.status) !== -1) &&
+          (!submissionMethods.length || submissionMethods.indexOf(row.dataset.submissionMethod) !== -1) &&
+          (!tripStartDate || rowStartDate.getTime() === tripStartDate.getTime()) &&
+          (!tripEndDate || rowEndDate.getTime() === tripEndDate.getTime())
+
+        row.dataset.matchesFilters = matches
+        if (matches) matchingRows.push(row)
+      })
+
+      noResults.hidden = matchingRows.length !== 0
+      renderPage(matchingRows)
+    }
+
+    searchForm.addEventListener('submit', function (event) {
+      event.preventDefault()
+      applyFilters(true)
+    })
+
+    filterForm.addEventListener('submit', function (event) {
+      event.preventDefault()
+      applyFilters(true)
+    })
+
+    paginationList.addEventListener('click', function (event) {
+      var pageLink = event.target.closest('a[data-page]')
+      if (!pageLink) return
+      event.preventDefault()
+      currentPage = Number(pageLink.dataset.page)
+      var matchingRows = rows.filter(function (row) {
+        return row.dataset.matchesFilters === 'true'
+      })
+      renderPage(matchingRows)
+    })
+
+    // pre-fill filters from a "view all" link elsewhere (e.g. vessel or user profile)
+    var urlParams = new URLSearchParams(window.location.search)
+    if (urlParams.has('vessel')) document.querySelector('#vessel').value = urlParams.get('vessel')
+    if (urlParams.has('created-by')) document.querySelector('#created-by').value = urlParams.get('created-by')
+    if (urlParams.has('vessel') || urlParams.has('created-by')) document.querySelector('.catch-records-filter-toggle').setAttribute('open', '')
+
+    filterClose.addEventListener('click', function () {
+      filterDetails.removeAttribute('open')
+      document.querySelector('.catch-records-filter-summary').focus()
+    })
+
+    applyFilters(true)
+  })
+</script>
+{% endblock %}

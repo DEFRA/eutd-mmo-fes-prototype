@@ -24,6 +24,13 @@ Check your answers - GOV.UK
     <h2 class="govuk-heading-m">Exporter</h2>
     <dl class="govuk-summary-list govuk-!-margin-bottom-7">
       <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Your reference</dt>
+        <dd class="govuk-summary-list__value">{{ data['your-reference'] or 'Not provided' }}</dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="../ps/your-reference.html">Change<span class="govuk-visually-hidden"> your reference</span></a>
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">Company name</dt>
         <dd class="govuk-summary-list__value">{{ data['company-name'] or 'Not provided' }}</dd>
         <dd class="govuk-summary-list__actions">

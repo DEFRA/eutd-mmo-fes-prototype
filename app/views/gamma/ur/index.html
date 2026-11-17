@@ -1,0 +1,69 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  User Research - Transport Pages Index
+{% endblock %}
+
+{% block content %}
+  {% include "../../includes/phase.html" %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      
+      <h1 class="govuk-heading-l">User Research - Transport Pages</h1>
+
+      <p class="govuk-body-l">Navigation page for testing transport details and container identification validation.</p>
+
+      <h2 class="govuk-heading-m">Catch Certificate - Truck Transport</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>
+          <a href="/gamma/ur/cc-transport-truck" class="govuk-link">Truck details page</a>
+        </li>
+        <li>
+          <a href="/gamma/ur/cc-transport-truck-error" class="govuk-link">Truck details page (error state)</a>
+        </li>
+      </ul>
+
+      <h2 class="govuk-heading-m">Catch Certificate - Train Transport</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>
+          <a href="/gamma/ur/cc-transport-train" class="govuk-link">Train details page</a>
+        </li>
+        <li>
+          <a href="/gamma/ur/cc-transport-train-error" class="govuk-link">Train details page (error state)</a>
+        </li>
+      </ul>
+
+      <h2 class="govuk-heading-m">Non-Manipulation Document - Truck Transport</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>
+          <a href="/gamma/ur/nmd-transport-truck" class="govuk-link">Truck arriving in the UK</a>
+        </li>
+        <li>
+          <a href="/gamma/ur/nmd-transport-truck-error" class="govuk-link">Truck arriving in the UK (error state)</a>
+        </li>
+      </ul>
+
+      <h2 class="govuk-heading-m">Non-Manipulation Document - Train Transport</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>
+          <a href="/gamma/ur/nmd-transport-train" class="govuk-link">Train arriving in the UK</a>
+        </li>
+        <li>
+          <a href="/gamma/ur/nmd-transport-train-error" class="govuk-link">Train arriving in the UK (error state)</a>
+        </li>
+      </ul>
+
+      <div class="govuk-inset-text" style="margin-top: 40px;">
+        <h3 class="govuk-heading-s">Container Identification Validation</h3>
+        <p>All pages include optional container identification field with validation:</p>
+        <ul class="govuk-list govuk-list--bullet">
+          <li>Format: 3 letters + U/J/Z/R + 7 numbers (11 characters total)</li>
+          <li>Example: ABCJ0123456</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+{% endblock %}

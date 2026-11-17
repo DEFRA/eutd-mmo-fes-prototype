@@ -1,0 +1,616 @@
+{% extends "layouts/layout-defra-v2.html" %}
+
+{% block pageTitle %}
+Web Admin Portal: Audit log
+{% endblock %}
+
+{% set serviceName %}
+Web Admin Portal
+{% endset %}
+
+{% set activeNavSection = "audit-log" %}
+
+{% block content %}
+<style>
+  .search-container {
+    max-width: none;
+  }
+
+  .search-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 0.5rem;
+  }
+
+  .search-controls .form-search {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .form-search {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+    width: 100%;
+  }
+
+  .search-input-wrapper {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.5em;
+    width: 100%;
+  }
+
+  input[type="search"] {
+    flex: 1;
+    width: 100%;
+    height: 44px;
+    font-family: "GDS Transport", arial, sans-serif;
+    border-radius: 0;
+    padding: 5px;
+    border: 2px solid #0b0c0c;
+    margin-bottom: 0;
+    appearance: none;
+    -webkit-appearance: none;
+    box-sizing: border-box;
+    font-weight: 400;
+    font-size: 1.1875rem;
+    line-height: 1.3157894737;
+    color: #0b0c0c;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  input[type="search"]:focus {
+    outline: 3px solid #fd0;
+    box-shadow: inset 0 0 0 2px #0b0c0c;
+    z-index: 1;
+  }
+
+  .btn {
+    flex: 0 0 auto;
+    width: 52px;
+    height: 44px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    background-color: #1d70b8;
+    color: white;
+    border: none;
+    font-size: 1.1875rem;
+    font-family: "GDS Transport", arial, sans-serif;
+    cursor: pointer;
+    line-height: 1.3157894737;
+    border-radius: 0;
+  }
+
+  .btn .gem-c-search__icon {
+    width: 28px;
+    height: 28px;
+    flex: 0 0 28px;
+  }
+
+  .btn:hover {
+    background-color: #1d70b8;
+  }
+
+  .btn:focus {
+    outline: 3px solid #fd0;
+    box-shadow: inset 0 0 0 4px #0b0c0c;
+    z-index: 1;
+  }
+
+  .catch-records-filters {
+    flex: 0 0 100%;
+    margin-top: 1.5rem;
+    padding: 1.5rem;
+    background-color: #f3f2f1;
+    border-top: 1px solid #b1b4b6;
+    position: relative;
+    box-sizing: border-box;
+  }
+
+  .catch-records-filter-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: #0b0c0c;
+    font-family: Arial, sans-serif;
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .catch-records-filter-close:hover {
+    background: #dbdad9;
+  }
+
+  .catch-records-filter-close:focus {
+    outline: 3px solid #fd0;
+    box-shadow: inset 0 0 0 2px #0b0c0c;
+  }
+
+  .catch-records-filter-form {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem 2rem;
+  }
+
+  .catch-records-filter-form > h2,
+  .catch-records-filter-form > button {
+    grid-column: 1 / -1;
+  }
+
+  .catch-records-filter-form__actions {
+    grid-column: 1 / -1;
+  }
+
+  .catch-records-filter-form .govuk-form-group {
+    margin-bottom: 0;
+    min-width: 0;
+    align-self: start;
+  }
+
+  .catch-records-filter-form .govuk-fieldset,
+  .catch-records-filter-form .govuk-date-input,
+  .catch-records-typeahead {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .catch-records-filter-form .govuk-checkboxes__input {
+    background-color: #fff;
+  }
+
+  .catch-records-filter-form .govuk-checkboxes__input + .govuk-checkboxes__label::before {
+    background-color: #fff;
+  }
+
+  .catch-records-typeahead {
+    position: relative;
+  }
+
+  .catch-records-typeahead__listbox {
+    display: none;
+    position: absolute;
+    z-index: 1000;
+    width: 100%;
+    margin: 0;
+    padding: 0.5em;
+    border: 1px solid #b1b4b6;
+    background: #fff;
+    box-sizing: border-box;
+    list-style: none;
+  }
+
+  .catch-records-typeahead__option {
+    padding: 0.25em 0;
+    cursor: pointer;
+  }
+
+  .catch-records-typeahead__option:hover,
+  .catch-records-typeahead__option:focus {
+    background: #f3f2f1;
+    outline: 3px solid #fd0;
+  }
+
+  .catch-records-filter-summary {
+    display: inline-block;
+    white-space: nowrap;
+    margin-bottom: 0;
+    padding: 0.5em 1em;
+    background-color: #f3f2f1;
+    color: #0b0c0c;
+    font-family: "GDS Transport", arial, sans-serif;
+    font-size: 1.1875rem;
+    line-height: 1.3157894737;
+    border: 1px solid #b1b4b6;
+    height: 44px;
+    box-sizing: border-box;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .catch-records-filter-summary:hover {
+    background-color: #dbdad9;
+  }
+
+  .catch-records-filter-summary:focus {
+    outline: 3px solid #fd0;
+    box-shadow: inset 0 0 0 2px #0b0c0c;
+  }
+
+  .catch-records-pagination {
+    margin-top: 2rem;
+  }
+
+  .catch-records-table-wrapper {
+    overflow-x: auto;
+    margin-bottom: 1rem;
+  }
+
+  .catch-records-table-wrapper .govuk-table {
+    margin-bottom: 0;
+  }
+
+  .catch-records-table-wrapper .catch-records-table--audit-log {
+    width: 100%;
+    min-width: 0;
+    table-layout: auto;
+  }
+
+  .catch-records-table-wrapper .catch-records-table--audit-log th,
+  .catch-records-table-wrapper .catch-records-table--audit-log td {
+    white-space: nowrap;
+  }
+
+  .catch-records-table-wrapper .govuk-table__cell,
+  .catch-records-table-wrapper .govuk-table__header {
+    white-space: nowrap;
+  }
+
+  @media (max-width: 40.0625em) {
+    .search-controls {
+      display: block;
+    }
+
+    .catch-records-filter-toggle {
+      margin-top: 0.75rem;
+      display: block;
+    }
+
+    .catch-records-filter-form {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+    <h1 class="govuk-heading-xl">Audit log</h1>
+
+    <div class="bottom search-container">
+      <div class="search-controls">
+        <form action="audit-log" class="form-search" id="searchform" method="get" role="search">
+        <label class="govuk-label govuk-label--s" for="s">Search audit log</label>
+        <div class="govuk-hint" id="audit-search-hint">
+          Search by user, PLN, fishing trip or staff member
+        </div>
+        <div class="search-input-wrapper">
+          <input class="search-query" enterkeyhint="search" id="s" name="s" title="Search" type="search" value="">
+          <button class="btn" type="submit" aria-label="Search audit log">
+            <svg aria-hidden="true" class="gem-c-search__icon" fill="none" focusable="false" height="28" viewbox="0 0 27 27" width="28" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12.0161" cy="11.0161" r="8.51613" stroke="currentColor" stroke-width="3"></circle>
+              <line stroke="currentColor" stroke-width="3" x1="17.8668" x2="26.4475" y1="17.3587" y2="25.9393"></line>
+            </svg>
+          </button>
+        </div>
+        </form>
+
+        <button class="catch-records-filter-summary" type="button" id="filter-toggle-button" aria-expanded="false" aria-controls="filter-panel">Filters</button>
+
+        <div class="catch-records-filters" id="filter-panel" hidden>
+            <button class="catch-records-filter-close" type="button" aria-label="Close filters">x</button>
+            <form action="audit-log" class="catch-records-filter-form" method="get">
+              <h2 class="govuk-heading-m">Filters</h2>
+
+              <div class="govuk-form-group">
+                <fieldset class="govuk-fieldset">
+                  <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Date from</legend>
+                  <div class="govuk-date-input" id="date-from">
+                    <div class="govuk-date-input__item">
+                      <label class="govuk-label govuk-date-input__label" for="date-from-day">Day</label>
+                      <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="date-from-day" name="date-from-day" type="text" inputmode="numeric">
+                    </div>
+                    <div class="govuk-date-input__item">
+                      <label class="govuk-label govuk-date-input__label" for="date-from-month">Month</label>
+                      <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="date-from-month" name="date-from-month" type="text" inputmode="numeric">
+                    </div>
+                    <div class="govuk-date-input__item">
+                      <label class="govuk-label govuk-date-input__label" for="date-from-year">Year</label>
+                      <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="date-from-year" name="date-from-year" type="text" inputmode="numeric">
+                    </div>
+                  </div>
+                </fieldset>
+              </div>
+
+              <div class="govuk-form-group">
+                <fieldset class="govuk-fieldset">
+                  <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Date to</legend>
+                  <div class="govuk-date-input" id="date-to">
+                    <div class="govuk-date-input__item">
+                      <label class="govuk-label govuk-date-input__label" for="date-to-day">Day</label>
+                      <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="date-to-day" name="date-to-day" type="text" inputmode="numeric">
+                    </div>
+                    <div class="govuk-date-input__item">
+                      <label class="govuk-label govuk-date-input__label" for="date-to-month">Month</label>
+                      <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="date-to-month" name="date-to-month" type="text" inputmode="numeric">
+                    </div>
+                    <div class="govuk-date-input__item">
+                      <label class="govuk-label govuk-date-input__label" for="date-to-year">Year</label>
+                      <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="date-to-year" name="date-to-year" type="text" inputmode="numeric">
+                    </div>
+                  </div>
+                </fieldset>
+              </div>
+
+              <div class="govuk-form-group">
+                <label class="govuk-label govuk-label--s" for="performed-by">Performed by</label>
+                <div class="catch-records-typeahead">
+                  <input class="govuk-input" id="performed-by" name="performed-by" type="text" minlength="2" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="performed-by-listbox">
+                  <ul class="catch-records-typeahead__listbox" id="performed-by-listbox" role="listbox"></ul>
+                </div>
+              </div>
+
+              <div class="govuk-form-group">
+                <fieldset class="govuk-fieldset">
+                  <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Record type</legend>
+                  <div class="govuk-checkboxes">
+                    {% for recordType in [{ label: "User", value: "user" }, { label: "Vessel", value: "vessel" }, { label: "Fishing trip", value: "trip" }] %}
+                    <div class="govuk-checkboxes__item">
+                      <input class="govuk-checkboxes__input" id="record-type-{{ recordType.value }}" name="record-type" type="checkbox" value="{{ recordType.value }}">
+                      <label class="govuk-label govuk-checkboxes__label" for="record-type-{{ recordType.value }}">{{ recordType.label }}</label>
+                    </div>
+                    {% endfor %}
+                  </div>
+                </fieldset>
+              </div>
+
+              <div class="govuk-button-group catch-records-filter-form__actions">
+                <button class="govuk-button" type="submit">Apply filters</button>
+                <button class="govuk-button govuk-button--secondary" type="reset">Clear filters</button>
+              </div>
+            </form>
+        </div>
+      </div>
+    </div>
+<br>
+    <div class="catch-records-table-wrapper" role="region" aria-label="Audit log table, scroll to see more columns" tabindex="0">
+    <table class="govuk-table govuk-table--m catch-records-table--audit-log" data-module="moj-sortable-table">
+      <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+          <th class="govuk-table__header" scope="col">Date and time</th>
+          <th class="govuk-table__header" scope="col">Record type</th>
+          <th class="govuk-table__header" scope="col">Record reference</th>
+          <th class="govuk-table__header" scope="col">Action</th>
+          <th class="govuk-table__header" scope="col">User role</th>
+          <th class="govuk-table__header" scope="col">User ID</th>
+          <th class="govuk-table__header" scope="col">Performed by</th>
+        </tr>
+      </thead>
+      <tbody class="govuk-table__body">
+        {% for entry in catchRecordsAuditEvents %}
+        <tr class="govuk-table__row" data-date="{{ entry.date }}" data-record-type="{{ entry.recordType }}" data-reference="{{ entry.reference }}" data-user-id="{{ entry.userId }}" data-user-name="{{ entry.userName }}" data-vessel-reference="{{ entry.vesselReference }}" data-action="{{ entry.action }}" data-performed-by="{{ entry.performedBy }}">
+          <td class="govuk-table__cell">{{ entry.dateTime }}</td>
+          <td class="govuk-table__cell">{{ 'Fishing trip' if entry.recordType == 'trip' else entry.recordType | capitalize }}</td>
+          <td class="govuk-table__cell"><a class="govuk-link" href="{{ entry.recordHref }}">{{ entry.reference }}</a></td>
+          <td class="govuk-table__cell">{{ entry.change }}</td>
+          <td class="govuk-table__cell">{{ entry.userRole or '&ndash;' | safe }}</td>
+          <td class="govuk-table__cell">{% if entry.userName %}<a class="govuk-link" href="user-profile?user={{ entry.userName | replace(' ', '+') }}&amp;status=accepted">{{ entry.userId }}</a>{% elif entry.userId %}{{ entry.userId }}{% else %}&ndash;{% endif %}</td>
+          <td class="govuk-table__cell">{{ entry.performedBy }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    </div>
+    <nav aria-label="Pagination" class="govuk-pagination catch-records-pagination">
+      <ul class="govuk-pagination__list" id="pagination-list"></ul>
+    </nav>
+    <p class="govuk-body" id="no-results" hidden>No audit log entries match your search or filters.</p>
+  </div>
+</div>
+{% endblock %}
+
+{% block pageScripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    function setupTypeahead(inputId, listId, options) {
+      var input = document.querySelector('#' + inputId)
+      var listbox = document.querySelector('#' + listId)
+
+      input.addEventListener('input', function () {
+        var value = input.value.trim().toLowerCase()
+        listbox.innerHTML = ''
+        input.setAttribute('aria-expanded', 'false')
+
+        if (value.length < 2) {
+          listbox.style.display = 'none'
+          return
+        }
+
+        options.filter(function (option) {
+          return option.toLowerCase().indexOf(value) !== -1
+        }).forEach(function (option, index) {
+          var item = document.createElement('li')
+          item.className = 'catch-records-typeahead__option'
+          item.id = inputId + '-option-' + index
+          item.setAttribute('role', 'option')
+          item.setAttribute('tabindex', '0')
+          item.textContent = option
+          item.addEventListener('click', function () {
+            input.value = option
+            listbox.style.display = 'none'
+            input.setAttribute('aria-expanded', 'false')
+          })
+          listbox.appendChild(item)
+        })
+
+        if (listbox.children.length) {
+          listbox.style.display = 'block'
+          input.setAttribute('aria-expanded', 'true')
+        }
+      })
+
+      document.addEventListener('click', function (event) {
+        if (!input.contains(event.target) && !listbox.contains(event.target)) {
+          listbox.style.display = 'none'
+          input.setAttribute('aria-expanded', 'false')
+        }
+      })
+    }
+
+    setupTypeahead('performed-by', 'performed-by-listbox', ['Maia Bates', 'Donna Jennings', 'Gwen Hopkinson', 'Alison Thomas', 'Lucy Harper', 'John Smith', 'Joe Bloggs', 'Paul Smith', 'System'])
+
+    var searchForm = document.querySelector('#searchform')
+    var filterForm = document.querySelector('.catch-records-filter-form')
+    var filterToggleButton = document.querySelector('#filter-toggle-button')
+    var filterPanel = document.querySelector('#filter-panel')
+    var filterClose = document.querySelector('.catch-records-filter-close')
+    var rows = Array.prototype.slice.call(document.querySelectorAll('tbody .govuk-table__row[data-date]'))
+    var noResults = document.querySelector('#no-results')
+    var paginationList = document.querySelector('#pagination-list')
+    var currentPage = 1
+    var pageSize = 10
+
+    document.querySelector('.catch-records-table--audit-log').addEventListener('catch-records:sorted', function () {
+      rows = Array.prototype.slice.call(this.tBodies[0].rows)
+      applyFilters(true)
+    })
+
+    function getDateValue(prefix) {
+      var day = document.querySelector('#' + prefix + '-day').value
+      var month = document.querySelector('#' + prefix + '-month').value
+      var year = document.querySelector('#' + prefix + '-year').value
+
+      if (!day || !month || !year) return null
+      return new Date(Date.UTC(Number(year), Number(month) - 1, Number(day)))
+    }
+
+    function renderPagination(matchingRows) {
+      var pageCount = Math.ceil(matchingRows.length / pageSize)
+      paginationList.innerHTML = ''
+
+      if (pageCount < 2) return
+
+      if (currentPage > 1) {
+        var previousItem = document.createElement('li')
+        previousItem.className = 'govuk-pagination__item govuk-pagination__prev'
+        previousItem.innerHTML = '<a class="govuk-link govuk-pagination__link" href="#" rel="prev"><span class="govuk-pagination__link-title">Previous<span class="govuk-visually-hidden"> page</span></span></a>'
+        previousItem.querySelector('a').dataset.page = currentPage - 1
+        paginationList.appendChild(previousItem)
+      }
+
+      for (var page = 1; page <= pageCount; page += 1) {
+        var pageItem = document.createElement('li')
+        pageItem.className = 'govuk-pagination__item' + (page === currentPage ? ' govuk-pagination__item--current' : '')
+        pageItem.innerHTML = '<a class="govuk-link govuk-pagination__link" href="#" aria-label="Page ' + page + '">' + page + '</a>'
+        var pageLink = pageItem.querySelector('a')
+        pageLink.dataset.page = page
+        if (page === currentPage) pageLink.setAttribute('aria-current', 'page')
+        paginationList.appendChild(pageItem)
+      }
+
+      if (currentPage < pageCount) {
+        var nextItem = document.createElement('li')
+        nextItem.className = 'govuk-pagination__item govuk-pagination__next'
+        nextItem.innerHTML = '<a class="govuk-link govuk-pagination__link" href="#" rel="next"><span class="govuk-pagination__link-title">Next<span class="govuk-visually-hidden"> page</span></span></a>'
+        nextItem.querySelector('a').dataset.page = currentPage + 1
+        paginationList.appendChild(nextItem)
+      }
+    }
+
+    function renderPage(matchingRows) {
+      var start = (currentPage - 1) * pageSize
+      var visibleRows = matchingRows.slice(start, start + pageSize)
+
+      rows.forEach(function (row) {
+        row.hidden = visibleRows.indexOf(row) === -1
+      })
+
+      renderPagination(matchingRows)
+    }
+
+    function applyFilters(resetPage) {
+      if (resetPage) currentPage = 1
+
+      var query = document.querySelector('#s').value.trim().toLowerCase()
+      var performedByValue = document.querySelector('#performed-by').value.trim().toLowerCase()
+      var recordTypes = Array.prototype.slice.call(document.querySelectorAll('input[name="record-type"]:checked')).map(function (checkbox) {
+        return checkbox.value
+      })
+      var dateFrom = getDateValue('date-from')
+      var dateTo = getDateValue('date-to')
+      var matchingRows = []
+
+      rows.forEach(function (row) {
+        var rowDate = new Date(row.dataset.date + 'T00:00:00Z')
+        var searchableText = row.dataset.recordType.toLowerCase() + ' ' + row.dataset.reference.toLowerCase() + ' ' + row.dataset.userId.toLowerCase() + ' ' + row.dataset.userName.toLowerCase() + ' ' + row.dataset.vesselReference.toLowerCase() + ' ' + row.dataset.action.toLowerCase() + ' ' + row.dataset.performedBy.toLowerCase()
+        var matches = (!query || searchableText.indexOf(query) !== -1) &&
+          (!performedByValue || row.dataset.performedBy.toLowerCase().indexOf(performedByValue) !== -1) &&
+          (!recordTypes.length || recordTypes.indexOf(row.dataset.recordType) !== -1) &&
+          (!dateFrom || rowDate.getTime() >= dateFrom.getTime()) &&
+          (!dateTo || rowDate.getTime() <= dateTo.getTime())
+
+        row.dataset.matchesFilters = matches
+        if (matches) matchingRows.push(row)
+      })
+
+      noResults.hidden = matchingRows.length !== 0
+      renderPage(matchingRows)
+    }
+
+    searchForm.addEventListener('submit', function (event) {
+      event.preventDefault()
+      applyFilters(true)
+    })
+
+    filterForm.addEventListener('submit', function (event) {
+      event.preventDefault()
+      applyFilters(true)
+      closeFilterPanel()
+    })
+
+    filterForm.addEventListener('reset', function () {
+      window.setTimeout(function () {
+        applyFilters(true)
+      }, 0)
+    })
+
+    paginationList.addEventListener('click', function (event) {
+      var pageLink = event.target.closest('a[data-page]')
+      if (!pageLink) return
+      event.preventDefault()
+      currentPage = Number(pageLink.dataset.page)
+      var matchingRows = rows.filter(function (row) {
+        return row.dataset.matchesFilters === 'true'
+      })
+      renderPage(matchingRows)
+    })
+
+    function closeFilterPanel() {
+      filterPanel.hidden = true
+      filterToggleButton.setAttribute('aria-expanded', 'false')
+    }
+
+    filterToggleButton.addEventListener('click', function () {
+      var isOpen = !filterPanel.hidden
+      filterPanel.hidden = isOpen
+      filterToggleButton.setAttribute('aria-expanded', String(!isOpen))
+    })
+
+    filterClose.addEventListener('click', function () {
+      closeFilterPanel()
+      filterToggleButton.focus()
+    })
+
+    // pre-fill filters from a "view all history" link elsewhere
+    var urlParams = new URLSearchParams(window.location.search)
+    if (urlParams.has('performed-by')) document.querySelector('#performed-by').value = urlParams.get('performed-by')
+    if (urlParams.has('s')) document.querySelector('#s').value = urlParams.get('s')
+    if (urlParams.has('performed-by')) {
+      filterPanel.hidden = false
+      filterToggleButton.setAttribute('aria-expanded', 'true')
+    }
+
+    applyFilters(true)
+  })
+</script>
+{% endblock %}

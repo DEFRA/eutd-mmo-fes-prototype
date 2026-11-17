@@ -1,4 +1,4 @@
-{% set serviceName = "Create a UK storage document" %}
+{% set serviceName = "Create a UK non-manipulation document" %}
 {% extends "layouts/main.html" %}
 
 {% block pageTitle %}
@@ -58,7 +58,7 @@ Progress - Catch Certificates
 
 
     <h1 class="govuk-heading-xl govuk-!-margin-bottom-2" data-testid="progress-titling">Your progress</h1>
-    <span class="govuk-caption-xl">Storage document: GBR-2025-SD-DB9443BBF</span>
+    <span class="govuk-caption-xl">Non-manipulation document: GBR-2025-SD-DB9443BBF</span>
     <br>
     <h2 class="govuk-heading-l" id="application-status" class="govuk-!-margin-bottom-2">Application incomplete</h2>
     <p class="govuk-body" id="progress-counter" class="govuk-body govuk-!-margin-bottom-7">
@@ -219,7 +219,7 @@ Progress - Catch Certificates
     <!-- Storage details -->
     <li class="app-task-list__item">
       <span class="app-task-list__task-name">
-        <a href="storage-facility-details.html" aria-describedby="storage-details-status">Storage facility</a>
+        <a href="storage-facility-details.html" aria-describedby="storage-details-status">Storage facility details</a>
       </span>
       {% if data['facility-name'] and data['building-number'] and data['building-number'] and data['building-name'] and data['street-name'] and data['postcode'] %}
   <strong class="govuk-tag app-task-list__tag govuk-tag--green" id="storage-details-status">Completed</strong>
@@ -411,7 +411,7 @@ Progress - Catch Certificates
                 <h2 class="app-contact-panel__heading">Get help with your application</h2>
 
                 <p class="app-contact-panel__body">
-                  If you have a storage document unique reference number, have it with you when you call.
+                  If you have a non-manipulation document unique reference number, have it with you when you call.
                 </p>
 
                 <ul class="govuk-list">

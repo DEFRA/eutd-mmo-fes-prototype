@@ -1,0 +1,173 @@
+{% extends "layouts/layout-defra.html" %}
+
+{% block pageTitle %}{{ profileUser.name }} - Web Admin Portal{% endblock %}
+
+{% set serviceName %}
+Web Admin Portal
+{% endset %}
+
+{% set activeNavSection = "users" %}
+{% set profileStatus = 'deactivated' if data['status'] == 'deactivated' else catchRecordsUserStatusByName[profileUser.name] or profileUser.status %}
+{% set userStatusTags = { accepted: 'turquoise', invited: 'pink', created: 'grey', deactivated: 'grey' } %}
+
+{% block beforeContent %}
+<a class="govuk-back-link" href="landing-page">Back to users</a>
+{% endblock %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+    <p class="govuk-caption-l">User profile</p>
+    <h1 class="govuk-heading-xl">{{ profileUser.name }}</h1>
+    {% if catchRecordsUsersUpdated in ['amended', 'added', 'removed'] %}
+    <div class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="user-update-heading"><div class="govuk-notification-banner__content"><h2 class="govuk-notification-banner__heading" id="user-update-heading">{% if catchRecordsUsersUpdated == 'amended' %}User details updated{% elif catchRecordsUsersUpdated == 'added' %}Vessel added{% else %}Vessel removed{% endif %}</h2></div></div>
+    {% endif %}
+    {% if catchRecordsUsersUpdated == 'deactivated' or catchRecordsUsersUpdated == 'reactivated' %}
+    <div class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="deactivated-heading">
+      <div class="govuk-notification-banner__content">
+        <h2 class="govuk-notification-banner__heading" id="deactivated-heading">{% if catchRecordsUsersUpdated == 'deactivated' %}User deactivated{% else %}User reactivated{% endif %}</h2>
+        <p class="govuk-body">{% if catchRecordsUsersUpdated == 'deactivated' %}{{ profileUser.name }} can no longer access the service. Their records have been kept.{% else %}{{ profileUser.name }} can access the service again. Their records have been kept.{% endif %}</p>
+      </div>
+    </div>
+    {% endif %}
+    <dl class="govuk-summary-list">
+      <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">Full name</dt><dd class="govuk-summary-list__value">{{ profileUser.name }}</dd></div>
+      <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">User ID</dt><dd class="govuk-summary-list__value">{{ profileUser.userId }}</dd></div>
+      {% if not catchRecordsRole.permissions.limitedUserDetails %}<div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">Email address</dt><dd class="govuk-summary-list__value"><a class="govuk-link" href="mailto:{{ profileUser.email }}">{{ profileUser.email }}</a></dd></div>
+      <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">Phone number</dt><dd class="govuk-summary-list__value">{{ profileUser.telephone or 'Not provided' }}</dd></div>
+      <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">Postal address</dt><dd class="govuk-summary-list__value">{% if profileUser.addressLine1 %}{{ profileUser.addressLine1 }}{% if profileUser.addressLine2 %}<br>{{ profileUser.addressLine2 }}{% endif %}<br>{{ profileUser.city }}<br>{{ profileUser.postcode }}{% else %}Not provided{% endif %}</dd></div>{% endif %}
+      <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">Administration</dt><dd class="govuk-summary-list__value">{{ profileUser.administration }}</dd></div>
+      <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">Status</dt><dd class="govuk-summary-list__value"><strong class="govuk-tag govuk-tag--{{ userStatusTags[profileStatus] }}">{{ profileStatus | capitalize }}</strong>{% if catchRecordsCanDeactivateUser and profileStatus != 'deactivated' %}<p class="govuk-body govuk-!-margin-top-2 govuk-!-margin-bottom-0"><a class="govuk-link" href="deactivate-user?userId={{ profileUser.userId }}">Deactivate user</a></p>{% endif %}{% if catchRecordsRole.permissions.reactivateUsers == true and profileStatus == 'deactivated' %}<p class="govuk-body govuk-!-margin-top-2 govuk-!-margin-bottom-0"><a class="govuk-link" href="reactivate-user?userId={{ profileUser.userId }}&amp;status=deactivated">Reactivate user</a></p>{% endif %}</dd></div>
+      {% if profileUser.invitationEmailStatus %}<div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">Invitation email</dt><dd class="govuk-summary-list__value">{{ profileUser.invitationEmailStatus | capitalize }} (simulated)</dd></div>{% endif %}
+      {% if profileUser.createdDisplay %}<div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">Created on</dt><dd class="govuk-summary-list__value">{{ profileUser.createdDisplay }}</dd></div>{% endif %}
+    </dl>
+    {% if catchRecordsRole.permissions.editUsers %}
+    <div>
+    <a class="govuk-button govuk-button--secondary" data-module="govuk-button" href="edit-user?userId={{ profileUser.userId }}">Amend user</a>
+    </div>
+    {% endif %}
+    {% if catchRecordsRole.permissions.createCatchRecords and profileStatus != 'deactivated' %}
+    <div>
+    <a class="govuk-button govuk-button--start" data-module="govuk-button" href="#" role="button" draggable="false">
+      Access catch recording
+      <svg class="govuk-button__start-icon" xmlns="http://www.w3.org/2000/svg" width="17.5" height="19" viewBox="0 0 33 40" aria-hidden="true" focusable="false">
+        <path fill="currentColor" d="M0 0h13l20 20-20 20H0l20-20z" />
+      </svg>
+    </a>
+    </div>
+    {% endif %}
+    <div class="govuk-tabs" data-module="govuk-tabs">
+      <h2 class="govuk-tabs__title">Contents</h2>
+      <ul class="govuk-tabs__list">
+        <li class="govuk-tabs__list-item govuk-tabs__list-item--selected"><a class="govuk-tabs__tab" href="#vessel-roles">Vessels</a></li>
+        <li class="govuk-tabs__list-item"><a class="govuk-tabs__tab" href="#fishing-trips">Fishing trips</a></li>
+        <li class="govuk-tabs__list-item"><a class="govuk-tabs__tab" href="#history">History</a></li>
+        <li class="govuk-tabs__list-item"><a class="govuk-tabs__tab" href="#notes">Notes</a></li>
+      </ul>
+      <div class="govuk-tabs__panel" id="vessel-roles">
+        <h2 class="govuk-heading-l">Vessels</h2>
+        {% if catchRecordsRole.permissions.manageVessels != 'none' %}
+        <div class="govuk-button-group">
+          <a class="govuk-button" data-module="govuk-button" href="user-vessels?userId={{ profileUser.userId }}&amp;action=add">Add a vessel{% if catchRecordsRole.permissions.manageVessels == 'skipper' %} as skipper{% endif %}</a>
+          <a class="govuk-button govuk-button--warning" data-module="govuk-button" href="user-vessels?userId={{ profileUser.userId }}&amp;action=remove">Remove a vessel{% if catchRecordsRole.permissions.manageVessels == 'skipper' %} as skipper{% endif %}</a>
+        </div>
+        {% endif %}
+        {% if vesselLinks.length %}
+        <table class="govuk-table">
+          <thead class="govuk-table__head"><tr class="govuk-table__row"><th class="govuk-table__header" scope="col">Vessel</th><th class="govuk-table__header" scope="col">Vessel reference</th><th class="govuk-table__header" scope="col">User role</th><th class="govuk-table__header" scope="col">Linked on</th></tr></thead>
+          <tbody class="govuk-table__body">
+            {% for link in vesselLinks %}<tr class="govuk-table__row"><td class="govuk-table__cell"><a class="govuk-link" href="vessel-profile?vessel={{ link.vesselName | replace(' ', '+') }}">{{ link.vesselName }}</a></td><td class="govuk-table__cell">{{ link.reference }}</td><td class="govuk-table__cell">{{ link.role }}</td><td class="govuk-table__cell">{{ link.linkedOn }}</td></tr>{% endfor %}
+          </tbody>
+        </table>
+        {% else %}<p class="govuk-body">No vessels linked to this user.</p>{% endif %}
+      </div>
+      <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="fishing-trips">
+        <h2 class="govuk-heading-l">Fishing trips</h2>
+        {% if profileTrips.length %}
+        <table class="govuk-table">
+          <thead class="govuk-table__head"><tr class="govuk-table__row"><th class="govuk-table__header" scope="col">Trip end date</th><th class="govuk-table__header" scope="col">Trip ID</th><th class="govuk-table__header" scope="col">Vessel</th><th class="govuk-table__header" scope="col">Status</th></tr></thead>
+          <tbody class="govuk-table__body">{% for trip in profileTrips %}<tr class="govuk-table__row"><td class="govuk-table__cell">{{ trip.tripDate }}</td><td class="govuk-table__cell"><a class="govuk-link" href="trip-profile?trip={{ trip.id }}">{{ trip.id }}</a></td><td class="govuk-table__cell">{{ trip.vesselName }}</td><td class="govuk-table__cell">{{ 'Amended' if trip.amendments.length else trip.originalVersion.status }}</td></tr>{% endfor %}</tbody>
+        </table>
+        {% else %}<p class="govuk-body">No fishing trips recorded for this user.</p>{% endif %}
+        <p class="govuk-body"><a class="govuk-link" href="fishing-trips?created-by={{ profileUser.name | urlencode }}">View all fishing trips for {{ profileUser.name }}</a></p>
+      </div>
+      <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="history">
+        <h2 class="govuk-heading-l">History</h2>
+        {% if profileHistory.length %}
+        <table class="govuk-table">
+          <thead class="govuk-table__head"><tr class="govuk-table__row"><th class="govuk-table__header" scope="col">Date and time</th><th class="govuk-table__header" scope="col">Action</th><th class="govuk-table__header" scope="col">Performed by</th></tr></thead>
+          <tbody class="govuk-table__body">{% for event in profileHistory %}<tr class="govuk-table__row"><td class="govuk-table__cell">{{ event.dateTime }}</td><td class="govuk-table__cell">{{ event.change or event.action }}</td><td class="govuk-table__cell">{{ event.performedBy }}</td></tr>{% endfor %}</tbody>
+        </table>
+        {% else %}<p class="govuk-body">No history recorded for this user.</p>{% endif %}
+        {% include "includes/catch-records-history-pagination.html" %}
+      </div>
+      <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="notes">
+        <h2 class="govuk-heading-l">Notes</h2>
+        {% for note in profileNotes %}<div class="govuk-!-margin-bottom-6"><p class="govuk-body-s"><strong>{{ note.author }}</strong> &mdash; {{ note.dateTime }}</p><p class="govuk-body" style="white-space: pre-wrap">{{ note.text }}</p></div>{% else %}<p class="govuk-body">No notes recorded for this user.</p>{% endfor %}
+        {% if not catchRecordsRole.readOnly %}
+        <form action="/catch-records/user-note" method="post">
+          <input type="hidden" name="user-id" value="{{ profileUser.userId }}">
+          <div class="govuk-form-group"><label class="govuk-label govuk-label--s" for="new-note">Add a note</label><textarea class="govuk-textarea" id="new-note" name="note" rows="4" required></textarea></div>
+          <button class="govuk-button" type="submit">Save note</button>
+        </form>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block pageScripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var tabList = document.querySelector('.govuk-tabs__list')
+    if (tabList.getAttribute('role') === 'tablist') return
+    var tabs = Array.prototype.slice.call(tabList.querySelectorAll('.govuk-tabs__tab'))
+    var panels = Array.prototype.slice.call(document.querySelectorAll('.govuk-tabs__panel'))
+    tabList.setAttribute('role', 'tablist')
+
+    function showTab(targetId) {
+      tabs.forEach(function (tab) {
+        var selected = tab.getAttribute('href') === '#' + targetId
+        tab.parentElement.setAttribute('role', 'presentation')
+        tab.parentElement.classList.toggle('govuk-tabs__list-item--selected', selected)
+        tab.id = 'tab-' + tab.getAttribute('href').substring(1)
+        tab.setAttribute('role', 'tab')
+        tab.setAttribute('aria-controls', tab.getAttribute('href').substring(1))
+        tab.setAttribute('aria-selected', selected ? 'true' : 'false')
+        tab.setAttribute('tabindex', selected ? '0' : '-1')
+      })
+      panels.forEach(function (panel) {
+        panel.setAttribute('role', 'tabpanel')
+        panel.setAttribute('aria-labelledby', 'tab-' + panel.id)
+        panel.classList.toggle('govuk-tabs__panel--hidden', panel.id !== targetId)
+      })
+    }
+
+    tabs.forEach(function (tab, index) {
+      tab.addEventListener('click', function (event) {
+        event.preventDefault()
+        showTab(tab.getAttribute('href').substring(1))
+        window.history.replaceState(null, '', tab.getAttribute('href'))
+      })
+      tab.addEventListener('keydown', function (event) {
+        var nextIndex = index
+        if (event.key === 'ArrowRight') nextIndex = (index + 1) % tabs.length
+        else if (event.key === 'ArrowLeft') nextIndex = (index + tabs.length - 1) % tabs.length
+        else if (event.key === 'Home') nextIndex = 0
+        else if (event.key === 'End') nextIndex = tabs.length - 1
+        else return
+        event.preventDefault()
+        tabs[nextIndex].click()
+        tabs[nextIndex].focus()
+      })
+    })
+    function showLinkedTab() {
+      var initialTab = window.location.hash.substring(1)
+      showTab(panels.some(function (panel) { return panel.id === initialTab }) ? initialTab : 'vessel-roles')
+    }
+    window.addEventListener('hashchange', showLinkedTab)
+    showLinkedTab()
+  })
+</script>
+{% endblock %}

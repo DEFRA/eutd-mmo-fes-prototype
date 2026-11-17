@@ -1,0 +1,465 @@
+{% extends "layouts/layout.html" %}
+
+{% block headIcons %}
+  <link rel="shortcut icon" href="{{ asset_path }}images/unbranded.ico?0.18.3" type="image/x-icon" />
+{% endblock %}
+
+{% block head %}
+  <!--[if lte IE 8]><link href="/public/stylesheets/unbranded-ie8.css" rel="stylesheet" type="text/css" /><![endif]-->
+  <!--[if gt IE 8]><!--><link href="/public/stylesheets/unbranded.css" media="all" rel="stylesheet" type="text/css" /><!--<![endif]-->
+
+  {% for stylesheetUrl in extensionConfig.stylesheets %}
+    <link href="{{ stylesheetUrl }}" rel="stylesheet" type="text/css" />
+  {% endfor %}
+  {% if activeNavSection %}<link href="/catch-records-v2/moj-frontend.css" rel="stylesheet" type="text/css" />{% endif %}
+{% endblock %}
+
+{% block header %}
+<style>
+  {% if activeNavSection %}
+  .govuk-template__body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  .govuk-template__body > .govuk-width-container {
+    flex: 1 0 auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .govuk-template__body > .govuk-width-container > main.govuk-main-wrapper {
+    flex: 1 0 auto;
+  }
+
+  .govuk-template__body > footer.govuk-footer {
+    flex-shrink: 0;
+  }
+
+  .govuk-width-container {
+    max-width: none;
+    margin-left: 15px;
+    margin-right: 15px;
+  }
+
+  main .catch-records-typeahead__option,
+  main .catch-records-user-picker__results li {
+    color: #0b0c0c;
+    font-family: "HelveticaNeue", "Helvetica Neue", Arial, Helvetica, sans-serif;
+    font-size: 1.1875rem;
+    line-height: 1.3157894737;
+  }
+
+  main [aria-sort] button {
+    color: #0b0c0c;
+  }
+
+  main [aria-sort] button svg {
+    color: #005ea5;
+  }
+
+  main .search-controls {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    gap: 1rem;
+    position: relative;
+  }
+
+  main .search-controls .form-search {
+    grid-column: 1;
+  }
+
+  main .search-controls details.catch-records-filter-toggle {
+    display: block;
+    grid-column: 2;
+  }
+
+  main .search-controls .catch-records-filter-summary {
+    position: relative;
+    z-index: 11;
+  }
+
+  main .search-controls details.catch-records-filter-toggle .catch-records-filter-summary {
+    display: block;
+    width: max-content;
+    margin-left: auto;
+  }
+
+  main .search-controls .catch-records-filters {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    z-index: 10;
+    width: min(420px, calc(100vw - 30px));
+    min-width: 0;
+    margin-top: 0;
+    max-height: min(65vh, 560px);
+    overflow-y: auto;
+    box-sizing: border-box;
+    box-shadow: 0 4px 12px rgba(11, 12, 12, 0.18);
+  }
+
+  main .search-controls .catch-records-filter-close {
+    position: sticky;
+    top: 0;
+    float: right;
+    z-index: 1;
+  }
+
+  main .search-controls .catch-records-filter-form > .govuk-form-group {
+    grid-column: auto;
+  }
+
+  main .search-controls .catch-records-filter-form .govuk-checkboxes {
+    columns: 1;
+  }
+
+  main .search-controls .catch-records-filter-form .catch-records-checkboxes--inline {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 10px;
+  }
+
+  main .search-controls .catch-records-checkboxes--inline .govuk-checkboxes__item {
+    min-width: 0;
+    margin-bottom: 0;
+  }
+
+  main .catch-records-filter-form > button {
+    justify-self: start;
+  }
+
+  main .catch-records-filter-form__actions .govuk-button--secondary[type="reset"] {
+    color: #0b0c0c;
+    background-color: transparent;
+    border: 1px solid #0b0c0c;
+    box-shadow: 0 3px 0 #0b0c0c;
+    transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
+  }
+
+  main .catch-records-filter-form__actions .govuk-button--secondary[type="reset"]:hover {
+    color: #0b0c0c;
+    background-color: #f3f2f1;
+  }
+
+  main .catch-records-filter-form__actions .govuk-button--secondary[type="reset"]:focus {
+    outline: 3px solid #fd0;
+    outline-offset: 0;
+    box-shadow: inset 0 0 0 1px #0b0c0c;
+  }
+
+  main .catch-records-filter-form__actions .govuk-button--secondary[type="reset"]:active {
+    top: 2px;
+    box-shadow: 0 1px 0 #0b0c0c;
+  }
+
+  main .search-controls .catch-records-filter-form__actions {
+    position: sticky;
+    bottom: -1.5rem;
+    z-index: 2;
+    padding: 0.75rem 0 1rem;
+    margin-bottom: -1.5rem;
+    background-color: #f3f2f1;
+    border-top: 1px solid #b1b4b6;
+  }
+
+  main .govuk-tabs__panel {
+    overflow-x: auto;
+  }
+
+  main .catch-records-note {
+    padding: 1rem 0;
+    border-bottom: 1px solid #b1b4b6;
+  }
+
+  main .govuk-grid-column-full > .govuk-summary-list,
+  main .govuk-grid-column-full > .govuk-inset-text,
+  main .govuk-grid-column-full > form[action="banner-message"] {
+    max-width: 760px;
+  }
+
+  main .govuk-grid-column-full > .govuk-inset-text {
+    box-sizing: border-box;
+  }
+
+  @media (min-width: 40.0625em) {
+    .govuk-width-container {
+      margin-left: 30px;
+      margin-right: 30px;
+    }
+
+    main .catch-records-filter-form {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    main .catch-records-filter-form > .govuk-form-group {
+      grid-column: auto;
+    }
+  }
+
+  @media (min-width: 40.0625em) and (max-width: 74.999em) {
+    main .catch-records-filter-form[action="fishing-trips"] .govuk-checkboxes {
+      columns: 1;
+    }
+  }
+
+  @media (min-width: 75em) {
+    main .catch-records-filter-form {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    main .catch-records-filter-form[action="audit-log"] {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    main .catch-records-filter-form[action="trip-breakdown"] {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+
+    main .catch-records-filter-form[action="trip-breakdown"] > .govuk-form-group {
+      grid-column: span 2;
+    }
+
+    main .catch-records-filter-form[action="trip-breakdown"] > .govuk-form-group:nth-of-type(n+4) {
+      grid-column: span 3;
+    }
+  }
+
+  main .search-controls .catch-records-filter-form {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  main .search-controls .catch-records-filter-form[action="trip-breakdown"] > .govuk-form-group {
+    grid-column: auto;
+  }
+
+  @media (max-width: 40.0625em) {
+    main .search-controls {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    main .search-controls details.catch-records-filter-toggle {
+      grid-column: 1;
+    }
+  }
+  {% endif %}
+
+  .catch-records-nav__link,
+  .catch-records-nav__link:link,
+  .catch-records-nav__link:visited {
+    color: #fff !important;
+  }
+
+  .catch-records-nav__link--active {
+    font-weight: 700;
+    border-bottom: 3px solid #fff;
+    padding-bottom: 4px;
+  }
+
+  nav[aria-label="Web Administration Portal sections"] {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  nav[aria-label="Web Administration Portal sections"] ul {
+    width: max-content;
+    min-width: 100%;
+  }
+
+  nav[aria-label="Web Administration Portal sections"] li,
+  nav[aria-label="Web Administration Portal sections"] a {
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  .catch-records-sign-out {
+    border: 0;
+    padding: 0;
+    background: none;
+    color: #fff;
+    font: inherit;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  .catch-records-sign-out:focus {
+    color: #0b0c0c;
+    background: #fd0;
+    outline: 3px solid #fd0;
+    box-shadow: 0 -2px #fd0, 0 4px #0b0c0c;
+    text-decoration: none;
+  }
+</style>
+<header class="govuk-header" role="banner" style="background-color:#0b0c0c;">
+  <div class="govuk-width-container">
+    <div style="display:flex; align-items:center; justify-content:space-between; gap:30px; padding:20px 0;">
+      <a class="govuk-link" href="/catch-records-v2/index" style="color:#fff; font-size:24px; font-weight:700; text-decoration:none;">
+        Web Administration Portal
+      </a>
+      {% if data.catchRecordsSignedIn %}
+        <div style="color:#fff; font-size:16px; text-align:right; overflow-wrap:anywhere;">
+          <strong>Sam Smith</strong><br>
+          <span>{{ data.catchRecordsUserEmail }}</span>
+          {% if catchRecordsRole %}<br><span>Role: {{ catchRecordsRole.name }}</span>{% endif %}
+          <form action="/catch-records-v2/sign-out" method="post">
+            <button class="catch-records-sign-out" type="submit">Sign out</button>
+          </form>
+        </div>
+      {% endif %}
+    </div>
+    {% if data.catchRecordsSignedIn %}
+    <nav aria-label="Web Administration Portal sections" style="border-top:1px solid #505a5f; padding:15px 0;">
+      <ul style="display:flex; gap:30px; list-style:none; margin:0; padding:0;">
+        {% for item in catchRecordsRoleNavigation %}
+        <li><a class="govuk-link catch-records-nav__link {% if activeNavSection == item.key %}catch-records-nav__link--active{% endif %}" href="{{ item.href }}" {% if activeNavSection == item.key %}aria-current="page"{% endif %}>{{ item.label }}</a></li>
+        {% endfor %}
+      </ul>
+    </nav>
+    {% endif %}
+  </div>
+</header>
+{% endblock %}
+
+{% block footer %}
+<footer class="govuk-footer" role="contentinfo" style="background-color:#f3f2f1">
+  <div class="govuk-width-container">
+    <div class="govuk-footer__meta">
+      <div class="govuk-footer__meta-item govuk-footer__meta-item--grow">
+
+        <svg aria-hidden="true" focusable="false" class="govuk-footer__licence-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 483.2 195.7" height="17" width="41">
+          <path fill="currentColor" d="M421.5 142.8V.1l-50.7 32.3v161.1h112.4v-50.7zm-122.3-9.6A47.12 47.12 0 0 1 221 97.8c0-26 21.1-47.1 47.1-47.1 16.7 0 31.4 8.7 39.7 21.8l42.7-27.2A97.63 97.63 0 0 0 268.1 0c-36.5 0-68.3 20.1-85.1 49.7A98 98 0 0 0 97.8 0C43.9 0 0 43.9 0 97.8s43.9 97.8 97.8 97.8c36.5 0 68.3-20.1 85.1-49.7a97.76 97.76 0 0 0 149.6 25.4l19.4 22.2h3v-87.8h-80l24.3 27.5zM97.8 145c-26 0-47.1-21.1-47.1-47.1s21.1-47.1 47.1-47.1 47.2 21 47.2 47S123.8 145 97.8 145" />
+        </svg>
+        <span class="govuk-footer__licence-description">
+          All content is available under the
+          <a class="govuk-footer__link" href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" rel="license">Open Government Licence v3.0</a>, except where otherwise stated
+        </span>
+      </div>
+
+    </div>
+  </div>
+</footer>
+{% endblock %}
+
+{% block bodyEnd %}
+{{ super() }}
+{% if activeNavSection %}
+{% include "includes/catch-records-sorting.html" %}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('main .search-controls').forEach(function (controls) {
+      var panel = controls.querySelector('.catch-records-filters')
+      var trigger = controls.querySelector('.catch-records-filter-summary')
+      var details = controls.querySelector('details.catch-records-filter-toggle')
+      if (!panel || !trigger) return
+
+      function isOpen() {
+        return details ? details.open : !panel.hidden
+      }
+
+      function fitPanelToViewport() {
+        if (!isOpen()) return
+
+        var availableHeight = window.innerHeight - panel.getBoundingClientRect().top - 16
+        var panelHeight = Math.max(120, Math.min(560, window.innerHeight * 0.65, availableHeight))
+        panel.style.maxHeight = panelHeight + 'px'
+      }
+
+      function closeFilters(restoreFocus) {
+        if (details) {
+          details.open = false
+        } else {
+          panel.hidden = true
+          trigger.setAttribute('aria-expanded', 'false')
+        }
+        if (restoreFocus) trigger.focus()
+      }
+
+      if (details) details.addEventListener('toggle', fitPanelToViewport)
+      trigger.addEventListener('click', function () {
+        window.requestAnimationFrame(fitPanelToViewport)
+      })
+      window.addEventListener('resize', fitPanelToViewport)
+
+      document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape' && !event.defaultPrevented && isOpen()) {
+          event.preventDefault()
+          closeFilters(true)
+        }
+      })
+
+      document.addEventListener('click', function (event) {
+        if (isOpen() && !controls.contains(event.target)) closeFilters(false)
+      })
+    })
+  })
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var listPaths = ['landing-page', 'vessels', 'fishing-trips', 'trip-breakdown', 'audit-log']
+    var detailPaths = ['user-profile', 'new-user-profile', 'vessel-profile', 'trip-profile']
+    var pageName = window.location.pathname.split('/').pop()
+    var returnPathKey = 'catchRecordsV2ReturnToList'
+    var stateKeyPrefix = 'catchRecordsV2ListState:'
+
+    if (listPaths.indexOf(pageName) !== -1) {
+      var stateKey = stateKeyPrefix + pageName
+      var urlParams = new URLSearchParams(window.location.search)
+      if (urlParams.get('restoreFilters') === '1') {
+        var savedState = sessionStorage.getItem(stateKey)
+        if (savedState) {
+          try {
+            savedState = JSON.parse(savedState)
+            ;(savedState.fields || []).forEach(function (savedField) {
+              var field = savedField.id ? document.getElementById(savedField.id) : null
+              if (!field && savedField.name) {
+                field = document.querySelector('main .search-controls [name="' + savedField.name + '"]')
+              }
+              if (!field) return
+              if (field.type === 'checkbox' || field.type === 'radio') field.checked = Boolean(savedField.checked)
+              else field.value = savedField.value
+            })
+
+            var searchForm = document.querySelector('#searchform')
+            if (searchForm) searchForm.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }))
+
+            var pageNumber = Number(savedState.page) || 1
+            var pageLink = document.querySelector('#pagination-list a[aria-label="Page ' + pageNumber + '"]')
+            if (pageLink) pageLink.click()
+          } catch (error) {
+            sessionStorage.removeItem(stateKey)
+          }
+        }
+        sessionStorage.removeItem(stateKey)
+        sessionStorage.removeItem(returnPathKey)
+        window.history.replaceState(null, '', window.location.pathname)
+      } else {
+        sessionStorage.removeItem(returnPathKey)
+      }
+
+      var tableBody = document.querySelector('main table tbody')
+      if (tableBody) {
+        tableBody.addEventListener('click', function (event) {
+          var link = event.target.closest('a[href]')
+          if (!link) return
+          var destination = new URL(link.href, window.location.href)
+          if (!detailPaths.some(function (path) { return destination.pathname.endsWith('/' + path) })) return
+
+          var fields = Array.prototype.slice.call(document.querySelectorAll('main .search-controls input, main .search-controls select, main .search-controls textarea')).map(function (field) {
+            return { id: field.id, name: field.name, value: field.value, checked: field.checked }
+          })
+          var currentPage = document.querySelector('#pagination-list a[aria-current="page"]')
+          sessionStorage.setItem(stateKey, JSON.stringify({ fields, page: currentPage ? currentPage.textContent.trim() : 1 }))
+          sessionStorage.setItem(returnPathKey, pageName)
+        })
+      }
+    } else if (detailPaths.indexOf(pageName) !== -1) {
+      var returnPath = sessionStorage.getItem(returnPathKey)
+      var backLink = document.querySelector('a.govuk-back-link')
+      if (returnPath && backLink) backLink.href = '/catch-records-v2/' + returnPath + '?restoreFilters=1'
+    }
+  })
+</script>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,387 @@
+{% set serviceName = "Create a UK non-manipulation document" %}
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  GOV.UK Prototype Kit
+{% endblock %}
+
+{% block content %}
+  {% include "../../includes/phase.html" %}
+
+    <style>
+  .secondary-button-style {
+    display: inline-block;
+    position: relative;
+    padding: 6px 10px 5px;
+    margin: 0 10px 20px 0;
+    /* Adds spacing between buttons */
+    min-width: 80px;
+    width: auto;
+    /* Prevents full-width stretching */
+    font-family: "GDS Transport", arial, sans-serif;
+    font-size: 1.1875rem;
+    font-weight: 400;
+    line-height: 1.3157894737;
+    color: #0b0c0c;
+    background: rgba(0, 0, 0, 0);
+    border: 1px solid #0b0c0c;
+    box-shadow: 0 3px 0 #0b0c0c;
+    text-align: center;
+    text-decoration: none;
+    vertical-align: top;
+    cursor: pointer;
+    border-radius: 0;
+    box-sizing: border-box;
+    -webkit-appearance: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
+  }
+
+  .secondary-button-style:hover {
+    background-color: #f3f2f1;
+    color: #0b0c0c;
+  }
+
+  .secondary-button-style:focus {
+    outline: 3px solid #fd0;
+    outline-offset: 0;
+    box-shadow: inset 0 0 0 1px #0b0c0c;
+  }
+
+  .secondary-button-style:active {
+    top: 2px;
+    box-shadow: 0 1px 0 #0b0c0c;
+  }
+</style>
+
+
+<style>
+  .govuk-fieldset {margin-bottom:30px;}
+  .govuk-fieldset__legend {font-weight:bold;}
+  #cmr-hint {margin-bottom:50px;}
+  .black {color:#0b0c0c;}
+  .govuk-button-group {margin-top:50px;}
+</style>
+
+<style>
+  .app-contact-panel {
+    margin-top: 60px;
+    /* govuk-responsive-margin(9, "top") equivalent */
+    padding-top: 20px;
+    /* govuk-spacing(3) equivalent */
+    border-top: 2px solid #1d70b8;
+    /* govuk-colour("blue") */
+  }
+
+  .app-contact-panel__heading,
+  .app-contact-panel__body,
+  .app-contact-panel__link {
+    max-width: 100%;
+  }
+
+  .app-contact-panel__heading {
+    font-family: "GDS Transport", Arial, sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 1.25;
+    padding-top: 10px;
+  }
+
+  .app-contact-panel__heading:first-child {
+    padding-top: 0;
+  }
+
+  .app-contact-panel__body:last-child {
+    margin-bottom: 0;
+  }
+</style>
+
+
+
+  
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+      
+    <a href="javascript:history.back()" class="govuk-back-link">Back</a>
+    
+    <h1 class="govuk-heading-xl">Container vessel arriving in the UK</h1>
+
+            <div class="govuk-inset-text">
+  We need details about where the consignment started its journey, when it departed, and the container vessel transporting it.
+</div>
+    
+      <form id="details-form" method="post" action="transport-container-vessel">
+
+
+           <div class="custom-radio-style" style="background-color: #f8f8f8; width: 100%; padding: 2rem; border-radius: 2;">
+
+          
+
+<!-- Country of departure -->
+<div class="govuk-form-group">
+  <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Country of departure</legend>
+            <div id="container-vessel-departure-country-hint" class="govuk-hint">
+            This is the country the consignment left before arriving in the UK.
+          </div>
+  <div id="container-vessel-departure-country-wrapper" style="position: relative;">
+    <input name="container-vessel-departure-country" type="text" class="govuk-input govuk-!-width-two-thirds"
+      id="container-vessel-departure-country" autocomplete="off"
+      aria-expanded="false" role="combobox" aria-autocomplete="list"
+      aria-owns="container-vessel-departure-country-listbox" aria-activedescendant="">
+    <ul id="container-vessel-departure-country-listbox" role="listbox" class="govuk-list"
+      style="display: none; border: 1px solid #b1b4b6; padding: 0.5em; background: white; position: absolute; z-index: 1000; width: 63%;">
+    </ul>
+  </div>
+</div>
+
+ <div class="govuk-form-group">
+  <fieldset class="govuk-fieldset" role="group" aria-describedby="container-vessel-departure-date-issued-hint">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+      Departure date
+    </legend>
+    <div id="container-vessel-departure-date-hint" class="govuk-hint">
+      This is when the consignment left the country of departure. For example, 27/8/2025
+    </div>
+    <div class="govuk-date-input" id="container-vessel-departure-date">
+      <div class="govuk-date-input__item">
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-date-input__label" for="container-vessel-departure-date-day">
+            Day
+          </label>
+          <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="container-vessel-departure-date-day" name="container-vessel-departure-date-day" type="text" inputmode="numeric">
+        </div>
+      </div>
+      <div class="govuk-date-input__item">
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-date-input__label" for="container-vessel-departure-date-month">
+            Month
+          </label>
+          <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="container-vessel-departure-date-month" name="container-vessel-departure-date-month" type="text" inputmode="numeric">
+        </div>
+      </div>
+      <div class="govuk-date-input__item">
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-date-input__label" for="container-vessel-departure-date-year">
+            Year
+          </label>
+          <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="container-vessel-departure-date-year" name="container-vessel-departure-date-year" type="text" inputmode="numeric">
+        </div>
+      </div>
+    </div>
+  </fieldset>
+</div>
+
+  
+
+      <!-- Place leaving UK -->
+      <div class="govuk-form-group">
+        <label class="govuk-label" for="container-vessel-departure"><b>Where the container vessel departs from</b></label>
+        <div id="container vessel-departure-hint" class="govuk-hint">For example, Calais port, Calais intermodal terminal, or the place where the consignment left by container vessel before arriving in the UK.</div>
+        <input class="govuk-input govuk-!-width-one-half" id="container-vessel-departure" name="container-vessel-departure" type="text">
+      </div>
+
+      <!-- Place of unloading -->
+                   <div class="govuk-form-group">
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--s" for="unloading-place-vessel">Place of unloading</legend>
+          <div id="export-place-hint" class="govuk-hint">
+            This is where the consignment was unloaded from the container vessel when arriving in the UK.
+          </div>
+          <input class="govuk-input govuk-input--width-20" id="unloading-place-vessel" name="unloading-place-vessel" type="text" aria-describedby="unloading-place-vessel-hint">
+        </div>
+      
+      <!-- container vessel nationality -->
+      <div class="govuk-form-group">
+        <label class="govuk-label" for="container-vessel-nationality"><b>Vessel name</b></label>
+                                <div id="container vessel-departure-hint" class="govuk-hint">For example, Felicity Ace.</div>
+        <input class="govuk-input govuk-!-width-one-half" id="vessel-name" name="vessel-name" type="text">
+      </div>
+      
+      <!-- Flag state -->
+      <div class="govuk-form-group">
+        <label class="govuk-label govuk-label--s" for="flag-state">Flag state</label>
+        <div id="flag-state-hint" class="govuk-hint">For example, Greece.</div>
+        <div style="position: relative;">
+          <input name="flag-state" type="text"
+            class="govuk-input govuk-!-width-two-thirds"
+            id="flag-state" autocomplete="off"
+            aria-expanded="false" role="combobox" aria-autocomplete="list"
+            aria-owns="flag-state-listbox" aria-activedescendant="">
+          <ul id="flag-state-listbox" role="listbox"
+            class="govuk-list"
+            style="display: none; border: 1px solid #b1b4b6; padding: 0.5em; background: white; position: absolute; z-index: 1000; width: 63%;">
+          </ul>
+        </div>
+      </div>
+
+            <!-- Shipping container identification number -->
+      <div class="govuk-form-group">
+        <label class="govuk-label govuk-label--s" for="vessel-container-identifcation"><b>Shipping container identification number</b></label>
+                <div id="vessel-container-identifcation-hint" class="govuk-hint">Enter the container number. For example, ABCJ0123456. Leave blank if not applicable.</div>
+        <input class="govuk-input govuk-input--width-10" id="vessel-container-identifcation" name="vessel-container-identifcation" type="text">
+      </div>
+
+   
+
+      <script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const containerFields = document.getElementById('container-fields');
+    const addButton = document.getElementById('add-container-button');
+    let containerCount = 1;
+
+    addButton.addEventListener('click', function () {
+      containerCount++;
+
+      const wrapper = document.createElement('div');
+      wrapper.classList.add('govuk-form-group', 'container-field');
+      wrapper.id = `container-field-${containerCount}`;
+
+      const label = document.createElement('label');
+      label.classList.add('govuk-label');
+      label.setAttribute('for', `container-identification-${containerCount}`);
+      label.innerHTML = '<b>Container identification number</b>';
+
+      const input = document.createElement('input');
+      input.classList.add('govuk-input', 'govuk-!-width-one-third');
+      input.id = `container-identification-${containerCount}`;
+      input.name = 'container-identification[]';
+      input.type = 'text';
+
+      const buttonWrapper = document.createElement('div');
+      buttonWrapper.classList.add('govuk-!-margin-top-2');
+
+      const removeButton = document.createElement('button');
+      removeButton.type = 'button';
+      removeButton.classList.add('govuk-button', 'govuk-button--secondary');
+      removeButton.textContent = 'Remove';
+      removeButton.addEventListener('click', function () {
+        wrapper.remove();
+      });
+
+      buttonWrapper.appendChild(removeButton);
+      wrapper.appendChild(label);
+      wrapper.appendChild(input);
+      wrapper.appendChild(buttonWrapper);
+      containerFields.appendChild(wrapper);
+    });
+  });
+</script>
+
+   <div class="govuk-button-group govuk-!-margin-top-2">
+<button type="button" class="govuk-button govuk-button--secondary secondary-button-style" id="add-container-button">Add another container</button>
+
+</div>
+      
+
+
+            <!-- Place leaving UK -->
+      <div class="govuk-form-group">
+        <label class="govuk-label" for="container-vessel-departure"><b>Freight bill number</b></label>
+        <div id="container vessel-departure-hint" class="govuk-hint">For example, AA1234567.</div>
+        <input class="govuk-input govuk-input--width-10" id="vessel-freight-bill" name="vessel-freight-bill" type="text">
+      </div>
+
+           </div>
+      
+      
+     <!-- Form controls -->
+        <div class="govuk-button-group">
+                    <button class="govuk-button" data-module="govuk-button" type="submit">
+            Save and continue
+          </button>
+          <button class="govuk-button govuk-button--secondary" data-module="govuk-button" formaction="progress" type="submit">
+            Save as draft
+          </button>
+        </div>
+      </form>
+   
+    
+    
+        <p class="govuk-body">
+      <a href="../sd/progress.html" class="govuk-link">Back to your progress</a>
+    </p>
+
+
+              <div class="app-contact-panel">
+                <h2 class="app-contact-panel__heading">Get help with your application</h2>
+
+                <p class="app-contact-panel__body">
+                  If you have a non-manipulation document unique reference number, have it with you when you call.
+                </p>
+
+                <ul class="govuk-list">
+                  <li>Phone: 0330 159 1989 </li>
+                  <li>Monday to Friday, 9am to 5pm (except public holidays)</li>
+                </ul>
+
+                <p class="govuk-body">
+                  <a class="govuk-link" href="#">Find out about call charges</a>
+                </p>
+
+                <p>Read the guidance on <a
+                    href="https://www.gov.uk/guidance/exporting-or-moving-fish-from-the-uk#get-help-with-fish-export-documents"
+                    class="govuk-link" rel="noreferrer noopener" target="_blank">exporting or moving fish from the UK
+                    (opens in new tab).</a>
+                </p>
+
+              </div>
+                 </div>
+</div>
+
+  <script>
+  const countries = [
+    "Belgium", "China", "Denmark", "Estonia", "Finland", "France", "Germany", "Greece",
+    "Iceland", "Ireland", "Italy", "Latvia", "Lithuania", "Netherlands", "Norway",
+    "Northern Ireland", "Poland", "Portugal", "Republic of Ireland", "South Korea",
+    "Spain", "Sweden", "United States", "Vietnam"
+  ];
+
+  function setupAutocomplete(inputId, listboxId) {
+    const input = document.getElementById(inputId);
+    const listbox = document.getElementById(listboxId);
+
+    input.addEventListener("input", () => {
+      const value = input.value.toLowerCase();
+      listbox.innerHTML = "";
+
+      if (value.length < 2) {
+        listbox.style.display = "none";
+        return;
+      }
+
+      const matches = countries.filter(country => country.toLowerCase().includes(value));
+      if (matches.length === 0) {
+        listbox.style.display = "none";
+        return;
+      }
+
+      matches.forEach((country, index) => {
+        const option = document.createElement("li");
+        option.setAttribute("role", "option");
+        option.setAttribute("id", `${inputId}-option-${index}`);
+        option.textContent = country;
+        option.style.cursor = "pointer";
+        option.style.padding = "0.25em 0";
+        option.onclick = () => {
+          input.value = country;
+          listbox.style.display = "none";
+        };
+        listbox.appendChild(option);
+      });
+
+      listbox.style.display = "block";
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!input.contains(e.target) && !listbox.contains(e.target)) {
+        listbox.style.display = "none";
+      }
+    });
+  }
+
+  setupAutocomplete("container-vessel-departure-country", "container-vessel-departure-country-listbox");
+  setupAutocomplete("flag-state", "flag-state-listbox");
+</script>
+
+{% endblock %}
+

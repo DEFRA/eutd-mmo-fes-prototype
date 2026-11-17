@@ -1,0 +1,721 @@
+{% set serviceName = "Create a UK processing statement" %}
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+GOV.UK Prototype Kit
+{% endblock %}
+
+{% block content %}
+{% include "../../includes/phase.html" %}
+
+<style>
+  /* Force the radio circle to be white */
+  .govuk-radios__input:checked+.govuk-radios__label::before,
+  .govuk-radios__input+.govuk-radios__label::before {
+    background-color: #ffffff !important;
+  }
+</style>
+
+<style>
+  .secondary-button-style {
+    display: inline-block;
+    position: relative;
+    padding: 6px 10px 5px;
+    margin: 0 10px 20px 0;
+    /* Adds spacing between buttons */
+    min-width: 80px;
+    width: auto;
+    /* Prevents full-width stretching */
+    font-family: "GDS Transport", arial, sans-serif;
+    font-size: 1.1875rem;
+    font-weight: 400;
+    line-height: 1.3157894737;
+    color: #0b0c0c;
+    background: rgba(0, 0, 0, 0);
+    border: 1px solid #0b0c0c;
+    box-shadow: 0 3px 0 #0b0c0c;
+    text-align: center;
+    text-decoration: none;
+    vertical-align: top;
+    cursor: pointer;
+    border-radius: 0;
+    box-sizing: border-box;
+    -webkit-appearance: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
+  }
+
+  .secondary-button-style:hover {
+    background-color: #f3f2f1;
+    color: #0b0c0c;
+  }
+
+  .secondary-button-style:focus {
+    outline: 3px solid #fd0;
+    outline-offset: 0;
+    box-shadow: inset 0 0 0 1px #0b0c0c;
+  }
+
+  .secondary-button-style:active {
+    top: 2px;
+    box-shadow: 0 1px 0 #0b0c0c;
+  }
+</style>
+
+<style>
+  .app-contact-panel {
+    margin-top: 60px;
+    /* govuk-responsive-margin(9, "top") equivalent */
+    padding-top: 20px;
+    /* govuk-spacing(3) equivalent */
+    border-top: 2px solid #1d70b8;
+    /* govuk-colour("blue") */
+  }
+
+  .app-contact-panel__heading,
+  .app-contact-panel__body,
+  .app-contact-panel__link {
+    max-width: 100%;
+  }
+
+  .app-contact-panel__heading {
+    font-family: "GDS Transport", Arial, sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 1.25;
+    padding-top: 10px;
+  }
+
+  .app-contact-panel__heading:first-child {
+    padding-top: 0;
+  }
+
+  .app-contact-panel__body:last-child {
+    margin-bottom: 0;
+  }
+</style>
+
+<style>
+  .custom-radio-style .govuk-radios__input {
+    background-color: white !important;
+  }
+</style>
+
+<style>
+  .secondary-button-style {
+    display: inline-block;
+    position: relative;
+    padding: 6px 10px 5px;
+    margin: 0 10px 20px 0;
+    /* Adds spacing between buttons */
+    min-width: 80px;
+    width: auto;
+    /* Prevents full-width stretching */
+    font-family: "GDS Transport", arial, sans-serif;
+    font-size: 1.1875rem;
+    font-weight: 400;
+    line-height: 1.3157894737;
+    color: #0b0c0c;
+    background: rgba(0, 0, 0, 0);
+    border: 1px solid #0b0c0c;
+    box-shadow: 0 3px 0 #0b0c0c;
+    text-align: center;
+    text-decoration: none;
+    vertical-align: top;
+    cursor: pointer;
+    border-radius: 0;
+    box-sizing: border-box;
+    -webkit-appearance: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
+  }
+
+  .secondary-button-style:hover {
+    background-color: #f3f2f1;
+    color: #0b0c0c;
+  }
+
+  .secondary-button-style:focus {
+    outline: 3px solid #fd0;
+    outline-offset: 0;
+    box-shadow: inset 0 0 0 1px #0b0c0c;
+  }
+
+  .secondary-button-style:active {
+    top: 2px;
+    box-shadow: 0 1px 0 #0b0c0c;
+  }
+</style>
+
+<style>
+  input[readonly] {
+    background-color: #e8effe;
+    border-color: #0b0c0c;
+    color: #0b0c0c;
+  }
+</style>
+
+
+<script>
+  const speciesList = [
+    "Atlantic Cod (COD)", "Haddock (HAD)", "Atlantic Mackerel (MAC)", "European Hake (HKE)",
+    "Atlantic Salmon (SAL)", "European Plaice (PLE)", "Common Sole (SOL)", "European Lobster (LBE)",
+    "Monkfish (MON)", "Edible crab (CRA)", "Herring (HER)", "Bluefin Tuna (BFT)", "Yellowfin Tuna (YFT)",
+    "Bigeye Tuna (BET)", "Swordfish (SWO)", "Anchovy (ANC)", "Sardine (SAR)", "Sprat (SPR)",
+    "Whiting (WHG)", "Pollock (POL)", "Red Mullet (MUL)", "Sea Bass (BSS)", "John Dory (DOR)",
+    "Turbot (TUR)", "Halibut (HAL)", "Ling (LIN)"
+
+  ];
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const speciesInput = document.getElementById("species-input");
+    const speciesListbox = document.getElementById("species-listbox");
+    const changeButton = document.getElementById("change-species");
+
+    const lockInput = () => {
+      speciesInput.setAttribute("readonly", true);
+      changeButton.style.display = "inline-block";
+    };
+
+    const unlockInput = () => {
+      speciesInput.removeAttribute("readonly");
+      speciesInput.focus();
+      changeButton.style.display = "none";
+    };
+
+    speciesInput.addEventListener("input", () => {
+      const value = speciesInput.value.toLowerCase();
+      speciesListbox.innerHTML = "";
+
+      if (value.length < 2) {
+        speciesListbox.style.display = "none";
+        return;
+      }
+
+      const matches = speciesList.filter(item => {
+        const lowerItem = item.toLowerCase();
+        const faoCode = item.match(/\(([^)]+)\)/);
+        return lowerItem.includes(value) || (faoCode && faoCode[1].toLowerCase().includes(value));
+      });
+
+      if (matches.length === 0) {
+        speciesListbox.style.display = "none";
+        return;
+      }
+
+      matches.forEach((item, index) => {
+        const option = document.createElement("li");
+        option.setAttribute("role", "option");
+        option.setAttribute("id", `species-option-${index}`);
+        option.textContent = item;
+
+        // GOV.UK styling
+        option.classList.add("govuk-body");
+        option.style.cursor = "pointer";
+        option.style.padding = "0.25em 0";
+
+        option.onclick = () => {
+          speciesInput.value = item;
+          speciesListbox.style.display = "none";
+
+          // ✅ Lock input immediately after selection
+          lockInput();
+        };
+
+        speciesListbox.appendChild(option);
+      });
+
+      speciesListbox.style.display = "block";
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!speciesInput.contains(e.target) && !speciesListbox.contains(e.target)) {
+        speciesListbox.style.display = "none";
+      }
+    });
+
+    if (speciesInput.value.trim() !== "") {
+      lockInput();
+    }
+
+    changeButton.addEventListener("click", () => {
+      unlockInput();
+    });
+  });
+</script>
+
+<style>
+  /* Reduce spacing between input/button and details */
+  #species-input,
+  #change-species {
+    margin-bottom: 0 !important;
+  }
+
+  /* Optional: reduce spacing of the wrapper if needed */
+  .govuk-input__wrapper {
+    margin-bottom: 0.5rem;
+    /* adjust as needed */
+  }
+</style>
+
+<script>
+  const countries = [
+ 
+  "United States", "China", "Germany", "France", "Netherlands", "Republic of Ireland", "Northern Ireland",
+  "Belgium", "Italy", "Spain", "Switzerland", "United Arab Emirates", "South Korea", "Vietnam", "Canada",
+  "Australia", "Norway", "Sweden", "Denmark", "Finland", "Poland", "Portugal", "Greece", "Luxembourg",
+  "Japan", "Hong Kong","Ireland", "Iceland", "Latvia", "Lithuania", "Estonia",
+  "Czech Republic", "Slovakia", "Hungary", "Austria", "Bulgaria", "Romania", "Croatia", "Slovenia",
+  ];
+
+  function setupAutocomplete(inputId, listboxId) {
+    const input = document.getElementById(inputId);
+    const listbox = document.getElementById(listboxId);
+    if (!input || !listbox) return;
+
+    input.addEventListener("input", () => {
+      const value = input.value.toLowerCase();
+      listbox.innerHTML = "";
+
+      if (value.length < 2) {
+        listbox.style.display = "none";
+        return;
+      }
+
+      const matches = countries.filter(country => country.toLowerCase().includes(value));
+      if (matches.length === 0) {
+        listbox.style.display = "none";
+        return;
+      }
+
+      matches.forEach((country, index) => {
+        const option = document.createElement("li");
+        option.setAttribute("role", "option");
+        option.setAttribute("id", `${inputId}-option-${index}`);
+        option.textContent = country;
+        option.style.cursor = "pointer";
+        option.style.padding = "0.25em 0";
+        option.onclick = () => {
+          input.value = country;
+          listbox.style.display = "none";
+        };
+        listbox.appendChild(option);
+      });
+
+      listbox.style.display = "block";
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!input.contains(e.target) && !listbox.contains(e.target)) {
+        listbox.style.display = "none";
+      }
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    setupAutocomplete("departure-destination-country", "departure-destination-country-listbox");
+    setupAutocomplete("issuing-country", "issuing-country-listbox");
+    // Add more fields here as needed
+  });
+</script>
+
+
+
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+
+    <a href="javascript:history.back()" class="govuk-back-link">Back</a>
+
+
+    <h1 class="govuk-heading-xl">Add species to your processed product</h1>
+
+
+
+    <form method="post" action="product-details">
+
+      <input class="govuk-input" id="pid" name="pid" type="hidden" value="">
+
+      {% if data.formErrors and data.formErrors.length > 0 %}
+      <div class="govuk-error-summary" data-module="govuk-error-summary">
+        <div class="govuk-error-summary__body">
+          <h2 class="govuk-error-summary__title">There is a problem</h2>
+          <ul class="govuk-list govuk-error-summary__list">
+            {% for error in data.formErrors %}
+            <li>
+              <a href="#{{ error.fieldName }}">{{ error.message }}</a>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+      {% endif %}
+
+      <div class="custom-radio-style" style="background-color: #f8f8f8; width: 100%; padding: 2rem; border-radius: 2;">
+
+
+        <!-- Species -->
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-label--s" for="species-input">
+            Food and agriculture organisation (FAO) code or species name
+          </label>
+          <div id="species-hint" class="govuk-hint">
+            Start typing a species name or FAO code to see suggestions, for example Atlantic cod or COD.
+          </div>
+
+
+          <input class="govuk-input govuk-!-width-two-thirds" id="species-input" name="species" type="text"
+            value="{{ data.species }}" {% if data.species %}readonly{% endif %} autocomplete="off" aria-expanded="false"
+            role="combobox" aria-autocomplete="list" aria-owns="species-listbox" aria-activedescendant="">
+
+          <button type="button" id="change-species" class="secondary-button-style" {% if not data.species
+            %}style="display: none;" {% endif %}>
+            Change
+          </button>
+
+
+          <ul id="species-listbox" role="listbox" class="govuk-list"
+            style="display: none; border: 1px solid #b1b4b6; padding: 0.5em; background: white; position: absolute; z-index: 1000; width: 23%;">
+          </ul>
+        </div>
+
+
+
+        <details class="govuk-details">
+          <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+              Help with species name
+            </span>
+          </summary>
+          <div class="govuk-details__text">
+            <p class="govuk-body">Some species are exempt from this requirement.</p>
+            <p class="govuk-body">See the <a
+                href="https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:32011R0202&qid=1647522263758&from=EN"
+                class="govuk-link" rel="noreferrer noopener" target="_blank">list of exempt species on europa.eu (opens
+                in a new tab)</a>
+
+            </p>
+          </div>
+        </details>
+
+
+
+
+        <!-- Catch certificate -->
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-label--s" for="company-name">
+            Was the catch certificate issued in the UK?
+          </label>
+          <div id="changedName-hint" class="govuk-hint">
+            This is the last document used to bring the product into the UK.
+          </div>
+
+          <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="uk-document" name="uk-document" type="radio" value="Yes">
+              <label class="govuk-label govuk-radios__label" for="uk-document">Yes</label>
+            </div>
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="uk-document-2" name="uk-document" type="radio" value="No"
+                data-aria-controls="conditional-uk-document">
+              <label class="govuk-label govuk-radios__label" for="uk-document-2">No</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-uk-document">
+          <div class="govuk-form-group">
+            <label class="govuk-label govuk-label--s" for="issuing-country">Issuing country</label>
+            <div id="issuing-country-hint" class="govuk-hint">
+              Enter the country that issued the catch certificate.
+            </div>
+            <div class="govuk-form-group govuk-!-width-two-thirds" style="position: relative;">
+              <input name="issuing-country" type="text" class="govuk-input govuk-!-width-full" id="issuing-country"
+                autocomplete="off" aria-expanded="false" role="combobox" aria-autocomplete="list"
+                aria-owns="issuing-country-listbox" aria-activedescendant="">
+              <ul id="issuing-country-listbox" role="listbox" class="govuk-list"
+                style="display: none; border: 1px solid #b1b4b6; padding: 0.5em; background: white; position: absolute; z-index: 1000; width: 95%;">
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Catch certificate reference -->
+
+
+        <div id="document-fields">
+          <div class="govuk-form-group document-field" id="document-field-1">
+            <fieldset class="govuk-fieldset" aria-describedby="commodity-code-hint">
+              <legend class="govuk-fieldset__legend govuk-fieldset__legend--s" for="product-reference-number-1">
+                Catch certificate
+              </legend>
+              <div id="product-reference-number-hint-1" class="govuk-hint">
+                Enter the catch certificate reference number, including any hyphens, dashes or other characters. For
+                example, GBR-2024-CC-BEFCD6036.
+              </div>
+              <input class="govuk-input govuk-!-width-two-thirds" id="product-reference-number-1"
+                name="productReferenceNumber[]" type="text" aria-describedby="product-reference-number-hint-1">
+            </fieldset>
+          </div>
+        </div>
+
+        <details class="govuk-details" data-module="govuk-details">
+          <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+              Help with catch certificate
+            </span>
+          </summary>
+          <div class="govuk-details__text">
+            <p>The catch certificate is the official paperwork that allowed the product to enter the UK.</p>
+            <p>Make sure the document is a catch certificate.</p>
+          </div>
+        </details>
+
+        <!-- Species commodity code -->
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-label--s" for="catch-certificate-code">
+            Species commodity code
+          </label>
+
+          <div id="catch-certificate-code-hint" class="govuk-hint">
+            This information will not appear on the processing statement. Enter the species commodity code exactly how it appears on the catch certificate. This applies even if the fish has been processed since landing.
+          </div>
+
+          <input class="govuk-input govuk-input--width-10" id="catch-certificate-code"
+            name="catch-certificate-code" type="text" inputmode="numeric" minlength="6" maxlength="12"
+            aria-describedby="catch-certificate-code-hint">
+        </div>
+
+                  <details class="govuk-details">
+            <summary class="govuk-details__summary">
+              <span class="govuk-details__summary-text">
+                Help with species commodity code
+              </span>
+            </summary>
+            <div class="govuk-details__text">
+              <p>The commodity code is shown on your catch certificate. It's typically
+              an 8-digit number (for example: 03024310).</p>
+              <p>If you don't have the certificate to hand, you can search for commodity
+              codes on the
+                <a href="https://www.trade-tariff.service.gov.uk/find_commodity"
+                  target="_blank" rel="noreferrer noopener">UK Trade Tariff (opens in new tab)</a>
+              </p>
+            </div>
+          </details>
+
+        <div class="govuk-form-group {% if data.formErrors %}{% for error in data.formErrors %}{% if error.fieldName == 'catch-certificate-weight' %}govuk-form-group--error{% endif %}{% endfor %}{% endif %}">
+          <label class="govuk-label govuk-label--s" for="catch-certificate-weight">
+           Species weight on catch certificate
+            </b></label>
+          </label>
+          <div class="govuk-hint" id="weight-hint">
+            Enter the weight of the species as shown on the catch certificate.
+          </div>
+          {% if data.formErrors %}
+            {% for error in data.formErrors %}
+              {% if error.fieldName == 'catch-certificate-weight' %}
+              <p class="govuk-error-message" id="catch-certificate-weight-error">
+                <span class="govuk-visually-hidden">Error:</span> {{ error.message }}
+              </p>
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+          <div class="govuk-input__wrapper">
+            <input class="govuk-input govuk-input--width-5 {% if data.formErrors %}{% for error in data.formErrors %}{% if error.fieldName == 'catch-certificate-weight' %}govuk-input--error{% endif %}{% endfor %}{% endif %}" id="catch-certificate-weight"
+              name="catch-certificate-weight" type="number" value="" spellcheck="false" aria-describedby="weight-hint" min="0">
+            <div class="govuk-input__suffix" aria-hidden="true">kg</div>
+          </div>
+<br>
+          <details class="govuk-details">
+            <summary class="govuk-details__summary">
+              <span class="govuk-details__summary-text">
+                What does this mean?
+              </span>
+            </summary>
+            <div class="govuk-details__text">
+              <p class="govuk-body">This is the weight of the raw fish before any processing, such as filleting, smoking, freezing, battering or canning.</p>
+            </div>
+          </details>
+        </div>
+
+        <!-- Export weight -->
+
+
+        <div class="govuk-form-group {% if data.formErrors %}{% for error in data.formErrors %}{% if error.fieldName == 'net-weight' %}govuk-form-group--error{% endif %}{% endfor %}{% endif %}">
+          <label class="govuk-label govuk-label--s" for="net-weight">Export weight before processing
+            </b></label>
+          <div class="govuk-form-group">
+            <div id="weight" class="govuk-hint" for="width-20">
+              Enter the weight of the product before any processing. Do not include any additional ingredients.
+            </div>
+            {% if data.formErrors %}
+              {% for error in data.formErrors %}
+                {% if error.fieldName == 'net-weight' %}
+                <p class="govuk-error-message" id="net-weight-error">
+                  <span class="govuk-visually-hidden">Error:</span> {{ error.message }}
+                </p>
+                {% endif %}
+              {% endfor %}
+            {% endif %}
+            <div class="govuk-input__wrapper">
+              <input class="govuk-input govuk-input--width-5 {% if data.formErrors %}{% for error in data.formErrors %}{% if error.fieldName == 'net-weight' %}govuk-input--error{% endif %}{% endfor %}{% endif %}" id="net-weight" name="net-weight" type="number" value=""
+                spellcheck="false" min="0">
+              <div class="govuk-input__suffix" aria-hidden="true">kg</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="govuk-form-group {% if data.formErrors %}{% for error in data.formErrors %}{% if error.fieldName == 'fish-weight' %}govuk-form-group--error{% endif %}{% endfor %}{% endif %}">
+          <label class="govuk-label govuk-label--s" for="fish-weight">Export weight after processing
+            </b></label>
+          <div id="weight" class="govuk-hint" for="width-20">
+            Enter the weight of the product after any processing. Do not include any additional ingredients.
+          </div>
+          {% if data.formErrors %}
+            {% for error in data.formErrors %}
+              {% if error.fieldName == 'fish-weight' %}
+              <p class="govuk-error-message" id="fish-weight-error">
+                <span class="govuk-visually-hidden">Error:</span> {{ error.message }}
+              </p>
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+          <div class="govuk-input__wrapper">
+            <input class="govuk-input govuk-input--width-5 {% if data.formErrors %}{% for error in data.formErrors %}{% if error.fieldName == 'fish-weight' %}govuk-input--error{% endif %}{% endfor %}{% endif %}" id="fish-weight" name="fish-weight" type="number" value=""
+              spellcheck="false" min="0">
+            <div class="govuk-input__suffix" aria-hidden="true">kg</div>
+          </div>
+        </div>
+
+        <div class="govuk-form-group">
+          <button type="submit" class="govuk-button" name="action" value="add" data-module="govuk-button">
+            Add
+          </button>
+          <button type="button" class="secondary-button-style" data-module="govuk-button"
+            onclick="cancelSpeciesEntry()">
+            Cancel
+          </button>
+        </div>
+      </div>
+
+
+      {% set speciesCount = 0 %}
+      {% set documentCount = 0 %}
+
+      {% for entry in data.productEntries %}
+      {% if entry.description == data.description %}
+      {% if entry.species %}
+      {% set speciesCount = speciesCount + 1 %}
+      {% endif %}
+      {% if entry.ukDocument %}
+      {% set documentCount = documentCount + 1 %}
+      {% endif %}
+      {% endif %}
+      {% endfor %}
+
+
+      {% if data.productEntries.length %}
+
+
+      <div id="species-table-container" style="margin-top:20px;">
+
+        <h2 class="govuk-heading-l"> You have added {{ speciesCount }} species and {{ documentCount }} document{% if
+          documentCount != 1 %}s{% endif %} for ‘{{ data.description }}’</h2>
+
+
+        <table class="govuk-table">
+          <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+              <th scope="col" class="govuk-table__header">Species name (FAO)</th>
+              <th scope="col" class="govuk-table__header">Species commodity code</th>
+              <th scope="col" class="govuk-table__header">Catch certificate weight</th>
+              <th scope="col" class="govuk-table__header">Export weight before processing</th>
+              <th scope="col" class="govuk-table__header">Export weight after processing</th>
+              <th scope="col" class="govuk-table__header">Action</th>
+            </tr>
+          </thead>
+          <tbody class="govuk-table__body">
+            {% for entry in data.productEntries %}
+            {% if not entry.isPartial and entry.description == data.description %}
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">{{ entry.species }}</td>
+              <td class="govuk-table__cell">{{ entry['catch-certificate-code'] or 'Not provided' }}</td>
+              <td class="govuk-table__cell">{{ entry['catch-certificate-weight']}}kg</td>
+              <td class="govuk-table__cell">{{ entry['net-weight'] }}kg</td>
+              <td class="govuk-table__cell">{{ entry['fish-weight'] }}kg</td>
+              <td class="govuk-table__cell">
+                <a class="govuk-link" href="edit-product/{{ loop.index0 }}">Change</a><br/>
+                <a class="govuk-link govuk-link--destructive" href="remove-product-directly/{{ loop.index0 }}">Remove</a>
+              </td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% endif %}
+
+
+
+
+
+      <br>
+
+
+
+
+
+
+      <div class="govuk-button-group">
+
+        <button class="govuk-button" data-module="govuk-button" name="action" value="continue">
+          Save and continue
+        </button>
+
+        <button type="button" class="dcx-button govuk-button govuk-button--secondary" id="saveAsDraft"
+          data-module="govuk-button" data-testid="save-draft-button" onclick="location.href='progress.html'">
+          Save as draft
+        </button>
+    </form>
+
+  </div>
+
+
+
+  <p class="govuk-body">
+    <a href="../ps/progress.html" class="govuk-link">Back to your progress</a>
+  </p>
+
+
+  <div class="app-contact-panel">
+    <h2 class="app-contact-panel__heading">Get help with your application</h2>
+
+    <p class="app-contact-panel__body">
+      If you have a processing statement unique reference number, have it with you when you call.
+    </p>
+
+    <ul class="govuk-list">
+      <li>Phone: 0330 159 1989 </li>
+      <li>Monday to Friday, 9am to 5pm (except public holidays)</li>
+    </ul>
+
+    <p class="govuk-body">
+      <a class="govuk-link" href="#">Find out about call charges</a>
+    </p>
+
+    <p>Read the guidance on <a
+        href="https://www.gov.uk/guidance/exporting-or-moving-fish-from-the-uk#get-help-with-fish-export-documents"
+        class="govuk-link" rel="noreferrer noopener" target="_blank">exporting or moving fish from the UK
+        (opens in new tab).</a>
+    </p>
+
+
+
+  </div>
+</div>
+</div>
+
+{% endblock %}
