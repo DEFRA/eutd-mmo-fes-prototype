@@ -6,8 +6,8 @@ This project was created using the [GOV.UK Prototype Kit](https://prototype-kit.
 ## Getting Started
 
 ### Prerequisites
-- Node.js (version 20.11.1)
-- npm (Node Package Manager)
+- Node.js (version 26.x)
+- npm (version 11.x or 12.x)
 - Git
 
 ### Installation
