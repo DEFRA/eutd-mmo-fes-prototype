@@ -1,3 +1,5 @@
+@use "sass:string";
+
 .app-c-brexit-notice__link,
 .gem-c-contextual-sidebar__brexit-cta .gem-c-contextual-sidebar__brexit-text,
 .gem-c-notice__title a,
@@ -1119,10 +1121,10 @@
   margin-right: 15px;
   margin-left: 15px;
 }
-@supports (margin: unquote("max(calc(0px))")) {
+@supports (margin: string.unquote("max(calc(0px))")) {
   .govuk-width-container {
-    margin-right: unquote("max(15px, calc(15px + env(safe-area-inset-right)))");
-    margin-left: unquote("max(15px, calc(15px + env(safe-area-inset-left)))");
+    margin-right: string.unquote("max(15px, calc(15px + env(safe-area-inset-right)))");
+    margin-left: string.unquote("max(15px, calc(15px + env(safe-area-inset-left)))");
   }
 }
 @media (min-width: 40.0625em) {
@@ -1130,10 +1132,10 @@
     margin-right: 30px;
     margin-left: 30px;
   }
-  @supports (margin: unquote("max(calc(0px))")) {
+  @supports (margin: string.unquote("max(calc(0px))")) {
     .govuk-width-container {
-      margin-right: unquote("max(30px, calc(15px + env(safe-area-inset-right)))");
-      margin-left: unquote("max(30px, calc(15px + env(safe-area-inset-left)))");
+      margin-right: string.unquote("max(30px, calc(15px + env(safe-area-inset-right)))");
+      margin-left: string.unquote("max(30px, calc(15px + env(safe-area-inset-left)))");
     }
   }
 }
@@ -1142,7 +1144,7 @@
     margin-right: auto;
     margin-left: auto;
   }
-  @supports (margin: unquote("max(calc(0px))")) {
+  @supports (margin: string.unquote("max(calc(0px))")) {
     .govuk-width-container {
       margin-right: auto;
       margin-left: auto;
@@ -11621,10 +11623,10 @@
     line-height: 1.2;
   }
 }
-@supports (padding: unquote("max(calc(0px))")) {
+@supports (padding: string.unquote("max(calc(0px))")) {
   .govuk-skip-link {
-    padding-right: unquote("max(15px, calc(15px + env(safe-area-inset-right)))");
-    padding-left: unquote("max(15px, calc(15px + env(safe-area-inset-left)))");
+    padding-right: string.unquote("max(15px, calc(15px + env(safe-area-inset-right)))");
+    padding-left: string.unquote("max(15px, calc(15px + env(safe-area-inset-left)))");
   }
 }
 
