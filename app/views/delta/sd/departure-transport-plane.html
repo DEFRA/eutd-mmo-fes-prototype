@@ -1,0 +1,381 @@
+{% set serviceName = "Create a UK non-manipulation document" %}
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  GOV.UK Prototype Kit
+{% endblock %}
+
+{% block content %}
+  {% include "../../includes/phase.html" %}
+
+    <style>
+  .secondary-button-style {
+    display: inline-block;
+    position: relative;
+    padding: 6px 10px 5px;
+    margin: 0 10px 20px 0;
+    /* Adds spacing between buttons */
+    min-width: 80px;
+    width: auto;
+    /* Prevents full-width stretching */
+    font-family: "GDS Transport", arial, sans-serif;
+    font-size: 1.1875rem;
+    font-weight: 400;
+    line-height: 1.3157894737;
+    color: #0b0c0c;
+    background: rgba(0, 0, 0, 0);
+    border: 1px solid #0b0c0c;
+    box-shadow: 0 3px 0 #0b0c0c;
+    text-align: center;
+    text-decoration: none;
+    vertical-align: top;
+    cursor: pointer;
+    border-radius: 0;
+    box-sizing: border-box;
+    -webkit-appearance: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
+  }
+
+  .secondary-button-style:hover {
+    background-color: #f3f2f1;
+    color: #0b0c0c;
+  }
+
+  .secondary-button-style:focus {
+    outline: 3px solid #fd0;
+    outline-offset: 0;
+    box-shadow: inset 0 0 0 1px #0b0c0c;
+  }
+
+  .secondary-button-style:active {
+    top: 2px;
+    box-shadow: 0 1px 0 #0b0c0c;
+  }
+</style>
+
+<style>
+  .govuk-fieldset {margin-bottom:30px;}
+  .govuk-fieldset__legend {font-weight:bold;}
+  #cmr-hint {margin-bottom:50px;}
+  .black {color:#0b0c0c;}
+  .govuk-button-group {margin-top:50px;}
+</style>
+
+<style>
+  .app-contact-panel {
+    margin-top: 60px;
+    /* govuk-responsive-margin(9, "top") equivalent */
+    padding-top: 20px;
+    /* govuk-spacing(3) equivalent */
+    border-top: 2px solid #1d70b8;
+    /* govuk-colour("blue") */
+  }
+
+  .app-contact-panel__heading,
+  .app-contact-panel__body,
+  .app-contact-panel__link {
+    max-width: 100%;
+  }
+
+  .app-contact-panel__heading {
+    font-family: "GDS Transport", Arial, sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 1.25;
+    padding-top: 10px;
+  }
+
+  .app-contact-panel__heading:first-child {
+    padding-top: 0;
+  }
+
+  .app-contact-panel__body:last-child {
+    margin-bottom: 0;
+  }
+</style>
+
+
+
+  
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+      
+    <a href="javascript:history.back()" class="govuk-back-link">Back</a>
+    
+    <h1 class="govuk-heading-xl">Plane departing the UK</h1>
+    
+    <form id="details-form" method="post" action="/delta/sd/departure-transport-plane">
+
+              <div class="govuk-inset-text">
+                We need details about where the consignment is going, when it departs the UK, and where the plane transporting it left from.
+              </div>
+
+             <div class="custom-radio-style" style="background-color: #f8f8f8; width: 100%; padding: 2rem; border-radius: 2;">
+
+
+              <!-- Place consignment leaves the departure country -->
+<div class="govuk-form-group">
+  <label class="govuk-label govuk-label--s" for="plane-departure-destination-country">Destination country</label>
+  <div id="plane-departure-destination-country-hint" class="govuk-hint">
+    Enter the main destination country for the export. Do not include countries the goods are passing through.</div>
+  <input name="plane-departure-destination-country" type="text"
+    class="govuk-input govuk-!-width-two-thirds"
+    id="plane-departure-destination-country" autocomplete="off"
+    aria-expanded="false" role="combobox" aria-autocomplete="list"
+    aria-owns="plane-departure-destination-country-listbox" aria-activedescendant="">
+  <ul id="plane-departure-destination-country-listbox" role="listbox"
+    class="govuk-list"
+    style="display: none; border: 1px solid #b1b4b6; padding: 0.5em; background: white; position: absolute; z-index: 1000; width: 23%;">
+  </ul>
+</div>
+
+
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-label--s" for="destination-point-plane">Point of destination</label>
+          <div id="destination-point-plane-hint" class="govuk-hint">
+            Enter the final intended destination for the consignment. For example, Bologna, New York or Singapore.
+          </div>
+          <input class="govuk-input govuk-!-width-two-thirds" id="destination-point-plane" name="destination-point-plane" type="text" aria-describedby="destination-point-plane-hint">
+        </div>
+
+        <details class="govuk-details" data-module="govuk-details">
+          <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+              Help with point of destination
+            </span>
+          </summary>
+          <div class="govuk-details__text">
+            Enter the final destination where the consignment is intended to go. This could be anywhere in the world. If you do not know the final destination, enter the first destination you know the consignment will reach, such as an EU entry point or the first port of call.
+          </div>
+        </details>
+
+<div class="govuk-form-group">
+  <fieldset class="govuk-fieldset" role="group" aria-describedby="plane-departure-date-uk-issued-hint">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+      Departure date from the UK
+    </legend>
+    <div id="plane-departure-date-uk-hint" class="govuk-hint">
+      This is the date the plane with the consignment left the UK. For example, 27/8/2025
+    </div>
+    <div class="govuk-date-input" id="plane-departure-date-uk">
+      <div class="govuk-date-input__item">
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-date-input__label" for="plane-departure-date-uk-day">
+            Day
+          </label>
+          <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="plane-departure-date-uk-day" name="plane-departure-date-uk-day" type="text" inputmode="numeric">
+        </div>
+      </div>
+      <div class="govuk-date-input__item">
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-date-input__label" for="plane-departure-date-uk-month">
+            Month
+          </label>
+          <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="plane-departure-date-uk-month" name="plane-departure-date-uk-month" type="text" inputmode="numeric">
+        </div>
+      </div>
+      <div class="govuk-date-input__item">
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-date-input__label" for="plane-departure-date-uk-year">
+            Year
+          </label>
+          <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="plane-departure-date-uk-year" name="plane-departure-date-uk-year" type="text" inputmode="numeric">
+        </div>
+      </div>
+    </div>
+  </fieldset>
+</div>
+
+            <!-- Place leaving UK -->
+      <div class="govuk-form-group">
+        <label class="govuk-label" for="plane-departure"><b>Where the plane leaves the UK</b></label>
+        <div id="plane-departure-hint" class="govuk-hint">For example, London Heathrow Airport, East Midlands Airport, or the place the plane with the consignment departs from the UK.</div>
+        <input class="govuk-input govuk-!-width-one-half" id="plane-departure" name="plane-departure" type="text">
+      </div>
+      
+
+      <div class="govuk-form-group">
+        <label class="govuk-label" for="airway-bill"><b>Air waybill number</b></label>
+       <div id="plane-departure-hint" class="govuk-hint">For example, 123-45678901</div>
+        <input class="govuk-input govuk-input--width-10" id="airway-bill" name="airway-bill" type="text">
+      </div>
+      
+      <!-- plane nationality -->
+      <div class="govuk-form-group">
+        <label class="govuk-label" for="plane-nationality"><b>Flight number</b></label>
+        <input class="govuk-input govuk-input--width-10" id="flight-number" name="flight-number" type="text">
+      </div>
+
+      
+      <!-- Container identification -->
+<div id="container-fields">
+  <div class="govuk-form-group container-field">
+    <label class="govuk-label" for="container-identification-1"><b>Container identification number</b></label>
+    <div id="plane-departure-hint" class="govuk-hint">For example, ABCD1234567.</div>
+    <input class="govuk-input govuk-!-width-one-third" id="container-identification-1" name="container-identification" type="text">
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const containerFields = document.getElementById('container-fields');
+    const addButton = document.getElementById('add-container-button');
+    let containerCount = 1;
+
+    addButton.addEventListener('click', function () {
+      containerCount++;
+
+      const wrapper = document.createElement('div');
+      wrapper.classList.add('govuk-form-group', 'container-field');
+      wrapper.id = `container-field-${containerCount}`;
+
+      const label = document.createElement('label');
+      label.classList.add('govuk-label');
+      label.setAttribute('for', `container-identification-${containerCount}`);
+      label.innerHTML = '<b>Container identification number</b>';
+
+      const input = document.createElement('input');
+      input.classList.add('govuk-input', 'govuk-!-width-one-third');
+      input.id = `container-identification-${containerCount}`;
+      input.name = 'container-identification[]';
+      input.type = 'text';
+
+      const buttonWrapper = document.createElement('div');
+      buttonWrapper.classList.add('govuk-!-margin-top-2');
+
+      const removeButton = document.createElement('button');
+      removeButton.type = 'button';
+      removeButton.classList.add('govuk-button', 'govuk-button--secondary');
+      removeButton.textContent = 'Remove';
+      removeButton.addEventListener('click', function () {
+        wrapper.remove();
+      });
+
+      buttonWrapper.appendChild(removeButton);
+      wrapper.appendChild(label);
+      wrapper.appendChild(input);
+      wrapper.appendChild(buttonWrapper);
+      containerFields.appendChild(wrapper);
+    });
+  });
+</script>
+
+
+<div class="govuk-button-group govuk-!-margin-top-2">
+<button type="button" class="secondary-button-style govuk-!-margin-bottom-5" id="add-container-button">Add another container</button>
+</div>
+
+
+            <!-- Freight bill number -->
+      <div class="govuk-form-group">
+        <label class="govuk-label" for="freight-bill"><b>Freight bill number</b></label>
+        <input class="govuk-input govuk-!-width-one-quarter" id="freight-bill" name="freight-bill" type="text">
+      </div>
+  
+             </div>
+      
+     <!-- Form controls -->
+        <div class="govuk-button-group">
+                    <button class="govuk-button" data-module="govuk-button" type="submit">
+            Save and continue
+          </button>
+          <button class="govuk-button govuk-button--secondary" data-module="govuk-button" formaction="/delta/storage-document" type="submit">
+            Save as draft
+          </button>
+        </div>
+      </form>
+   
+    
+    
+    <p class="govuk-body">
+      <a href="../sd/progress.html" class="govuk-link">Back to your progress</a>
+    </p>
+
+
+
+
+              <div class="app-contact-panel">
+                <h2 class="app-contact-panel__heading">Get help with your application</h2>
+
+                <p class="app-contact-panel__body">
+                  If you have a non-manipulation document unique reference number, have it with you when you call.
+                </p>
+
+                <ul class="govuk-list">
+                  <li>Phone: 0330 159 1989 </li>
+                  <li>Monday to Friday, 9am to 5pm (except public holidays)</li>
+                </ul>
+
+                <p class="govuk-body">
+                  <a class="govuk-link" href="#">Find out about call charges</a>
+                </p>
+
+                <p>Read the guidance on <a
+                    href="https://www.gov.uk/guidance/exporting-or-moving-fish-from-the-uk#get-help-with-fish-export-documents"
+                    class="govuk-link" rel="noreferrer noopener" target="_blank">exporting or moving fish from the UK
+                    (opens in new tab).</a>
+                </p>
+                   </div>
+</div>
+</div>
+
+  <script>
+  const countries = [
+    "Belgium", "China", "Denmark", "Estonia", "Finland", "France", "Germany", "Greece", "Iceland", "Ireland",
+    "Italy", "Latvia", "Lithuania", "Netherlands", "Norway", "Northern Ireland", "Poland", "Portugal",
+    "Republic of Ireland", "South Korea", "Spain", "Sweden", "United States", "Vietnam"
+  ];
+
+  function setupAutocomplete(inputId, listboxId) {
+    const input = document.getElementById(inputId);
+    const listbox = document.getElementById(listboxId);
+
+    input.addEventListener("input", () => {
+      const value = input.value.toLowerCase();
+      listbox.innerHTML = "";
+
+      if (value.length < 2) {
+        listbox.style.display = "none";
+        return;
+      }
+
+      const matches = countries.filter(country => country.toLowerCase().includes(value));
+      if (matches.length === 0) {
+        listbox.style.display = "none";
+        return;
+      }
+
+      matches.forEach((country, index) => {
+        const option = document.createElement("li");
+        option.setAttribute("role", "option");
+        option.setAttribute("id", `${inputId}-option-${index}`);
+        option.textContent = country;
+        option.style.cursor = "pointer";
+        option.style.padding = "0.25em 0";
+        option.onclick = () => {
+          input.value = country;
+          listbox.style.display = "none";
+        };
+        listbox.appendChild(option);
+      });
+
+      listbox.style.display = "block";
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!input.contains(e.target) && !listbox.contains(e.target)) {
+        listbox.style.display = "none";
+      }
+    });
+  }
+
+  setupAutocomplete("plane-departure-destination-country", "plane-departure-destination-country-listbox");
+
+</script>
+
+
+{% endblock %}
+
+

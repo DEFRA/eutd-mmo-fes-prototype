@@ -1,0 +1,318 @@
+{% set serviceName = "Create a UK non-manipulation document" %}
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Error: Truck details - GOV.UK
+{% endblock %}
+
+{% block content %}
+  {% include "../../includes/phase.html" %}
+
+  <style>
+    .govuk-table {
+      margin-top: 30px;
+    }
+
+    .govuk-form-group {
+      margin-bottom: 20px;
+    }
+
+    .govuk-button-group {
+      margin-top: 30px;
+    }
+
+    .document-field {
+      position: relative;
+      padding-bottom: 20px;
+    }
+
+    .delete-link {
+      margin-left: 10px;
+    }
+
+    .govuk-label--m {
+      font-size: 16px;
+    }
+
+    .govuk-input {
+      font-size: 16px;
+    }
+  </style>
+
+  <style>
+  .app-contact-panel {
+    margin-top: 60px;
+    padding-top: 20px;
+    border-top: 2px solid #1d70b8;
+  }
+
+  .app-contact-panel__heading,
+  .app-contact-panel__body,
+  .app-contact-panel__link {
+    max-width: 100%;
+  }
+
+  .app-contact-panel__heading {
+    font-family: "GDS Transport", Arial, sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 1.25;
+    padding-top: 10px;
+  }
+
+  .app-contact-panel__heading:first-child {
+    padding-top: 0;
+  }
+
+  .app-contact-panel__body:last-child {
+    margin-bottom: 0;
+  }
+</style>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <a href="javascript:history.back()" class="govuk-back-link">Back</a>
+
+      <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" data-module="govuk-error-summary">
+        <h2 class="govuk-error-summary__title" id="error-summary-title">
+          There is a problem
+        </h2>
+        <div class="govuk-error-summary__body">
+          <ul class="govuk-list govuk-error-summary__list">
+            <li>
+              <a href="#container-identification-truck">Enter a container number in the correct format. This must be 11 characters: 3 letters, then U, J, Z or R, then 7 numbers.</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <h1 class="govuk-heading-xl">Truck arriving in the UK</h1>
+
+      <form id="details-form" method="post" action="/gamma/ur/nmd-transport-truck">
+
+            <div class="govuk-warning-text">
+  <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+  <strong class="govuk-warning-text__text">
+    <span class="govuk-visually-hidden">Warning</span>
+    This section is optional, except for the truck registration and place of unloading.  All fields  will become mandatory from 10 January 2026, under new
+EU regulations.
+  </strong>
+</div>
+
+
+        <div class="govuk-inset-text">
+  We need details about where the consignment started its journey, when it departed, and the truck transporting it.
+</div>
+
+      <div class="custom-radio-style" style="background-color: #f8f8f8; width: 100%; padding: 2rem; border-radius: 2;">
+
+    
+
+<!-- Country of departure -->
+<div class="govuk-form-group">
+  <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Country of departure</legend>
+            <div id="departure-country-hint" class="govuk-hint">
+            This is the country the consignment left before arriving in the UK
+          </div>
+  <div id="departure-country-wrapper" style="position: relative;">
+    <input name="departure-country" type="text" class="govuk-input govuk-!-width-two-thirds"
+      id="departure-country" autocomplete="off"
+      aria-expanded="false" role="combobox" aria-autocomplete="list"
+      aria-owns="departure-country-listbox" aria-activedescendant="">
+    <ul id="departure-country-listbox" role="listbox" class="govuk-list"
+      style="display: none; border: 1px solid #b1b4b6; padding: 0.5em; background: white; position: absolute; z-index: 1000; width: 63%;">
+    </ul>
+  </div>
+</div>
+
+ <div class="govuk-form-group">
+  <fieldset class="govuk-fieldset" role="group" aria-describedby="departure-date-issued-hint">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+      Departure date
+    </legend>
+    <div id="departure-date-hint" class="govuk-hint">
+      This is when the consignment left the country of departure. For example, 27/8/2025
+    </div>
+    <div class="govuk-date-input" id="departure-date">
+      <div class="govuk-date-input__item">
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-date-input__label" for="departure-date-day">
+            Day
+          </label>
+          <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="departure-date-day" name="departure-date-day" type="text" inputmode="numeric">
+        </div>
+      </div>
+      <div class="govuk-date-input__item">
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-date-input__label" for="departure-date-month">
+            Month
+          </label>
+          <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="departure-date-month" name="departure-date-month" type="text" inputmode="numeric">
+        </div>
+      </div>
+      <div class="govuk-date-input__item">
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-date-input__label" for="departure-date-year">
+            Year
+          </label>
+          <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="departure-date-year" name="departure-date-year" type="text" inputmode="numeric">
+        </div>
+      </div>
+    </div>
+  </fieldset>
+</div>
+
+
+
+
+           <div class="govuk-form-group">
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--s" for="export-place">Where the truck departs from</legend>
+          <div id="export-place-hint" class="govuk-hint">
+            For example, Calais port, Transmarck logistics hub, or the place where the consignment left by truck before arriving in the UK
+          </div>
+          <input class="govuk-input govuk-input--width-20" id="export-place" name="export-place" type="text" aria-describedby="export-place-hint">
+        </div>
+
+            <div class="govuk-form-group">
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--s" for="unloading-place">Place of unloading</legend>
+          <div id="export-place-hint" class="govuk-hint">
+            This is where the consignment was unloaded from the truck when arriving in the UK
+          </div>
+          <input class="govuk-input govuk-input--width-20" id="unloading-place" name="unloading" type="text" aria-describedby="unloading-place-hint">
+        </div>
+
+
+
+        <!-- Truck nationality -->
+<div class="govuk-form-group">
+  <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Truck nationality</legend>
+  <div id="truck-nationality-wrapper" style="position: relative;">
+    <input name="truck-nationality" type="text" class="govuk-input govuk-!-width-two-thirds"
+      id="truck-nationality" autocomplete="off"
+      aria-expanded="false" role="combobox" aria-autocomplete="list"
+      aria-owns="truck-nationality-listbox" aria-activedescendant="">
+    <ul id="truck-nationality-listbox" role="listbox" class="govuk-list"
+      style="display: none; border: 1px solid #b1b4b6; padding: 0.5em; background: white; position: absolute; z-index: 1000; width: 63%;">
+    </ul>
+  </div>
+</div>
+
+
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-label--s" for="registration-number">Registration number</label>
+          <div id="registration-number-hint" class="govuk-hint">
+            For example, A123 4567 or BD51SMR. This field is required now to help prepare for new EU regulations coming into force on 10 January 2026
+          </div>
+          <input class="govuk-input govuk-input--width-10" id="registration-number" name="registration-number" type="text" aria-describedby="registration-number-hint">
+        </div>
+
+
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-label--s" for="freight-number">Freight bill number</label>
+          <div id="freight-number-hint" class="govuk-hint">
+            For example, AA1234567
+          </div>
+          <input class="govuk-input govuk-input--width-10" id="freight-number" name="freight-number" type="text" aria-describedby="freight-number-hint">
+        </div>
+
+        <!-- Container identification with error -->
+        <div id="container-fields">
+          <div class="govuk-form-group govuk-form-group--error container-field">
+            <label class="govuk-label" for="container-identification-truck"><b>Container identification number (optional)</b></label>
+            <div id="container-identification-truck-hint" class="govuk-hint">Enter the container or trailer identification number. For example, ABCJ0123456.</div>
+            <p id="container-identification-truck-error" class="govuk-error-message">
+              <span class="govuk-visually-hidden">Error:</span> Enter a container number in the correct format. This must be 11 characters: 3 letters, then U, J, Z or R, then 7 numbers.
+            </p>
+            <input class="govuk-input govuk-input--error govuk-!-width-one-third" id="container-identification-truck" name="container-identification-truck" type="text" value="{{ data['container-identification-truck'] }}" aria-describedby="container-identification-truck-hint container-identification-truck-error">
+          </div>
+        </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const containerFields = document.getElementById('container-fields');
+    const addButton = document.getElementById('add-container-button');
+    let containerCount = 1;
+
+    addButton.addEventListener('click', function () {
+      containerCount++;
+
+      const wrapper = document.createElement('div');
+      wrapper.classList.add('govuk-form-group', 'container-field');
+      wrapper.id = `container-field-${containerCount}`;
+
+      const label = document.createElement('label');
+      label.classList.add('govuk-label');
+      label.setAttribute('for', `container-identification-${containerCount}`);
+      label.innerHTML = '<b>Container identification number</b>';
+
+      const input = document.createElement('input');
+      input.classList.add('govuk-input', 'govuk-!-width-one-third');
+      input.id = `container-identification-${containerCount}`;
+      input.name = 'container-identification[]';
+      input.type = 'text';
+
+      const buttonWrapper = document.createElement('div');
+      buttonWrapper.classList.add('govuk-!-margin-top-2');
+
+      const removeButton = document.createElement('button');
+      removeButton.type = 'button';
+      removeButton.classList.add('govuk-button', 'govuk-button--secondary', 'secondary-button-style');
+      removeButton.textContent = 'Remove';
+      removeButton.addEventListener('click', function () {
+        wrapper.remove();
+      });
+
+      buttonWrapper.appendChild(removeButton);
+      wrapper.appendChild(label);
+      wrapper.appendChild(input);
+      wrapper.appendChild(buttonWrapper);
+      containerFields.appendChild(wrapper);
+    });
+  });
+</script>
+
+
+<div class="govuk-button-group govuk-!-margin-top-2">
+  <button type="button" class="secondary-button-style govuk-button--secondary" id="add-container-button">Add another container</button>
+</div>
+
+      </div>
+
+        <!-- Form controls -->
+        <div class="govuk-button-group">
+          <button class="govuk-button" data-module="govuk-button" type="submit">
+            Save and continue
+          </button>
+          <button class="govuk-button govuk-button--secondary" data-module="govuk-button" formaction="/gamma/storage-document" type="submit">
+            Save as draft
+          </button>
+        </div>
+      </form>
+
+      <div class="app-contact-panel">
+        <h2 class="app-contact-panel__heading">Get help with your application</h2>
+
+        <p class="app-contact-panel__body">
+          If you have a non-manipulation document unique reference number, have it with you when you call.
+        </p>
+
+        <ul class="govuk-list">
+          <li>Phone: 0330 159 1989</li>
+          <li>Monday to Friday, 9am to 5pm (except public holidays)</li>
+        </ul>
+
+        <p class="govuk-body">
+          <a class="govuk-link" href="#">Find out about call charges</a>
+        </p>
+
+        <p>Read the guidance on <a
+            href="https://www.gov.uk/guidance/exporting-or-moving-fish-from-the-uk#get-help-with-fish-export-documents"
+            class="govuk-link" rel="noreferrer noopener" target="_blank">exporting or moving fish from the UK
+            (opens in new tab).</a>
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+{% endblock %}

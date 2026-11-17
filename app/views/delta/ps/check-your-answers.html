@@ -1,0 +1,280 @@
+{% set serviceName = "Create a UK processing statement" %}
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+Check your answers - GOV.UK
+{% endblock %}
+
+{% block content %}
+
+{% include "../../includes/phase.html" %}
+
+  
+
+
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <a href="javascript:history.back()" class="govuk-back-link">Back</a>
+
+    <h1 class="govuk-heading-l">Check your answers before you create the processing statement</h1>
+
+        <!-- Exporter -->
+    <h2 class="govuk-heading-m">Exporter</h2>
+    <dl class="govuk-summary-list govuk-!-margin-bottom-7">
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Your reference</dt>
+        <dd class="govuk-summary-list__value">{{ data['your-reference'] or 'Not provided' }}</dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="../ps/your-reference.html">Change<span class="govuk-visually-hidden"> your reference</span></a>
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Company name</dt>
+        <dd class="govuk-summary-list__value">{{ data['company-name'] or 'Not provided' }}</dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="../ps/exporter-details.html">Change</a>
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Company address</dt>
+        <dd class="govuk-summary-list__value">45 Leopold Street<br>Derby<br>DE1 2HF<br></dd>
+        <dd class="govuk-summary-list__actions">
+        </dd>
+      </div>
+    </dl>
+
+<!-- Products -->
+<h2 class="govuk-heading-m">Processed products</h2>
+
+
+  <!-- Loop through product entries -->
+
+
+{% set shown_index = 1 %}
+{% for entry in data.productEntries %}
+  {% if entry.species and entry.productReferenceNumber %}
+    <div class="govuk-inset-text">
+      Consignment item {{ shown_index }}
+    </div>
+
+
+    <dl class="govuk-summary-list govuk-!-margin-bottom-7">
+
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Product description</dt>
+        <dd class="govuk-summary-list__value">{{ entry.description if entry.description and entry.description != '' else (data.description if data.description and data.description != '' else 'Not provided') }}</dd>
+        <dd class="govuk-summary-list__actions">
+      <a class="govuk-link" href="../ps/product-summary.html">Change</a>
+
+        </dd>
+      </div>
+
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Commodity code</dt>
+        <dd class="govuk-summary-list__value">{{ entry.commodityCode or 'Not provided' }}</dd>
+      </div>
+
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Species</dt>
+        <dd class="govuk-summary-list__value">{{ entry.species }}</dd>
+      </div>
+
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Catch certificate issued in the UK</dt>
+        <dd class="govuk-summary-list__value">{{ entry.ukDocument or 'Not provided' }}</dd>
+        <dd class="govuk-summary-list__actions">
+      <a class="govuk-link" href=""></a>
+        </dd>
+      </div>
+
+      <div class="govuk-summary-list__row">
+      <dt class="govuk-summary-list__key">Issuing country</dt>
+      <dd class="govuk-summary-list__value">
+        {% if entry.ukDocument == 'Yes' %}
+          United Kingdom
+        {% else %}
+          {{ entry.issuingCountry or 'Not provided' }}
+        {% endif %}
+      </dd>
+      <dd class="govuk-summary-list__actions">
+        <a class="govuk-link" href=""></a>
+      </dd>
+    </div>
+
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Catch certificate</dt>
+        <dd class="govuk-summary-list__value">{{ entry.productReferenceNumber or 'Not provided' }}</dd>
+      </div>
+
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Catch certificate commodity code</dt>
+        <dd class="govuk-summary-list__value">{{ entry['catch-certificate-code'] or 'Not provided' }}</dd>
+      </div>
+
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Catch certificate weight</dt>
+        <dd class="govuk-summary-list__value">{{ entry['catch-certificate-weight'] or 'Not provided' }}kg</dd>
+        <dd class="govuk-summary-list__actions">
+               <a class="govuk-link" href=""></a>
+
+        </dd>
+      </div>
+
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Export weight before processing</dt>
+        <dd class="govuk-summary-list__value">{{ entry['net-weight'] or 'Not provided' }}kg</dd>
+      </div>
+
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Export weight after processing</dt>
+        <dd class="govuk-summary-list__value">{{ entry['fish-weight'] or 'Not provided' }}kg</dd>
+      </div>
+
+    </dl>
+    
+
+    {% set shown_index = shown_index + 1 %}
+
+  {% endif %}
+{% endfor %}
+
+
+
+</dl>
+
+
+<!-- Storage facility -->
+<h2 class="govuk-heading-m">Processing plant</h2>
+<dl class="govuk-summary-list govuk-!-margin-bottom-7">
+     
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">Processing plant name</dt>
+    <dd class="govuk-summary-list__value">{{ data['plant-name'] or 'Not provided' }}</dd>
+    <dd class="govuk-summary-list__actions">
+      <a class="govuk-link" href="../ps/storage-facility-details.html">Change</a>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">Plant approval number</dt>
+    <dd class="govuk-summary-list__value">{{ data['approval-number'] or 'Not provided' }}</dd>
+    <dd class="govuk-summary-list__actions">
+      <a class="govuk-link" href="/delta/ps/storage-facility-approval"></a>
+    </dd>
+  </div>
+
+  <div class="govuk-summary-list__row">
+  <dt class="govuk-summary-list__key">Person responsible for consignment</dt>
+  <dd class="govuk-summary-list__value">
+  {{ data['person-name'] or 'Not provided' }}
+  </dd>
+  <dd class="govuk-summary-list__actions">
+    <a class="govuk-link" href="/delta/ps/storage-facility-approval"></a>
+  </dd>
+</div>
+
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">Address</dt>
+    <dd class="govuk-summary-list__value">
+      {{ data['plant-name'] or '' }}<br>
+      {{ data['building-number'] or '' }} {{ data['building-name'] or '' }}<br>
+      {{ data['street-name'] or '' }}<br>
+      {{ data['postcode'] or 'Not provided' }}
+    </dd>
+    <dd class="govuk-summary-list__actions">
+    </dd>
+  </div>
+</dl>
+
+
+
+    <!-- Departure from storage facility -->
+    <h2 class="govuk-heading-m">Transportation and logistics</h2>
+ 
+<dl class="govuk-summary-list govuk-!-margin-bottom-7">
+
+
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">Export health certificate</dt>
+    <dd class="govuk-summary-list__value">{{ data['health-certificate'] or 'Not provided' }}</dd>
+    <dd class="govuk-summary-list__actions">
+      <a class="govuk-link" href="../ps/departure-transport-type.html">Change</a>
+    </dd>
+  </div>
+  
+   <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">Issue date</dt>
+    <dd class="govuk-summary-list__value">{{ data['certificate-date'] or 'Not provided' }}</dd>
+  </div>
+
+    <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">Destination country</dt>
+    <dd class="govuk-summary-list__value">{{ data['departure-destination-country'] or 'Not provided' }}</dd>
+    <dd class="govuk-summary-list__actions">
+      <a class="govuk-link" href="../ps/departure-transport-type.html">Change</a>
+    </dd>
+  </div>
+
+    
+</dl>
+
+
+
+    <div class="govuk-warning-text">
+      <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+      <strong class="govuk-warning-text__text">
+        <span class="govuk-visually-hidden"></span>
+        You may be liable to investigation and enforcement action, including prosecution, if you knowingly submit false,
+        misleading, or otherwise inaccurate data.
+      </strong>
+    </div>
+
+    <!-- Final submission -->
+    <h2 class="govuk-heading-m">Now create your processing statement</h2>
+
+    <p class="govuk-body">By submitting this processing statement, you confirm that:</p>
+    <ul class="govuk-list govuk-list--bullet">
+      <li>you understand that you are under a duty not to knowingly submit information that is false or otherwise
+        inaccurate</li>
+      <li>the fisheries administrations may undertake checks on the accuracy and validity of the data, cross-reference
+        it with data held and submitted by others in the supply chain, and exchange data with other relevant fisheries
+        administrations, including those in the country of export</li>
+      <li>you understand that you may be liable to investigation and potentially to enforcement action, including
+        prosecution, if you knowingly submit false, misleading, or otherwise inaccurate data</li>
+    </ul>
+
+    <br>
+    <a href="../ps/processing-statement-complete.html" role="button" draggable="false"
+      class="govuk-button govuk-button--start" data-module="govuk-button">
+      Accept and processing statement
+    </a>
+
+    </form>
+
+  </div>
+</div>
+{% endblock %}
+
+              <div class="app-contact-panel">
+                <h2 class="app-contact-panel__heading">Get help with your application</h2>
+
+                <p class="app-contact-panel__body">
+                  If you have a processing statement unique reference number, have it with you when you call.
+                </p>
+
+                <ul class="govuk-list">
+                  <li>Phone: 0330 159 1989 </li>
+                  <li>Monday to Friday, 9am to 5pm (except public holidays)</li>
+                </ul>
+
+                <p class="govuk-body">
+                  <a class="govuk-link" href="#">Find out about call charges</a>
+                </p>
+
+                <p>Read the guidance on <a
+                    href="https://www.gov.uk/guidance/exporting-or-moving-fish-from-the-uk#get-help-with-fish-export-documents"
+                    class="govuk-link" rel="noreferrer noopener" target="_blank">exporting or moving fish from the UK
+                    (opens in new tab).</a>
+                </p>
+

@@ -1,0 +1,711 @@
+{% extends "layouts/layout-defra.html" %}
+
+{% set isPeterTrip = tripId == 'A45352202606151201' %}
+{% set isFrankTrip = tripId == 'C34245202608171402' %}
+{% set displayedTripId = tripId or 'A12345202606151302' %}
+
+{% block pageTitle %}
+{% if tripVersion == 'amendments' %}
+Web Admin Portal: Amended records for Trip {{ displayedTripId }}
+{% elif tripVersion == 'original' %}
+Web Admin Portal: Original record for Trip {{ displayedTripId }}
+{% else %}
+Web Admin Portal: Trip {{ displayedTripId }}
+{% endif %}
+{% endblock %}
+
+{% set serviceName %}
+Web Admin Portal
+{% endset %}
+
+{% set activeNavSection = "fishing-trips" %}
+
+{% block beforeContent %}
+{% if tripVersion == 'current-amended' or tripVersion == 'original' %}
+<a class="govuk-back-link" href="trip-amendments?trip={{ displayedTripId }}">Back to amended records</a>
+{% elif tripVersion == 'amendments' %}
+<a class="govuk-back-link" href="trip-profile">Back to trip details</a>
+{% else %}
+<a class="govuk-back-link" href="fishing-trips">Back to fishing trips</a>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<style>
+  .catch-records-tab-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 1rem;
+    margin-top: 1rem;
+  }
+
+  .catch-records-tab-actions .govuk-button {
+    margin-right: 0;
+  }
+
+  .catch-records-note {
+    padding: 1rem 0;
+    border-bottom: 1px solid #b1b4b6;
+  }
+
+  .catch-records-note__meta {
+    color: #505a5f;
+  }
+
+  .catch-records-note__correct {
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+  }
+
+  .trip-information--split {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 2rem;
+  }
+
+  .trip-information--split .govuk-summary-list__row {
+    display: block;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #b1b4b6;
+  }
+
+  .trip-information--split .govuk-summary-list__key,
+  .trip-information--split .govuk-summary-list__value {
+    display: block;
+    width: auto;
+    margin: 0;
+    padding: 0;
+    text-align: left;
+  }
+
+  .trip-information--split .govuk-summary-list__key {
+    margin-bottom: 0.25rem;
+  }
+
+  .trip-profile-layout--right {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr);
+    align-items: start;
+    gap: 2rem;
+  }
+
+  .trip-profile-sections--balanced {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+    grid-template-areas: "catch history" "catch notes";
+    column-gap: 2rem;
+    row-gap: 2rem;
+    align-items: start;
+  }
+
+  .trip-profile-summary--bounded {
+    width: 100%;
+    max-width: 760px;
+  }
+
+  .trip-profile-sections--balanced > *,
+  .trip-profile-sections--ticket-panel > .moj-ticket-panel,
+  .trip-profile-sections--ticket-panel .moj-ticket-panel__content {
+    min-width: 0;
+  }
+
+  .trip-profile-sections--balanced #catch-breakdown,
+  .trip-profile-sections--balanced #history,
+  .trip-profile-sections--balanced #notes {
+    border-left: 4px solid #0b0c0c;
+  }
+
+  .trip-profile-sections--balanced #catch-breakdown,
+  .trip-profile-sections--ticket-panel #catch-breakdown {
+    grid-area: catch;
+  }
+
+  .trip-profile-sections--balanced #history,
+  .trip-profile-sections--ticket-panel #history {
+    grid-area: history;
+  }
+
+  .trip-profile-sections--balanced #notes,
+  .trip-profile-sections--ticket-panel #notes {
+    grid-area: notes;
+  }
+
+  .trip-profile-sections--balanced #catch-breakdown,
+  .trip-profile-sections--ticket-panel #catch-breakdown {
+    padding: 1.5rem;
+    border: 1px solid #b1b4b6;
+    border-left: 4px solid #b1b4b6;
+    background-color: #f3f2f1;
+  }
+
+  .trip-profile-sections--balanced #history,
+  .trip-profile-sections--balanced #notes,
+  .trip-profile-sections--ticket-panel #history,
+  .trip-profile-sections--ticket-panel #notes {
+    padding: 1.5rem;
+    border: 1px solid #b1b4b6;
+    border-left: 4px solid #b1b4b6;
+    background-color: #fff;
+  }
+
+  .trip-profile-sections--ticket-panel #catch-breakdown,
+  .trip-profile-sections--ticket-panel #history,
+  .trip-profile-sections--ticket-panel #notes {
+    border-left-width: 1px;
+  }
+
+  .trip-profile-sections--balanced #catch-breakdown,
+  .trip-profile-sections--balanced #history,
+  .trip-profile-sections--balanced #notes {
+    border-left-color: #0b0c0c;
+  }
+
+  .trip-profile-sections--ticket-panel .moj-ticket-panel {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas: "catch catch" "history notes";
+    column-gap: 2rem;
+    row-gap: 2rem;
+    align-items: start;
+  }
+
+  .trip-profile-layout--right > div {
+    min-width: 0;
+  }
+
+  .trip-profile-contents {
+    margin-bottom: 2rem;
+  }
+
+  .trip-profile-contents ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    margin-bottom: 0;
+  }
+
+  .trip-profile-section {
+    padding-top: 1.5rem;
+    border-top: 1px solid #b1b4b6;
+    scroll-margin-top: 1rem;
+  }
+
+  .catch-records-table-wrapper {
+    overflow-x: auto;
+    margin-bottom: 1rem;
+  }
+
+  @media (max-width: 64em) {
+    .trip-profile-layout--right {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+
+    .trip-profile-sections--balanced,
+    .trip-profile-sections--ticket-panel .moj-ticket-panel {
+      grid-template-columns: 1fr;
+      grid-template-areas: "catch" "history" "notes";
+    }
+  }
+
+  @media (max-width: 40.0625em) {
+    .trip-information--split {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+    <p class="govuk-caption-l">{% if tripVersion == 'amendments' %}Amended records{% elif tripVersion == 'original' %}Original submitted record{% else %}Trip details{% endif %}</p>
+    <h1 class="govuk-heading-xl" id="trip-heading">Trip {{ displayedTripId }}</h1>
+
+    {% if tripVersion == 'current-amended' %}
+      <div class="govuk-inset-text">
+        You are viewing {{ selectedVersion.label }}.
+        <a class="govuk-link" href="trip-profile?trip={{ tripRecord.id }}&amp;status=amended">Return to trip details</a>
+      </div>
+    {% elif isPeterTrip and tripVersion in ['amendment-1', 'amendment-2'] %}
+      <div class="govuk-inset-text">
+          You are viewing {{ selectedVersion.label }}.
+        <a class="govuk-link" href="trip-amendments?trip={{ displayedTripId }}">Return to amended records</a>
+      </div>
+    {% elif tripVersion != 'original' and tripStatus == 'amended' %}
+      <div class="govuk-inset-text">
+        You are viewing {{ selectedVersion.label }}.
+        <a class="govuk-link" href="trip-amendments?trip={{ displayedTripId }}">View amended records</a>
+      </div>
+    {% elif tripVersion == 'original' %}
+      <div class="govuk-inset-text">
+          Original record submitted by {{ tripRecord.originalVersion.by }} on {{ tripRecord.originalVersion.dateTime }}.
+      </div>
+    {% endif %}
+
+    {% set tripStatusColour = 'blue' %}
+    {% if tripStatus == 'submitted' %}{% set tripStatusColour = 'green' %}{% elif tripStatus == 'late' %}{% set tripStatusColour = 'red' %}{% endif %}
+    {% if (tripLayout == 'f' or tripLayout == 'f2') and tripVersion != 'amendments' %}
+    <div class="catch-records-tab-actions">
+      {% if tripVersion != 'original' %}
+      <a class="govuk-button govuk-button--secondary" href="trip-profile?trip={{ tripRecord.id }}&amp;status=submitted&amp;version=original">View original record</a>
+      {% endif %}
+      {% if tripRecord.amendments.length %}<a class="govuk-button govuk-button--secondary" href="trip-amendments?trip={{ tripRecord.id }}">View amended records</a>{% endif %}
+      {% if catchRecordsRole.permissions.downloadTripPdf %}<a class="govuk-button govuk-button--secondary" href="#">Download PDF</a>{% endif %}
+    </div>
+    {% endif %}
+    {% if tripLayout == 'c' %}<div class="trip-profile-layout trip-profile-layout--right"><div class="trip-profile-layout__information">{% endif %}
+    <h2 class="govuk-heading-m">Trip information</h2>
+    {% if tripLayout == 'd' %}
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-one-half">
+        <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+          <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">Trip ID</dt><dd class="govuk-summary-list__value">{{ displayedTripId }}</dd></div>
+          <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">Vessel name</dt><dd class="govuk-summary-list__value"><a class="govuk-link" href="vessel-profile?vessel={{ tripRecord.vesselName | replace(' ', '+') }}">{{ tripRecord.vesselName }}</a></dd></div>
+          <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">PLN</dt><dd class="govuk-summary-list__value">{{ tripRecord.pln }}</dd></div>
+          <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">Created by</dt><dd class="govuk-summary-list__value"><a class="govuk-link" href="user-profile?user={{ tripRecord.userName | replace(' ', '+') }}&amp;status=accepted">{{ tripRecord.userName }}</a></dd></div>
+          <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">User role</dt><dd class="govuk-summary-list__value">{{ tripUserRole }}</dd></div>
+          <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">Departure date</dt><dd class="govuk-summary-list__value">{{ tripRecord.tripDate }}</dd></div>
+          <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">Departure port</dt><dd class="govuk-summary-list__value">{{ tripRecord.departurePort }}</dd></div>
+          <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">Return date</dt><dd class="govuk-summary-list__value">{{ tripRecord.returnDate or tripRecord.tripDate }}</dd></div>
+          <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">Return port</dt><dd class="govuk-summary-list__value">{{ tripRecord.returnPort or tripRecord.departurePort }}</dd></div>
+          <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">Admin port</dt><dd class="govuk-summary-list__value">{{ tripRecord.departurePort }}</dd></div>
+          <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">Port code</dt><dd class="govuk-summary-list__value">{{ tripRecord.portCode }}</dd></div>
+        </dl>
+      </div>
+      <div class="govuk-grid-column-one-half">
+        <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+          <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">Status</dt><dd class="govuk-summary-list__value"><strong class="govuk-tag govuk-tag--{{ tripStatusColour }}" id="trip-status">{{ tripStatus | capitalize }}</strong></dd></div>
+          <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">Created on</dt><dd class="govuk-summary-list__value">{{ tripRecord.createdOn }}</dd></div>
+          <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">Received on</dt><dd class="govuk-summary-list__value">{{ tripRecord.receivedOn }}</dd></div>
+          <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">Late submission</dt><dd class="govuk-summary-list__value" id="late-submission">No</dd></div>
+          <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">Amended</dt><dd class="govuk-summary-list__value">{{ 'Yes' if tripRecord.amendments.length else 'No' }}</dd></div>
+          <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">Submission method</dt><dd class="govuk-summary-list__value">{{ tripRecord.submissionMethod }}</dd></div>
+          <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">Amendment reason</dt><dd class="govuk-summary-list__value">{{ selectedVersion.reason or tripRecord.amendments[0].reason if tripRecord.amendments.length else 'Not applicable' }}</dd></div>
+          <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">Retained catch</dt><dd class="govuk-summary-list__value">{{ selectedVersion.retainedCatch or tripRecord.retainedCatch }}</dd></div>
+        </dl>
+      </div>
+    </div>
+    {% else %}
+    <dl class="govuk-summary-list govuk-!-margin-bottom-9{% if tripLayout in ['b', 'b2'] %} trip-information--split{% endif %}{% if tripLayout in ['c', 'f', 'f2'] %} trip-profile-summary--bounded{% endif %}">
+      <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">Trip reference</dt><dd class="govuk-summary-list__value">{{ displayedTripId }}</dd></div>
+      <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">Status</dt><dd class="govuk-summary-list__value"><strong class="govuk-tag govuk-tag--{{ tripStatusColour }}" id="trip-status">{{ tripStatus | capitalize }}</strong></dd></div>
+      {% if tripLayout == 'b2' or tripLayout == 'c' or tripLayout == 'e2' or tripLayout == 'f' or tripLayout == 'f2' %}
+      <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">Vessel name</dt><dd class="govuk-summary-list__value"><a class="govuk-link" href="vessel-profile?vessel={{ tripRecord.vesselName | replace(' ', '+') }}">{{ tripRecord.vesselName }}</a></dd></div>
+      <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">Created by</dt><dd class="govuk-summary-list__value"><a class="govuk-link" href="user-profile?user={{ tripRecord.userName | replace(' ', '+') }}&amp;status=accepted">{{ tripRecord.userName }}</a></dd></div>
+      <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">User role</dt><dd class="govuk-summary-list__value">{{ tripUserRole }}</dd></div>
+      <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">Departure port</dt><dd class="govuk-summary-list__value">{{ tripRecord.departurePort }}</dd></div>
+      <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">Return port</dt><dd class="govuk-summary-list__value">{{ tripRecord.returnPort or tripRecord.departurePort }}</dd></div>
+      {% endif %}
+      <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">PLN</dt><dd class="govuk-summary-list__value">{{ tripRecord.pln }}</dd></div>
+      <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">Trip start date</dt><dd class="govuk-summary-list__value">{{ tripRecord.tripDate }}</dd></div>
+      <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">Trip end date</dt><dd class="govuk-summary-list__value">{{ tripRecord.tripDate }}</dd></div>
+      <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">Retained catch</dt><dd class="govuk-summary-list__value">{{ selectedVersion.retainedCatch or tripRecord.retainedCatch }}</dd></div>
+      <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">Admin port</dt><dd class="govuk-summary-list__value">{{ tripRecord.departurePort }}</dd></div>
+      <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">Port code</dt><dd class="govuk-summary-list__value">{{ tripRecord.portCode }}</dd></div>
+      <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">Created on</dt><dd class="govuk-summary-list__value">{{ tripRecord.createdOn }}</dd></div>
+      <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">Received on</dt><dd class="govuk-summary-list__value">{{ tripRecord.receivedOn }}</dd></div>
+      <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">Late submission</dt><dd class="govuk-summary-list__value" id="late-submission">No</dd></div>
+      <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">Submission method</dt><dd class="govuk-summary-list__value">{{ tripRecord.submissionMethod }}</dd></div>
+      {% if tripVersion != 'amendments' and tripVersion != 'original' and tripRecord.amendments.length %}
+      <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">Amendment reason</dt><dd class="govuk-summary-list__value">{{ selectedVersion.reason or tripRecord.amendments[0].reason }}</dd></div>
+      {% endif %}
+    </dl>
+    {% endif %}
+
+    {% if catchRecordsRole.permissions.amendCatchRecords %}
+    <a class="govuk-button govuk-button--start" data-module="govuk-button" href="#" role="button" draggable="false">
+      Amend catch recording
+      <svg class="govuk-button__start-icon" xmlns="http://www.w3.org/2000/svg" width="17.5" height="19" viewBox="0 0 33 40" aria-hidden="true" focusable="false">
+        <path fill="currentColor" d="M0 0h13l20 20-20 20H0l20-20z" />
+      </svg>
+    </a>
+    {% endif %}
+
+    {% if tripLayout == 'c' %}</div><div class="trip-profile-layout__tabs">{% endif %}
+    <div class="{% if tripLayout == 'e' or tripLayout == 'e2' %}trip-profile-sections{% elif tripLayout == 'f' %}trip-profile-sections trip-profile-sections--balanced{% elif tripLayout == 'f2' %}trip-profile-sections trip-profile-sections--ticket-panel{% else %}govuk-tabs{% endif %}"{% if tripLayout != 'e' and tripLayout != 'e2' and tripLayout != 'f' and tripLayout != 'f2' %} data-module="govuk-tabs" data-default-tab="catch-breakdown"{% endif %}>
+      {% if tripLayout == 'e' or tripLayout == 'e2' %}
+      <nav class="trip-profile-contents" aria-label="Trip details sections">
+        <h2 class="govuk-heading-s">On this page</h2>
+        <ul class="govuk-list">
+          <li><a class="govuk-link" href="#catch-breakdown">Catch breakdown</a></li>
+          {% if tripLayout == 'e' %}<li><a class="govuk-link" href="#vessel">Vessel</a></li>
+          <li><a class="govuk-link" href="#user">User</a></li>{% endif %}
+          <li><a class="govuk-link" href="#history">History</a></li>
+          <li><a class="govuk-link" href="#notes">Notes</a></li>
+        </ul>
+      </nav>
+      {% elif tripLayout != 'f' and tripLayout != 'f2' %}
+      <h2 class="govuk-tabs__title">Contents</h2>
+      <ul class="govuk-tabs__list">
+        <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
+          <a class="govuk-tabs__tab" href="#catch-breakdown">Catch breakdown</a>
+        </li>
+        {% if tripLayout != 'b2' and tripLayout != 'c' and tripLayout != 'd' and tripLayout != 'f' %}<li class="govuk-tabs__list-item">
+          <a class="govuk-tabs__tab" href="#vessel">Vessel</a>
+        </li>{% endif %}
+        {% if tripLayout != 'b2' and tripLayout != 'c' and tripLayout != 'd' and tripLayout != 'f' %}<li class="govuk-tabs__list-item">
+          <a class="govuk-tabs__tab" href="#user">User</a>
+        </li>{% endif %}
+        <li class="govuk-tabs__list-item">
+          <a class="govuk-tabs__tab" href="#history">History</a>
+        </li>
+        <li class="govuk-tabs__list-item">
+          <a class="govuk-tabs__tab" href="#notes">Notes</a>
+        </li>
+      </ul>
+      {% endif %}
+
+      {% if tripLayout == 'f2' %}<article class="moj-ticket-panel" aria-label="Trip information sections">{% endif %}
+      {% if tripLayout == 'f2' %}<section class="moj-ticket-panel__content" id="catch-breakdown">{% else %}<div class="{% if tripLayout == 'e' or tripLayout == 'e2' or tripLayout == 'f' %}trip-profile-section{% else %}govuk-tabs__panel{% endif %}" id="catch-breakdown">{% endif %}
+        <h2 class="govuk-heading-{% if tripLayout == 'f2' %}m{% else %}l{% endif %}">Catch breakdown</h2>
+        {% if gearDisplay == 'old' %}
+        {% for gear in tripRecord.gears %}
+        <p class="govuk-body"><strong>{{ gear.type }} subrectangle:</strong> {{ gear.subrectangle or 'Not recorded' }}</p>
+        {% endfor %}
+        <div class="catch-records-table-wrapper" role="region" aria-label="Catch breakdown table, scroll to see more columns" tabindex="0">
+          <table class="govuk-table">
+            <thead class="govuk-table__head">
+              <tr class="govuk-table__row">
+                <th class="govuk-table__header" scope="col">Species</th>
+                <th class="govuk-table__header" scope="col">Species FAO code</th>
+                <th class="govuk-table__header" scope="col">Gear type</th>
+                <th class="govuk-table__header" scope="col">Measurements</th>
+                <th class="govuk-table__header" scope="col">Weight (kg)</th>
+                {% if hasRetainedWeight %}
+                <th class="govuk-table__header" scope="col">Retained weight (kg)</th>
+                {% endif %}
+                {% if hasWeightBelowMinimumSize %}<th class="govuk-table__header" scope="col">Weight below minimum size (kg)</th>{% endif %}
+                {% if hasWeightDiscarded %}<th class="govuk-table__header" scope="col">Weight discarded (kg)</th>{% endif %}
+              </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+              {% for catch in tripRecord.catches %}
+              {% set displayWeight = catch.weight %}
+              {% set displayRetained = catch.retained %}
+              {% if tripVersion == 'original' and catch.originalWeight is defined %}{% set displayWeight = catch.originalWeight %}{% endif %}
+              {% if tripVersion == 'amendment-1' and catch.amendment1Weight is defined %}{% set displayWeight = catch.amendment1Weight %}{% endif %}
+              {% if tripVersion in ['original', 'amendment-1', 'amendment-2'] and catch.originalRetained is defined %}{% set displayRetained = catch.originalRetained %}{% endif %}
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">{{ catch.species }}</td>
+                <td class="govuk-table__cell">{{ catch.code }}</td>
+                <td class="govuk-table__cell">{{ catch.gearType }}</td>
+                <td class="govuk-table__cell">{% if catch.gearMeasurements.length %}{{ catch.gearMeasurements | join(', ') }}{% else %}&ndash;{% endif %}</td>
+                <td class="govuk-table__cell">{{ displayWeight }}</td>
+                {% if hasRetainedWeight %}
+                <td class="govuk-table__cell">{{ displayRetained if displayRetained else '&ndash;' | safe }}</td>
+                {% endif %}
+                {% if hasWeightBelowMinimumSize %}<td class="govuk-table__cell">{{ catch.weightBelowMinimumSize if catch.weightBelowMinimumSize else '&ndash;' | safe }}</td>{% endif %}
+                {% if hasWeightDiscarded %}<td class="govuk-table__cell">{{ catch.weightDiscarded if catch.weightDiscarded else '&ndash;' | safe }}</td>{% endif %}
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        {% for gear in tripRecord.gears %}
+        <h3 class="govuk-heading-s">Gear {{ loop.index }}: {{ gear.type }}</h3>
+        <p class="govuk-body"><strong>{% if gear.measurements.length > 1 %}Measurements{% else %}Measurement{% endif %}:</strong> {{ gear.measurements | join(', ') if gear.measurements.length else 'Not recorded' }}</p>
+        <p class="govuk-body"><strong>Subrectangle:</strong> {{ gear.subrectangle or 'Not recorded' }}</p>
+        <div class="catch-records-table-wrapper" role="region" aria-label="Catches using gear {{ loop.index }}: {{ gear.type }}" tabindex="0">
+          <table class="govuk-table">
+            <caption class="govuk-visually-hidden">Catches using gear {{ loop.index }}: {{ gear.type }}</caption>
+            <thead class="govuk-table__head">
+              <tr class="govuk-table__row">
+                <th class="govuk-table__header" scope="col">Species</th>
+                <th class="govuk-table__header" scope="col">Species FAO code</th>
+                <th class="govuk-table__header" scope="col">Weight (kg)</th>
+                {% if hasRetainedWeight %}
+                <th class="govuk-table__header" scope="col">Retained weight (kg)</th>
+                {% endif %}
+                {% if hasWeightBelowMinimumSize %}<th class="govuk-table__header" scope="col">Weight below minimum size (kg)</th>{% endif %}
+                {% if hasWeightDiscarded %}<th class="govuk-table__header" scope="col">Weight discarded (kg)</th>{% endif %}
+              </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+              {% for catch in tripRecord.catches %}
+              {% if catch.gearId == gear.id %}
+              {% set displayWeight = catch.weight %}
+              {% set displayRetained = catch.retained %}
+              {% if tripVersion == 'original' and catch.originalWeight is defined %}{% set displayWeight = catch.originalWeight %}{% endif %}
+              {% if tripVersion == 'amendment-1' and catch.amendment1Weight is defined %}{% set displayWeight = catch.amendment1Weight %}{% endif %}
+              {% if tripVersion in ['original', 'amendment-1', 'amendment-2'] and catch.originalRetained is defined %}{% set displayRetained = catch.originalRetained %}{% endif %}
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">{{ catch.species }}</td>
+                <td class="govuk-table__cell">{{ catch.code }}</td>
+                <td class="govuk-table__cell">{{ displayWeight }}</td>
+                {% if hasRetainedWeight %}
+                <td class="govuk-table__cell">{{ displayRetained if displayRetained else '&ndash;' | safe }}</td>
+                {% endif %}
+                {% if hasWeightBelowMinimumSize %}<td class="govuk-table__cell">{{ catch.weightBelowMinimumSize if catch.weightBelowMinimumSize else '&ndash;' | safe }}</td>{% endif %}
+                {% if hasWeightDiscarded %}<td class="govuk-table__cell">{{ catch.weightDiscarded if catch.weightDiscarded else '&ndash;' | safe }}</td>{% endif %}
+              </tr>
+              {% endif %}
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% endfor %}
+        {% endif %}
+      {% if tripLayout == 'f2' %}</section>{% else %}</div>{% endif %}
+
+      {% if tripLayout != 'b2' and tripLayout != 'c' and tripLayout != 'd' and tripLayout != 'e2' and tripLayout != 'f' and tripLayout != 'f2' %}<div class="{% if tripLayout == 'e' %}trip-profile-section{% else %}govuk-tabs__panel govuk-tabs__panel--hidden{% endif %}" id="vessel">
+        <h2 class="govuk-heading-l">Vessel</h2>
+        <table class="govuk-table">
+          <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+              <th class="govuk-table__header" scope="col">Vessel</th>
+              <th class="govuk-table__header" scope="col">PLN</th>
+              <th class="govuk-table__header" scope="col">Departure port</th>
+              <th class="govuk-table__header" scope="col">Return port</th>
+            </tr>
+          </thead>
+          <tbody class="govuk-table__body">
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell"><a class="govuk-link" href="vessel-profile?vessel={{ tripRecord.vesselName | replace(' ', '+') }}">{{ tripRecord.vesselName }}</a></td>
+              <td class="govuk-table__cell">{{ tripRecord.pln }}</td>
+              <td class="govuk-table__cell">{{ tripRecord.departurePort }}</td>
+              <td class="govuk-table__cell">{{ tripRecord.returnPort or tripRecord.departurePort }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      {% endif %}
+
+      {% if tripLayout != 'b2' and tripLayout != 'c' and tripLayout != 'd' and tripLayout != 'e2' and tripLayout != 'f' and tripLayout != 'f2' %}<div class="{% if tripLayout == 'e' %}trip-profile-section{% else %}govuk-tabs__panel govuk-tabs__panel--hidden{% endif %}" id="user">
+        <h2 class="govuk-heading-l">User</h2>
+        <table class="govuk-table">
+          <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+              <th class="govuk-table__header" scope="col">Name</th>
+              <th class="govuk-table__header" scope="col">Role</th>
+            </tr>
+          </thead>
+          <tbody class="govuk-table__body">
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell"><a class="govuk-link" href="user-profile?user={{ tripRecord.userName | replace(' ', '+') }}&amp;status=accepted">{{ tripRecord.userName }}</a></td>
+              <td class="govuk-table__cell">{{ tripUserRole }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      {% endif %}
+
+      {% if tripLayout == 'f2' %}<section class="moj-ticket-panel__content" id="history">{% else %}<div class="{% if tripLayout == 'e' or tripLayout == 'e2' or tripLayout == 'f' %}trip-profile-section{% else %}govuk-tabs__panel govuk-tabs__panel--hidden{% endif %}" id="history">{% endif %}
+        <h2 class="govuk-heading-{% if tripLayout == 'f2' %}m{% else %}l{% endif %}">History</h2>
+        {% if tripLayout == 'f' or tripLayout == 'f2' %}
+        <div class="moj-timeline">
+          {% for event in tripRecord.history %}
+          <div class="moj-timeline__item">
+            <div class="moj-timeline__header">
+              <h3 class="moj-timeline__title">{{ event.action }}</h3>
+              <p class="moj-timeline__byline">by {{ event.by }}</p>
+            </div>
+            <p class="moj-timeline__date"><time datetime="{{ event.timestamp }}">{{ event.dateTime }}</time></p>
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <table class="govuk-table">
+          <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+              <th class="govuk-table__header" scope="col">Date and time</th>
+              <th class="govuk-table__header" scope="col">Action</th>
+              <th class="govuk-table__header" scope="col">Performed by</th>
+            </tr>
+          </thead>
+          <tbody class="govuk-table__body">
+            {% for event in tripRecord.history %}
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">{{ event.dateTime }}</td>
+              <td class="govuk-table__cell">{{ event.action }}</td>
+              <td class="govuk-table__cell">{{ event.by }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% endif %}
+        {% include "includes/catch-records-history-pagination.html" %}
+        {% if catchRecordsRole.key == 'serviceManager' %}
+        <p class="govuk-body"><a class="govuk-link" href="audit-log?s={{ displayedTripId }}">View all history for this trip</a></p>
+        {% endif %}
+      {% if tripLayout == 'f2' %}</section>{% else %}</div>{% endif %}
+
+      {% if tripLayout == 'f2' %}<section class="moj-ticket-panel__content" id="notes">{% else %}<div class="{% if tripLayout == 'e' or tripLayout == 'e2' or tripLayout == 'f' %}trip-profile-section{% else %}govuk-tabs__panel govuk-tabs__panel--hidden{% endif %}" id="notes">{% endif %}
+        <h2 class="govuk-heading-{% if tripLayout == 'f2' %}m{% else %}l{% endif %}">Notes</h2>
+        <div id="notes-list" data-read-only="{{ 'true' if catchRecordsRole.readOnly else 'false' }}">
+          {% if not tripRecord.notes.length %}
+          <p class="govuk-body" id="empty-notes-message">No notes recorded for this trip.</p>
+          {% endif %}
+          {% for note in tripRecord.notes %}
+          <div class="catch-records-note" id="note-{{ note.id }}" data-note-id="{{ note.id }}" data-note-author="{{ note.author }}">
+            <p class="govuk-body-s govuk-!-margin-bottom-1 catch-records-note__meta"><strong>Note {{ note.id }}</strong> &middot; <strong>{{ note.author }}</strong> &mdash; {{ note.dateTime }}</p>
+            <p class="govuk-body catch-records-note__text">{{ note.text }}</p>
+            <button class="govuk-link catch-records-note__correct" type="button" hidden>Add correction</button>
+          </div>
+          {% endfor %}
+        </div>
+        <form class="govuk-!-margin-top-6" id="add-note-form"{% if catchRecordsRole.readOnly %} hidden{% endif %}>
+          <p class="govuk-body-s" id="correction-context" hidden>Correction to note <span id="correction-note-number"></span> <button class="govuk-link catch-records-note__correct" id="cancel-correction" type="button">Cancel correction</button></p>
+          <div class="govuk-form-group">
+            <label class="govuk-label govuk-label--s" for="new-note">Add a note</label>
+            <textarea class="govuk-textarea" id="new-note" name="new-note" rows="4"></textarea>
+          </div>
+          <button class="govuk-button" type="submit">Save note</button>
+        </form>
+      {% if tripLayout == 'f2' %}</section>{% else %}</div>{% endif %}
+      {% if tripLayout == 'f2' %}</article>{% endif %}
+    </div>
+    {% if tripLayout == 'c' %}</div></div>{% endif %}
+
+    {% if tripVersion != 'amendments' and tripLayout != 'f' and tripLayout != 'f2' %}
+    <div class="catch-records-tab-actions">
+      {% if tripVersion != 'original' %}
+      <a class="govuk-button govuk-button--secondary" href="trip-profile?trip={{ tripRecord.id }}&amp;status=submitted&amp;version=original">View original record</a>
+      {% endif %}
+      {% if tripRecord.amendments.length %}<a class="govuk-button govuk-button--secondary" href="trip-amendments?trip={{ tripRecord.id }}">View amended records</a>{% endif %}
+      {% if catchRecordsRole.permissions.downloadTripPdf %}<a class="govuk-button govuk-button--secondary" href="#">Download PDF</a>{% endif %}
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+
+{% block pageScripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var tabs = Array.prototype.slice.call(document.querySelectorAll('.govuk-tabs__tab'))
+    var panels = Array.prototype.slice.call(document.querySelectorAll('.govuk-tabs__panel'))
+
+    if (tabs.length) {
+      function showTab(targetId) {
+        tabs.forEach(function (tab) {
+          var selected = tab.getAttribute('href') === '#' + targetId
+          tab.parentElement.classList.toggle('govuk-tabs__list-item--selected', selected)
+          tab.setAttribute('aria-selected', selected ? 'true' : 'false')
+          tab.setAttribute('tabindex', selected ? '0' : '-1')
+        })
+
+        panels.forEach(function (panel) {
+          panel.classList.toggle('govuk-tabs__panel--hidden', panel.id !== targetId)
+        })
+      }
+
+      tabs.forEach(function (tab) {
+        tab.addEventListener('click', function (event) {
+          event.preventDefault()
+          var targetId = tab.getAttribute('href').substring(1)
+          showTab(targetId)
+          window.history.replaceState(null, '', '#' + targetId)
+        })
+      })
+
+      var defaultTab = document.querySelector('.govuk-tabs').dataset.defaultTab
+      var initialTab = window.location.hash ? window.location.hash.substring(1) : defaultTab
+      showTab(document.getElementById(initialTab) ? initialTab : defaultTab)
+    }
+
+    var tripParams = new URLSearchParams(window.location.search)
+    var tripStatus = tripParams.get('status')
+    var tripStatusDetails = {
+      submitted: { label: 'Submitted', colour: 'green', late: 'No' },
+      amended: { label: 'Amended', colour: 'blue', late: 'No' },
+      late: { label: 'Late', colour: 'red', late: 'Yes' }
+    }
+    if (tripParams.get('trip')) document.querySelector('#trip-heading').textContent = 'Trip ' + tripParams.get('trip')
+    if (tripStatusDetails[tripStatus]) {
+      var statusDetails = tripStatusDetails[tripStatus]
+      var statusTag = document.querySelector('#trip-status')
+      statusTag.textContent = statusDetails.label
+      statusTag.className = 'govuk-tag govuk-tag--' + statusDetails.colour
+      document.querySelector('#late-submission').textContent = statusDetails.late
+    }
+
+    var notesList = document.querySelector('#notes-list')
+    var addNoteForm = document.querySelector('#add-note-form')
+    var noteTextarea = document.querySelector('#new-note')
+    var correctionContext = document.querySelector('#correction-context')
+    var correctionNoteNumber = document.querySelector('#correction-note-number')
+    var currentUserName = document.querySelector('header strong').textContent.trim()
+    var correctionNoteId = null
+    var nextNoteId = notesList.querySelectorAll('.catch-records-note').length + 1
+
+    Array.prototype.slice.call(notesList.querySelectorAll('.catch-records-note')).forEach(function (note) {
+      var correctionButton = note.querySelector('.catch-records-note__correct')
+      if (notesList.dataset.readOnly !== 'true' && note.dataset.noteAuthor === currentUserName) {
+        correctionButton.hidden = false
+      } else if (correctionButton) {
+        correctionButton.remove()
+      }
+    })
+
+    notesList.addEventListener('click', function (event) {
+      var button = event.target.closest('.catch-records-note__correct')
+      if (!button) return
+      var note = button.closest('.catch-records-note')
+      if (note.dataset.noteAuthor !== currentUserName) return
+      correctionNoteId = note.dataset.noteId
+      correctionNoteNumber.textContent = correctionNoteId
+      correctionContext.hidden = false
+      noteTextarea.focus()
+    })
+
+    document.querySelector('#cancel-correction').addEventListener('click', function () {
+      correctionNoteId = null
+      correctionContext.hidden = true
+      noteTextarea.focus()
+    })
+
+    addNoteForm.addEventListener('submit', function (event) {
+      event.preventDefault()
+      var text = noteTextarea.value.trim()
+      if (!text) return
+
+      var emptyNotesMessage = document.querySelector('#empty-notes-message')
+      if (emptyNotesMessage) emptyNotesMessage.remove()
+
+      var note = document.createElement('div')
+      note.className = 'catch-records-note'
+      note.dataset.noteId = nextNoteId
+      note.dataset.noteAuthor = currentUserName
+      note.id = 'note-' + nextNoteId
+
+      var now = new Date()
+      var meta = document.createElement('p')
+      meta.className = 'govuk-body-s govuk-!-margin-bottom-1 catch-records-note__meta'
+      meta.innerHTML = '<strong>Note ' + nextNoteId + '</strong> &middot; <strong>' + currentUserName + '</strong> &mdash; ' + now.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) + ', ' + now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })
+
+      var textEl = document.createElement('p')
+      textEl.className = 'govuk-body catch-records-note__text'
+      textEl.textContent = text
+
+      note.appendChild(meta)
+      if (correctionNoteId) {
+        var reference = document.createElement('p')
+        reference.className = 'govuk-body-s'
+        var referenceLink = document.createElement('a')
+        referenceLink.className = 'govuk-link'
+        referenceLink.href = '#note-' + correctionNoteId
+        referenceLink.textContent = 'Correction to note ' + correctionNoteId
+        reference.appendChild(referenceLink)
+        note.appendChild(reference)
+      }
+
+      note.appendChild(textEl)
+      if (!correctionNoteId) {
+        var correctionButton = document.createElement('button')
+        correctionButton.className = 'govuk-link catch-records-note__correct'
+        correctionButton.type = 'button'
+        correctionButton.textContent = 'Add correction'
+        note.appendChild(correctionButton)
+      }
+      notesList.insertBefore(note, notesList.firstChild)
+
+      nextNoteId += 1
+      noteTextarea.value = ''
+      correctionNoteId = null
+      correctionContext.hidden = true
+    })
+  })
+</script>
+{% endblock %}

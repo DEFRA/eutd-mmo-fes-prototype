@@ -9,58 +9,18 @@ GOV.UK Prototype Kit
 {% include "../../includes/phase.html" %}
 
 <style>
+        /* Visually indicate readonly input (match product-details.html) */
+        .desc-flex-row .govuk-input[readonly] {
+          background-color: #e8effe;
+          border-color: #0b0c0c;
+          color: #0b0c0c;
+          cursor: not-allowed;
+        }
 /* Force the radio circle to be white */
 .govuk-radios__input:checked + .govuk-radios__label::before,
 .govuk-radios__input + .govuk-radios__label::before {
   background-color: #ffffff !important;
 }
-</style>
-
-<style>
-  .secondary-button-style {
-    display: inline-block;
-    position: relative;
-    padding: 6px 10px 5px;
-    margin: 0 10px 20px 0;
-    /* Adds spacing between buttons */
-    min-width: 80px;
-    width: auto;
-    /* Prevents full-width stretching */
-    font-family: "GDS Transport", arial, sans-serif;
-    font-size: 1.1875rem;
-    font-weight: 400;
-    line-height: 1.3157894737;
-    color: #0b0c0c;
-    background: rgba(0, 0, 0, 0);
-    border: 1px solid #0b0c0c;
-    box-shadow: 0 3px 0 #0b0c0c;
-    text-align: center;
-    text-decoration: none;
-    vertical-align: top;
-    cursor: pointer;
-    border-radius: 0;
-    box-sizing: border-box;
-    -webkit-appearance: none;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
-  }
-
-  .secondary-button-style:hover {
-    background-color: #f3f2f1;
-    color: #0b0c0c;
-  }
-
-  .secondary-button-style:focus {
-    outline: 3px solid #fd0;
-    outline-offset: 0;
-    box-shadow: inset 0 0 0 1px #0b0c0c;
-  }
-
-  .secondary-button-style:active {
-    top: 2px;
-    box-shadow: 0 1px 0 #0b0c0c;
-  }
 </style>
 
 <style>
@@ -182,7 +142,7 @@ GOV.UK Prototype Kit
     <form method="post" action="/gamma/ps/product-description">
 
 
-               <div class="govuk-warning-text">
+    <div class="govuk-warning-text">
       <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
       <strong class="govuk-warning-text__text">
         <span class="govuk-visually-hidden"></span>
@@ -190,17 +150,79 @@ GOV.UK Prototype Kit
       </strong>
     </div>
 
-              <!-- Product description -->
-        <div class="govuk-form-group">
-          <label class="govuk-label govuk-label--s" for="commodity-code">Product description</label>
-          <div class="govuk-form-group">
-            <div id="description" class="govuk-hint" for="width-20">
-              The details entered here will appear on your document and must be legible in English. For example Battered
-              cod fillets
-            </div>
-            <input class="govuk-input govuk-!-width-two-thirds" id="description" name="description" type="text">
+    <!-- Product description (editable, GOV.UK style) -->
+    <div class="govuk-form-group">
+      <label class="govuk-label govuk-label--s" for="description">
+        Product description
+      </label>
+      <div id="description-hint" class="govuk-hint">
+        The details entered here will appear on your document and must be legible in English. For example Battered cod fillets
+      </div>
+        <style>
+          .desc-flex-row {
+            display: flex;
+            align-items: baseline;
+            gap: 1em;
+          }
+          .desc-flex-row .govuk-input {
+            margin-bottom: 0;
+          }
+          .desc-flex-row .govuk-button-group {
+            margin-bottom: 0;
+          }
+          .desc-flex-row .govuk-button,
+          .desc-flex-row .govuk-link {
+            vertical-align: baseline;
+          }
+        </style>
+        <div class="desc-flex-row">
+          <input class="govuk-input govuk-!-width-two-thirds" id="description" name="description" type="text"
+            value="{{ data.description }}" autocomplete="off">
+          <div class="govuk-button-group" id="desc-action-group" style="display: none;">
+            <button type="button" id="change-description" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+              Change<span class="govuk-visually-hidden"> product description</span>
+            </button>
+            <a href="#" id="remove-description" class="govuk-link govuk-link--destructive">
+              Remove<span class="govuk-visually-hidden"> product description</span>
+            </a>
           </div>
         </div>
+      <script>
+        document.addEventListener('DOMContentLoaded', function () {
+          var descInput = document.getElementById('description');
+          var changeBtn = document.getElementById('change-description');
+          var actionGroup = document.getElementById('desc-action-group');
+          var removeBtn = document.getElementById('remove-description');
+          function toggleButtons() {
+            if (descInput.value && descInput.value.trim().length > 0) {
+              actionGroup.style.display = 'flex';
+            } else {
+              actionGroup.style.display = 'none';
+            }
+          }
+          // Make input readonly after blur if it has content
+          descInput.addEventListener('blur', function () {
+            if (descInput.value && descInput.value.trim().length > 0) {
+              descInput.setAttribute('readonly', true);
+            }
+          });
+          // Make input editable again when Change is clicked
+          changeBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            descInput.removeAttribute('readonly');
+            descInput.focus();
+          });
+          // Redirect to confirmation page on Remove
+          removeBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            window.location.href = '/gamma/ps/confirm-remove-description.html';
+          });
+          descInput.addEventListener('input', toggleButtons);
+          // Show on load if prefilled
+          toggleButtons();
+        });
+      </script>
+    </div>
 
                 <!-- Commodity code -->
         <div class="govuk-form-group">

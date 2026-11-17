@@ -1,0 +1,41 @@
+{% extends "layouts/layout-defra.html" %}
+
+{% block pageTitle %}
+Web Admin Portal: Banner message
+{% endblock %}
+
+{% set serviceName %}
+Web Admin Portal
+{% endset %}
+
+{% set activeNavSection = "banner-message" %}
+{% set defaultServiceMessage = "The catch recording service may be slower than usual while we carry out planned maintenance. You can continue to submit catch records." %}
+{% set currentServiceMessage = data['service-message'] or defaultServiceMessage %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+    <h1 class="govuk-heading-xl">Banner message</h1>
+
+    {% if data['service-message'] %}
+    <div class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="service-message-updated-heading">
+      <div class="govuk-notification-banner__content"><h2 class="govuk-notification-banner__heading" id="service-message-updated-heading">Service message updated</h2></div>
+    </div>
+    {% endif %}
+
+    <h2 class="govuk-heading-l">Current service message</h2>
+    <div class="govuk-inset-text">
+      {{ currentServiceMessage }}
+    </div>
+
+    <h2 class="govuk-heading-l">New Service message</h2>
+    <form action="banner-message" method="post">
+      <div class="govuk-form-group">
+        <label class="govuk-label" for="service-message">Service message</label>
+        <textarea class="govuk-textarea" id="service-message" name="service-message" rows="5">{{ data['service-message'] or '' }}</textarea>
+      </div>
+      <button class="govuk-button" type="submit">Save message</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

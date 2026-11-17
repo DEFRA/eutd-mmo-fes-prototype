@@ -74,8 +74,27 @@
       <div class="govuk-form-group">
         <label class="govuk-label" for="plane-departure"><b>Place export leaves the UK</b></label>
         <div id="plane-departure-hint" class="govuk-hint">For example, Hull.</div>
-        <input class="govuk-input govuk-!-width-one-half" id="plane-departure" name="plane-departure" type="text">
+        <input class="govuk-input govuk-!-width-two-thirds" id="plane-departure" name="plane-departure" type="text">
       </div>
+
+              <div class="govuk-form-group">
+          <label class="govuk-label govuk-label--s" for="destination-point-plane">Point of destination</label>
+          <div id="destination-point-plane-hint" class="govuk-hint">
+            Enter the final intended destination for the export. For example, Bologna or Port of Rotterdam.
+          </div>
+          <input class="govuk-input govuk-!-width-two-thirds" id="destination-point-plane" name="destination-point-plane" type="text" aria-describedby="destination-point-plane-hint">
+        </div>
+
+        <details class="govuk-details" data-module="govuk-details">
+          <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+              Help with point of destination
+            </span>
+          </summary>
+          <div class="govuk-details__text">
+            If you do not know the final destination of the export, enter the first EU entry point. For example, Port of Rotterdam.
+          </div>
+        </details>
       
       <!-- Container identification -->
 <div id="container-fields">

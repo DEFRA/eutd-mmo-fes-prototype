@@ -1,0 +1,95 @@
+{% set serviceName = "Fish Export Service" %}
+
+
+{% extends "layouts/main.html" %}
+
+
+
+{% block content %}
+<main class="govuk-main-wrapper app-main-class" id="main-content" role="main">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+  <div class="govuk-notification-banner__header">
+    <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+      Important
+    </h2>
+  </div>
+  <div class="govuk-notification-banner__content">
+    <p class="govuk-notification-banner__heading">
+      From 10 January 2026 under new EU regulations, the document previously known as the storage document will be renamed to the non-manipulation document.
+    </p>
+  </div>
+</div>
+
+     
+
+
+
+
+
+
+      <form method="post" action="../delta/catch-certificates.html">
+        <fieldset class="govuk-fieldset">
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend govuk-!-margin-bottom-0">
+            <h1 class="govuk-heading-xl">What do you want to do?</h1>
+          </legend>
+          <div class="govuk-radios__item"><input id="createCatchCertificate" type="radio" role="radio"
+              name="journeySelection" class="govuk-radios__input" checked="" value="catchCertificate"><label
+              for="createCatchCertificate" class="govuk-label govuk-radios__label">Create a UK catch certificate
+              </label>
+                <div id="createStorageDocument" class="govuk-hint govuk-radios__hint">
+          Including links to direct landing documents.
+        </div>
+            </div>
+          <div class="govuk-radios__item"><input id="createProcessingStatement" type="radio" role="radio"
+              name="journeySelection" class="govuk-radios__input" value="processingStatement"><label
+              for="createProcessingStatement" class="govuk-label govuk-radios__label">Create a UK processing
+              statement</label></div>
+          <div class="govuk-radios__item"><input id="createStorageDocument" type="radio" role="radio"
+              name="journeySelection" class="govuk-radios__input" value="storageNotes"><label
+              for="createStorageDocument" class="govuk-label govuk-radios__label">Create a UK non-manipulation document</label>
+          </div>
+                  <div id="createStorageDocument" class="govuk-hint govuk-radios__hint">
+          Previously known as the storage document.
+        </div>
+        </fieldset><br><button type="submit" class="dcx-button govuk-button" id="continue"
+          data-module="govuk-button">Continue</button>
+      </form>
+
+      <script>
+        document.getElementById('continue').addEventListener('click', function(event) {
+          event.preventDefault();  // Stop the form from submitting right away
+      
+          const selected = document.querySelector('input[name="journeySelection"]:checked');
+      
+          if (!selected) {
+            alert('Please select an option before continuing.');
+            return;
+          }
+      
+          let url;
+          switch (selected.value) {
+            case 'catchCertificate':
+              url = '../delta/catch-certificates.html';
+              break;
+            case 'processingStatement':
+              url = '../delta/processing-statement.html';  // You can create this page later
+              break;
+            case 'storageNotes':
+              url = '../delta/storage-document.html';  // You can create this page later
+              break;
+            default:
+              url = '../delta/catch-certificates.html';
+          }
+      
+          window.location.href = url;
+        });
+      </script>
+
+    </div>
+  </div>
+</main>
+
+{% endblock %}

@@ -1,0 +1,94 @@
+{% set serviceName = "Web Admin Portal" %}
+
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}Web Administration Portal - Back office{% endblock %}
+{% set pageName = "Back office" %}
+
+{% block content %}
+<style>
+  .catch-records-index__trip-layout-heading {
+    white-space: nowrap;
+  }
+</style>
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+    <p class="govuk-caption-l">Back office</p>
+    <h1 class="govuk-heading-xl">Web Administration Portal</h1>
+
+    <table class="govuk-table">
+      <caption class="govuk-table__caption govuk-table__caption--m">Back-office sections</caption>
+      <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+          <th class="govuk-table__header" scope="col">Section</th>
+          <th class="govuk-table__header" scope="col">Description</th>
+        </tr>
+      </thead>
+      <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+          <th class="govuk-table__header" scope="row"><a class="govuk-link" href="landing-page" target="_blank" rel="noopener">Users</a></th>
+          <td class="govuk-table__cell">Search, view and create user accounts.</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th class="govuk-table__header" scope="row"><a class="govuk-link" href="vessels" target="_blank" rel="noopener">Vessels</a></th>
+          <td class="govuk-table__cell">Search vessels and manage their linked users.</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th class="govuk-table__header" scope="row"><a class="govuk-link" href="fishing-trips" target="_blank" rel="noopener">Fishing trips</a></th>
+          <td class="govuk-table__cell">
+            <p class="govuk-body">Search and view submitted fishing trips.</p>
+            <div class="govuk-inset-text govuk-!-margin-top-2 govuk-!-margin-bottom-0">
+              Compare filters: <a class="govuk-link" href="fishing-trips" target="_blank" rel="noopener">Version A (panel stays open)</a> or <a class="govuk-link" href="fishing-trips?variant=b" target="_blank" rel="noopener">Version B (panel closes after applying)</a>.
+            </div>
+          </td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th class="govuk-table__header" scope="row"><a class="govuk-link" href="trip-breakdown" target="_blank" rel="noopener">Trip breakdown</a></th>
+          <td class="govuk-table__cell">
+            <p class="govuk-body">Review catch entries across trips by species.</p>
+          </td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th class="govuk-table__header catch-records-index__trip-layout-heading" scope="row">Trip details layout <a class="govuk-link" href="trip-layout-archive" target="_blank" rel="noopener"><br>Archive</a></th>
+          <td class="govuk-table__cell">
+            <p class="govuk-body">Compare three trip detail layouts against the current design.</p>
+            <div class="govuk-inset-text govuk-!-margin-top-2 govuk-!-margin-bottom-0">
+              <a class="govuk-link" href="trip-profile?trip=C34245202608171402&amp;status=submitted&amp;gearDisplay=grouped&amp;layout=a" target="_blank" rel="noopener">A (as-is)</a> |
+              <a class="govuk-link" href="trip-profile?trip=C34245202608171402&amp;status=submitted&amp;gearDisplay=grouped&amp;layout=c" target="_blank" rel="noopener">C (wider tabs on the right)</a> |
+              <a class="govuk-link" href="trip-profile?trip=C34245202608171402&amp;status=submitted&amp;gearDisplay=grouped&amp;layout=d" target="_blank" rel="noopener">D (more trip information shown)</a> |
+              <a class="govuk-link" href="trip-profile?trip=C34245202608171402&amp;status=submitted&amp;gearDisplay=grouped&amp;layout=f2" target="_blank" rel="noopener">F2 (full-width catch, paired History and Notes)</a>.
+            </div>
+          </td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th class="govuk-table__header" scope="row"><a class="govuk-link" href="audit-log" target="_blank" rel="noopener">Audit log</a></th>
+          <td class="govuk-table__cell">Review recorded user, vessel and trip activity.</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th class="govuk-table__header" scope="row"><a class="govuk-link" href="banner-message" target="_blank" rel="noopener">Banner message</a></th>
+          <td class="govuk-table__cell">View and update the service banner message.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2 class="govuk-heading-l">Role-based access</h2>
+    <table class="govuk-table">
+      <caption class="govuk-table__caption govuk-table__caption--m">Web admin staff</caption>
+      <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+          <th class="govuk-table__header" scope="col">Role</th>
+          <th class="govuk-table__header" scope="col">Status</th>
+        </tr>
+      </thead>
+      <tbody class="govuk-table__body">
+        <tr class="govuk-table__row"><th class="govuk-table__header" scope="row"><a class="govuk-link" href="role-preview?role=serviceManager" target="_blank" rel="noopener">Service Manager</a></th><td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--green">Available</strong></td></tr>
+        <tr class="govuk-table__row"><th class="govuk-table__header" scope="row"><a class="govuk-link" href="role-preview?role=fishingVesselLicensing" target="_blank" rel="noopener">Fishing Vessel Licensing</a></th><td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--green">Available</strong></td></tr>
+        <tr class="govuk-table__row"><th class="govuk-table__header" scope="row"><a class="govuk-link" href="role-preview?role=helpline" target="_blank" rel="noopener">Helpline Team</a></th><td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--green">Available</strong></td></tr>
+        <tr class="govuk-table__row"><th class="govuk-table__header" scope="row"><a class="govuk-link" href="role-preview?role=compliance" target="_blank" rel="noopener">Compliance / Investigations</a></th><td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--green">Available</strong></td></tr>
+        <tr class="govuk-table__row"><th class="govuk-table__header" scope="row"><a class="govuk-link" href="role-preview?role=otherOperations" target="_blank" rel="noopener">Other Operations Team</a></th><td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--green">Available</strong></td></tr>
+        <tr class="govuk-table__row"><th class="govuk-table__header" scope="row"><a class="govuk-link" href="role-preview?role=fdst" target="_blank" rel="noopener">FDST</a></th><td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--green">Available</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

@@ -192,7 +192,11 @@ GOV.UK Prototype Kit
 
 
   <div style="background-color: #f8f8f8; width: 100%; padding: 2rem; border-radius: 2;">
-  <form method="post" action="/gamma/catch-waters">
+  <form method="post" action="/gamma/catch-waters" id="landingForm">
+    <input type="hidden" name="species" value="{{ data['species'] }}">
+    <input type="hidden" name="state" value="{{ data['state'] }}">
+    <input type="hidden" name="presentation" value="{{ data['presentation'] }}">
+    <input type="hidden" name="commodity-code" value="{{ data['commodity-code'] }}">
 
 
           <div class="govuk-form-group">
@@ -834,76 +838,13 @@ GOV.UK Prototype Kit
             });
           </script>
 
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-  const form = document.getElementById('landingForm');
-  const tableBody = document.getElementById('landingsTableBody');
-  const addButton = document.getElementById('addLandingButton');
-
-  addButton.addEventListener('click', function () {
-    // Use backend session data rendered into JS for all product fields
-    const product = "{{ data['species'] | escape }}" || '—';
-    const state = "{{ data['state'] | escape }}" || '—';
-    const presentation = "{{ data['presentation'] | escape }}" || '—';
-    const code = "{{ data['commodity-code'] | escape }}" || '—';
-
-    
-
- const startDate = document.getElementById('startDate').value;
-    const dateLanded = document.getElementById('dateLanded').value;
-    const faoArea = document.getElementById('select-faoArea').value;
-    const highSeasRaw = document.querySelector('input[name="highSeas"]:checked')?.value || '';
-const highSeas = highSeasRaw.charAt(0).toUpperCase() + highSeasRaw.slice(1);
-    const eez = document.getElementById('select-eez').value
-    const rfmo = document.getElementById('select-rfmo').value;
-    const vessel = document.getElementById('vessel').value;
-    const weight = document.getElementById('weight').value;
-    const gear1 = document.getElementById('gear1').value;
-    const gear2Select = document.getElementById('gear2');
-    const gear2 = gear2Select.options[gear2Select.selectedIndex].value;
-
-
-    const newRow = `
-      <tr class="govuk-table__row">
-        <td class="govuk-table__cell">
-          <b>Species:</b> ${product}<br>
-          <b>State:</b> ${state}<br>
-          <b>Presentation:</b> ${presentation}<br>
-          <b>Code:</b> ${code}
-        </td>
-        <td class="govuk-table__cell">
-          <b>Start date:</b> ${startDate}<br>
-          <b>Date landed:</b> ${dateLanded}<br>
-          <b>Catch area:</b> ${faoArea}<br>
-          <b>High seas:</b> ${highSeas}<br>
-          <b>EEZ:</b> ${eez}<br>
-          <b>RFMO:</b> ${rfmo}<br>
-          <b>Vessel:</b> ${vessel}<br>
-          <b>Gear category:</b> ${gear1}<br>
-          <b>Gear type:</b> ${gear2}
-        </td>
-        <td class="govuk-table__cell">${weight}</td>
-        <td class="govuk-table__cell govuk-!-text-align-right">
-          <button class="govuk-button govuk-button--secondary edit-button" type="button">Edit</button>
-          <button class="govuk-button govuk-button--secondary remove-button" type="button">Remove</button>
-        </td>
-      </tr>
-    `;
-
-    tableBody.insertAdjacentHTML('beforeend', newRow);
-    form.reset();
-    localStorage.removeItem('selectedProduct'); // Clear after use
-  });
-});
-</script>
-
 
           <div class="govuk-button-group">
 <button type="submit" class="secondary-button-style" data-module="govuk-button">
   Cancel
 </button>
 
-            <button type="button" id="addLandingButton" class="govuk-button">Add landing</button>
+            <button type="submit" id="addLandingButton" class="govuk-button" formaction="/gamma/add-landing">Add landing</button>
   
           </div>
           
@@ -926,7 +867,7 @@ const highSeas = highSeasRaw.charAt(0).toUpperCase() + highSeasRaw.slice(1);
         {{ product.species }} {{ product.country }}, {{ product.state }}, {{ product.presentation }}, {{ product.commodityCode }}
       </td>
       <td class="govuk-table__cell">
-  {{ product.exportWeight }} kg
+  {{ product.exportWeight or '0.00' }} kg
 </td>
       <td class="govuk-table__cell">
         <!-- Add action buttons if needed -->

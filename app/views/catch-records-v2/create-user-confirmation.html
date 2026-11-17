@@ -1,0 +1,37 @@
+{% extends "layouts/layout-defra-v2.html" %}
+
+{% block pageTitle %}User created - Web Admin Portal{% endblock %}
+
+{% set serviceName %}
+Web Admin Portal
+{% endset %}
+
+{% set activeNavSection = "users" %}
+
+{% block beforeContent %}
+<a class="govuk-back-link" href="landing-page">Back to users</a>
+{% endblock %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <div class="govuk-panel govuk-panel--confirmation">
+      <h1 class="govuk-panel__title">User created</h1>
+      {% if profileUser.email %}
+      <div class="govuk-panel__body">Invitation email marked as sent to<br><strong>{{ profileUser.email }}</strong></div>
+      {% else %}
+      <div class="govuk-panel__body">User created without an email address</div>
+      {% endif %}
+    </div>
+
+    {% if profileUser.email %}<div class="govuk-inset-text">Email delivery is simulated in this prototype. No real email has been sent.</div>{% endif %}
+
+    <h2 class="govuk-heading-m">What happens next</h2>
+    <p class="govuk-body">The user is listed as {{ 'invited' if profileUser.email else 'created' }}. You can link them to a vessel from that vessel’s profile.</p>
+
+    <p class="govuk-body"><a class="govuk-button" href="vessels">View vessels</a></p>
+    <p class="govuk-body"><a class="govuk-link" href="new-user-profile?userId={{ profileUser.userId }}">View user account</a></p>
+    <p class="govuk-body"><a class="govuk-link" href="landing-page">Return to users</a></p>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,156 @@
+{% set serviceName = "Record your catch" %}
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Retained species
+{% endblock %}
+
+{% block content %}
+  {% include "../includes/phase.html" %}
+
+<style>
+  .govuk-fieldset {margin-bottom:30px;}
+  .govuk-button-group {margin-top:50px;}
+</style>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+
+    <a href="javascript:history.back()" class="govuk-back-link">Back</a>
+
+    <h1 class="govuk-heading-xl">Which species from this trip are you not landing straight away?</h1>
+
+    <p class="govuk-body">Select all species being retained, then enter the estimated live weight for each.</p>
+
+    <form method="post" action="/mobile-app/confirm-trip">
+
+      <div class="govuk-form-group govuk-!-width-two-thirds">
+        <fieldset class="govuk-fieldset" aria-describedby="retained-species-hint">
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+            Select species
+          </legend>
+
+          <div id="retained-species-hint" class="govuk-hint">
+            Type the species name. For example: Atlantic Cod
+          </div>
+
+          <div style="position: relative;">
+            <input name="retained-species" type="text" class="govuk-input govuk-!-width-full"
+              id="retained-species-input" autocomplete="off" aria-expanded="false" role="combobox"
+              aria-autocomplete="list" aria-owns="retained-species-listbox" aria-activedescendant="">
+            <ul id="retained-species-listbox" role="listbox" class="govuk-list"
+              style="display: none; border: 1px solid #b1b4b6; padding: 0.5em; background: white; position: absolute; z-index: 1000; width: 100%;">
+            </ul>
+          </div>
+        </fieldset>
+      </div>
+
+      <div id="retained-species-list" style="margin-bottom:30px;">
+        <!-- Retained species items will be added here -->
+      </div>
+
+      <div class="govuk-button-group">
+        <button type="button" class="govuk-button govuk-button--secondary" data-module="govuk-button" onclick="addRetainedSpeciesForm()">
+          Add another species
+        </button>
+      </div>
+
+      <div class="govuk-button-group">
+        <button type="submit" class="govuk-button govuk-button--primary" data-module="govuk-button">
+          Save and continue
+        </button>
+      </div>
+
+    </form>
+
+  </div>
+</div>
+
+<script>
+  const retainedSpecies = [
+    "Atlantic Cod",
+    "Haddock",
+    "Atlantic Mackerel",
+    "European Hake",
+    "Atlantic Salmon",
+    "European Plaice",
+    "Common Sole",
+    "European Lobster",
+    "Monkfish",
+    "Edible crab",
+    "Herring",
+    "Bluefin Tuna",
+    "Yellowfin Tuna"
+  ];
+
+  const input = document.getElementById("retained-species-input");
+  const listbox = document.getElementById("retained-species-listbox");
+
+  input.addEventListener("input", () => {
+    const value = input.value.toLowerCase();
+    listbox.innerHTML = "";
+
+    if (value.length < 2) {
+      listbox.style.display = "none";
+      return;
+    }
+
+    const matches = retainedSpecies.filter(s => s.toLowerCase().includes(value));
+    if (matches.length === 0) {
+      listbox.style.display = "none";
+      return;
+    }
+
+    matches.forEach((spec, index) => {
+      const option = document.createElement("li");
+      option.setAttribute("role", "option");
+      option.setAttribute("id", `retained-species-option-${index}`);
+      option.textContent = spec;
+      option.style.cursor = "pointer";
+      option.style.padding = "0.25em 0";
+      option.onclick = () => {
+        input.value = spec;
+        listbox.style.display = "none";
+        addRetainedSpeciesForm();
+      };
+      listbox.appendChild(option);
+    });
+
+    listbox.style.display = "block";
+  });
+
+  document.addEventListener("click", (e) => {
+    if (!input.contains(e.target) && !listbox.contains(e.target)) {
+      listbox.style.display = "none";
+    }
+  });
+
+  function addRetainedSpeciesForm() {
+    const speciesName = input.value.trim();
+    if (!speciesName) return;
+
+    const list = document.getElementById('retained-species-list');
+    const id = Date.now();
+
+    const speciesItem = document.createElement('div');
+    speciesItem.style.marginBottom = '30px';
+    speciesItem.style.padding = '15px';
+    speciesItem.style.background = '#f3f2f1';
+    speciesItem.style.borderLeft = '4px solid #1d70b8';
+
+    speciesItem.innerHTML = `
+      <h3 class="govuk-heading-s">${speciesName}</h3>
+      <div class="govuk-form-group">
+        <label class="govuk-label" for="retained-weight-${id}">Estimated live weight (kg)</label>
+        <div class="govuk-hint">Weights under 10kg can use 0.1kg increments; over 10kg round down to nearest 1kg</div>
+        <input class="govuk-input govuk-!-width-one-half" id="retained-weight-${id}" name="retained-weight-${id}" type="number" step="0.1" inputmode="decimal">
+      </div>
+      <p><a href="#" class="govuk-link govuk-link--destructive" onclick="this.parentElement.parentElement.remove(); return false;">Remove species</a></p>
+    `;
+
+    list.appendChild(speciesItem);
+    input.value = '';
+  }
+</script>
+
+{% endblock %}

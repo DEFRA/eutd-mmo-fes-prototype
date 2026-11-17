@@ -1,0 +1,600 @@
+{% set serviceName = "Create a UK non-manipulation document" %}
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+Check your answers - GOV.UK
+{% endblock %}
+
+{% block content %}
+
+{% include "../../includes/phase.html" %}
+
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <a href="javascript:history.back()" class="govuk-back-link">Back</a>
+
+    <h1 class="govuk-heading-l">Check your answers before you create the non-manipulation document</h1>
+
+    <!-- Exporter -->
+    <h2 class="govuk-heading-m">Exporter</h2>
+    <dl class="govuk-summary-list govuk-!-margin-bottom-7">
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Your reference</dt>
+        <dd class="govuk-summary-list__value">{{ data['your-reference'] or 'Not provided' }}</dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="../sd/your-reference.html">Change<span class="govuk-visually-hidden"> your reference</span></a>
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Company name</dt>
+        <dd class="govuk-summary-list__value">{{ data['company-name'] or 'Not provided' }}</dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="../sd/exporter-details.html">Change</a>
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Company address</dt>
+        <dd class="govuk-summary-list__value">45 Leopold Street<br>Derby<br>DE1 2HF<br></dd>
+        <dd class="govuk-summary-list__actions">
+        </dd>
+      </div>
+    </dl>
+
+    <!-- Products -->
+    <h2 class="govuk-heading-m">Products</h2>
+
+    <!-- UK Entry Document Inset -->
+    {% for product in data.sdProductEntries %}
+    {% if product.ukDocument == 'Yes' %}
+    <div class="govuk-inset-text">
+      Issued or approved by a UK authority:
+    </div>
+    {% elif product.ukDocument == 'No' %}
+    <div class="govuk-inset-text">
+      Issued or approved by a third country:
+    </div>
+    {% endif %}
+
+    <dl class="govuk-summary-list govuk-!-margin-bottom-7">
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Entry document issued in the UK</dt>
+        <dd class="govuk-summary-list__value">{{ product.ukDocument }}</dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="../sd/product-details.html">Change</a>
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Issuing country</dt>
+        <dd class="govuk-summary-list__value">
+          {% if product.ukDocument == 'Yes' %}
+          United Kingdom
+          {% else %}
+          {{ product.issuingCountry or 'Not provided' }}
+          {% endif %}
+        </dd>
+        <dd class="govuk-summary-list__actions">
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Entry document reference</dt>
+        <dd class="govuk-summary-list__value">{{ product.entryDocumentReference or 'Not provided' }}</dd>
+        <dd class="govuk-summary-list__actions">
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Weight on entry document</dt>
+        <dd class="govuk-summary-list__value">{{ product.entryWeight or 'Not provided' }}kg</dd>
+        <dd class="govuk-summary-list__actions">
+        </dd>
+      </div>
+    </dl>
+    {% endfor %}
+
+
+
+
+    <!-- Loop through product entries -->
+    {% if data.sdProductEntries and data.sdProductEntries.length %}
+    {% for entry in data.sdProductEntries %}
+    <div class="govuk-inset-text">
+      Consignment item {{ loop.index }}
+    </div>
+
+    <dl class="govuk-summary-list govuk-!-margin-bottom-7">
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Species</dt>
+        <dd class="govuk-summary-list__value">{{ entry.species or 'Not provided' }}</dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="../sd/product-details.html?edit={{ loop.index0 }}">Change</a>
+        </dd>
+      </div>
+
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Commodity code</dt>
+        <dd class="govuk-summary-list__value">{{ entry.commodityCode or 'Not provided' }}</dd>
+      </div>
+
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Product description</dt>
+        <dd class="govuk-summary-list__value">{{ entry.description or 'Not provided' }}</dd>
+      </div>
+
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Supporting documents</dt>
+        <dd class="govuk-summary-list__value">{% if entry.productReferenceNumber and entry.productReferenceNumber[0] %}
+          {% if entry.productReferenceNumber is string %}{{ entry.productReferenceNumber }}{% else %}{{ entry.productReferenceNumber | join(', ') }}{% endif %}
+          {% else %}
+          Not provided
+          {% endif %}</dd>
+      </div>
+
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Net weight on arrival</dt>
+        <dd class="govuk-summary-list__value">{{ entry.netWeight or 'Not provided' }}kg</dd>
+      </div>
+
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Fishery product weight on arrival</dt>
+        <dd class="govuk-summary-list__value">{{ entry.fishWeight or 'Not provided' }}kg</dd>
+      </div>
+
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Net weight on departure</dt>
+        <dd class="govuk-summary-list__value">{{ entry.departureNetWeight or 'Not provided' }}kg</dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="../sd/departure-summary.html">Change</a>
+        </dd>
+      </div>
+
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Fishery product weight on departure</dt>
+        <dd class="govuk-summary-list__value">{{ entry.departureFishWeight or 'Not provided' }}kg</dd>
+      </div>
+    </dl>
+    {% endfor %}
+    {% endif %}
+
+
+    </dl>
+
+
+    <!-- Arrival transport details (dynamic by type) -->
+    <h2 class="govuk-heading-m">Arrival at storage facility</h2>
+    <dl class="govuk-summary-list govuk-!-margin-bottom-7">
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Transport type</dt>
+        <dd class="govuk-summary-list__value">{{ data['transport-type'] or 'Not provided' }}</dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="../sd/transport-type.html">Change</a>
+        </dd>
+      </div>
+      {% set transportType = data['transport-type'] %}
+      {% if transportType == 'Truck' %}
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Departure country</dt>
+        <dd class="govuk-summary-list__value">{{ data['departure-country'] or 'Not provided' }}</dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="../sd/transport-type.html"></a>
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Departure date</dt>
+        <dd class="govuk-summary-list__value">{{ data['departure-date'] or 'Not provided' }}</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Where the truck leaves from</dt>
+        <dd class="govuk-summary-list__value">{{ data['export-place'] or 'Not provided' }}</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Unloading place</dt>
+        <dd class="govuk-summary-list__value">{{ data['unloading-place'] or 'Not provided' }}</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Truck registration</dt>
+        <dd class="govuk-summary-list__value">{{ data['truck-registration'] or 'Not provided' }}</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Truck nationality</dt>
+        <dd class="govuk-summary-list__value">{{ data['truck-nationality'] or 'Not provided' }}</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Freight number</dt>
+        <dd class="govuk-summary-list__value">{{ data['freight-number'] or 'Not provided' }}</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Trailer number(s)</dt>
+        <dd class="govuk-summary-list__value">{{ entries[0].trailerNumber or data['trailer-number-truck'] or 'Not provided' }}</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Shipping container identification number(s)</dt>
+        <dd class="govuk-summary-list__value">{{ entries[0].containerIdentification or data['container-identification-truck'] or 'Not provided' }}</dd>
+      </div>
+
+
+
+      {% elif transportType == 'Plane' %}
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Departure country</dt>
+        <dd class="govuk-summary-list__value">{{ data['plane-departure-country'] or 'Not provided' }}</dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="../sd/transport-type.html"></a>
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Departure date</dt>
+        <dd class="govuk-summary-list__value">{{ data['plane-departure-date'] or 'Not provided' }}</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Where the plane leaves from</dt>
+        <dd class="govuk-summary-list__value">{{ data['plane-departure'] or 'Not provided' }}</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Unloading place</dt>
+        <dd class="govuk-summary-list__value">{{ data['unloading-place-plane'] or 'Not provided' }}</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Airway bill</dt>
+        <dd class="govuk-summary-list__value">{{ data['airway-bill'] or 'Not provided' }}</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Flight number</dt>
+        <dd class="govuk-summary-list__value">{{ data['flight-number'] or 'Not provided' }}</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Container identification</dt>
+        <dd class="govuk-summary-list__value">{{ data['container-identification'] or 'Not provided' }}</dd>
+      </div>
+      {% elif transportType == 'Train' %}
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Departure country</dt>
+        <dd class="govuk-summary-list__value">{{ data['train-departure-country'] or 'Not provided' }}</dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="../sd/transport-type.html"></a>
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Departure date</dt>
+        <dd class="govuk-summary-list__value">{{ data['train-departure-date'] or 'Not provided' }}</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Where the train leaves from</dt>
+        <dd class="govuk-summary-list__value">{{ data['train-departure'] or 'Not provided' }}</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Unloading place</dt>
+        <dd class="govuk-summary-list__value">{{ data['unloading-place-train'] or 'Not provided' }}</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Railway bill</dt>
+        <dd class="govuk-summary-list__value">{{ data['railway-bill'] or 'Not provided' }}</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Freight bill</dt>
+        <dd class="govuk-summary-list__value">{{ data['freight-bill'] or 'Not provided' }}</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Trailer number(s)</dt>
+        <dd class="govuk-summary-list__value">{{ entries[0].trailerNumber or data['trailer-number-train'] or 'Not provided' }}</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Shipping container identification number(s)</dt>
+        <dd class="govuk-summary-list__value">{{ entries[0].containerIdentification or data['container-identification-train'] or 'Not provided' }}</dd>
+      </div>
+      {% elif transportType == 'Container vessel' %}
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Departure country</dt>
+        <dd class="govuk-summary-list__value">{{ data['container-vessel-departure-country'] or 'Not provided' }}</dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="../sd/transport-type.html"></a>
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Departure date</dt>
+        <dd class="govuk-summary-list__value">{{ data['container-vessel-departure-date'] or 'Not provided' }}</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Where the container vessel leaves from</dt>
+        <dd class="govuk-summary-list__value">{{ data['container-vessel-departure'] or 'Not provided' }}</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Unloading place</dt>
+        <dd class="govuk-summary-list__value">{{ data['unloading-place-vessel'] or 'Not provided' }}</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Vessel name</dt>
+        <dd class="govuk-summary-list__value">{{ data['vessel-name'] or 'Not provided' }}</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Flag state</dt>
+        <dd class="govuk-summary-list__value">{{ data['flag-state'] or 'Not provided' }}</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Shipping container identification number</dt>
+        <dd class="govuk-summary-list__value">{{ data['vessel-container-identifcation'] or 'Not provided' }}</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Freight bill</dt>
+        <dd class="govuk-summary-list__value">{{ data['freight-bill'] or 'Not provided' }}</dd>
+      </div>
+      {% endif %}
+    </dl>
+
+
+
+
+    <!-- Storage facility -->
+    <h2 class="govuk-heading-m">Storage facility</h2>
+    <dl class="govuk-summary-list govuk-!-margin-bottom-7">
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Arrival date</dt>
+        <dd class="govuk-summary-list__value">{{ data['arrival-date'] or 'Not provided' }}</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Storage facility name</dt>
+        <dd class="govuk-summary-list__value">{{ data['facility-name'] or 'Not provided' }}</dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="../sd/storage-facility-details.html">Change</a>
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Storage facility address</dt>
+        <dd class="govuk-summary-list__value">
+          {{ data['facility-name'] or '' }}<br>
+          {{ data['building-number'] or '' }} {{ data['building-name'] or '' }}<br>
+          {{ data['street-name'] or '' }}<br>
+          {{ data['town-city'] or '' }}<br>
+          {{ data['postcode'] or 'Not provided' }}
+        </dd>
+        <dd class="govuk-summary-list__actions">
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Approval number</dt>
+        <dd class="govuk-summary-list__value">{{ data['approval-number'] or 'Not provided' }}</dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="storage-facility-details">Change</a>
+        </dd>
+      </div>
+
+
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Product storage</dt>
+        <dd class="govuk-summary-list__value">
+          {% if data['product-storage'] and data['product-storage'].length %}
+          {% if data['product-storage'] is string %}{{ data['product-storage'] }}{% else %}{{ data['product-storage'] | join(', ') }}{% endif %}
+          {% else %}
+          Not provided
+          {% endif %}
+        </dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="storage-facility-details">Change</a>
+        </dd>
+      </div>
+    </dl>
+
+
+
+    <!-- Departure from storage facility -->
+    <h2 class="govuk-heading-m">Departure from storage facility</h2>
+
+    <dl class="govuk-summary-list govuk-!-margin-bottom-7">
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Transport type</dt>
+        <dd class="govuk-summary-list__value">{{ data['departure-transport-type'] or 'Not provided' }}</dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="../sd/departure-transport-type.html">Change</a>
+        </dd>
+      </div>
+      {% set departureTransportType = data['departure-transport-type'] %}
+      {% if departureTransportType == 'Truck' %}
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Destination country</dt>
+        <dd class="govuk-summary-list__value">{{ data['departure-destination-country'] or 'Not provided' }}</dd>
+        <dd class="govuk-summary-list__actions">
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Destination point</dt>
+        <dd class="govuk-summary-list__value">{{ data['destination-point-truck'] or 'Not provided' }}</dd>
+        <dd class="govuk-summary-list__actions">
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Departure date from the UK</dt>
+        <dd class="govuk-summary-list__value">{{ data['departure-date-uk'] or 'Not provided' }}</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Where the truck leaves the UK</dt>
+        <dd class="govuk-summary-list__value">{{ data['departure-export-place'] or 'Not provided' }}</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Truck registration</dt>
+        <dd class="govuk-summary-list__value">{{ data['departure-truck-registration'] or 'Not provided' }}</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Truck nationality</dt>
+        <dd class="govuk-summary-list__value">{{ data['departure-truck-nationality'] or 'Not provided' }}</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Freight number</dt>
+        <dd class="govuk-summary-list__value">{{ data['departure-freight-number'] or 'Not provided' }}</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Trailer number(s)</dt>
+        <dd class="govuk-summary-list__value">{{ data['trailer-number[]'] or 'Not provided' }}</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Shipping container identification number(s)</dt>
+        <dd class="govuk-summary-list__value">{{ data['departure-container-identification-truck'] or data['container-identification[]'] or 'Not provided' }}</dd>
+      </div>
+      {% elif departureTransportType == 'Plane' %}
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Destination country</dt>
+        <dd class="govuk-summary-list__value">{{ data['plane-departure-destination-country'] or 'Not provided' }}</dd>
+        <dd class="govuk-summary-list__actions">
+        </dd>
+      </div>
+            <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Destination point</dt>
+        <dd class="govuk-summary-list__value">{{ data['destination-point-plane'] or 'Not provided' }}</dd>
+        <dd class="govuk-summary-list__actions">
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Departure date from the UK</dt>
+        <dd class="govuk-summary-list__value">{{ data['plane-departure-date-uk'] or 'Not provided' }}</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Where the plane leaves the UK</dt>
+        <dd class="govuk-summary-list__value">{{ data['departure-plane-departure'] or 'Not provided' }}</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Airway bill</dt>
+        <dd class="govuk-summary-list__value">{{ data['departure-airway-bill'] or 'Not provided' }}</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Flight number</dt>
+        <dd class="govuk-summary-list__value">{{ data['departure-flight-number'] or 'Not provided' }}</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Container identification</dt>
+        <dd class="govuk-summary-list__value">{{ data['departure-container-identification'] or 'Not provided' }}</dd>
+      </div>
+      {% elif departureTransportType == 'Train' %}
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Destination country</dt>
+        <dd class="govuk-summary-list__value">{{ data['train-departure-destination-country'] or 'Not provided' }}</dd>
+        <dd class="govuk-summary-list__actions">
+        </dd>
+      </div>
+            <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Destination point</dt>
+        <dd class="govuk-summary-list__value">{{ data['destination-point-train'] or 'Not provided' }}</dd>
+        <dd class="govuk-summary-list__actions">
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Departure date from the UK</dt>
+        <dd class="govuk-summary-list__value">{{ data['train-departure-date-uk'] or 'Not provided' }}</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Where the train leaves the UK</dt>
+        <dd class="govuk-summary-list__value">{{ data['departure-train-departure'] or 'Not provided' }}</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Railway bill</dt>
+        <dd class="govuk-summary-list__value">{{ data['departure-railway-bill'] or 'Not provided' }}</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Freight bill</dt>
+        <dd class="govuk-summary-list__value">{{ data['departure-freight-bill'] or 'Not provided' }}</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Trailer number(s)</dt>
+        <dd class="govuk-summary-list__value">{{ data['trailer-number[]'] or 'Not provided' }}</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Shipping container identification number(s)</dt>
+        <dd class="govuk-summary-list__value">{{ data['departure-container-identification-train'] or data['container-identification[]'] or 'Not provided' }}</dd>
+      </div>
+      {% elif departureTransportType == 'Container vessel' %}
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Destination country</dt>
+        <dd class="govuk-summary-list__value">{{ data['container-vessel-departure-destination-country'] or 'Not
+          provided' }}</dd>
+        <dd class="govuk-summary-list__actions">
+        </dd>
+      </div>
+            <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Destination point</dt>
+        <dd class="govuk-summary-list__value">{{ data['destination-point-vessel'] or 'Not provided' }}</dd>
+        <dd class="govuk-summary-list__actions">
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Departure date from the UK</dt>
+        <dd class="govuk-summary-list__value">{{ data['container-vessel-departure-date-uk'] or 'Not provided' }}</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Where the container vessel leaves the UK</dt>
+        <dd class="govuk-summary-list__value">{{ data['departure-container-vessel-departure'] or 'Not provided' }}</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Vessel name</dt>
+        <dd class="govuk-summary-list__value">{{ data['departure-vessel-name'] or 'Not provided' }}</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Flag state</dt>
+        <dd class="govuk-summary-list__value">{{ data['departure-flag-state'] or 'Not provided' }}</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Shipping container identification number</dt>
+        <dd class="govuk-summary-list__value">{{ data['departure-vessel-container-identification'] or 'Not provided' }}</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Freight bill</dt>
+        <dd class="govuk-summary-list__value">{{ data['departure-freight-bill'] or 'Not provided' }}</dd>
+      </div>
+      {% endif %}
+    </dl>
+
+
+
+    <div class="govuk-warning-text">
+      <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+      <strong class="govuk-warning-text__text">
+        <span class="govuk-visually-hidden"></span>
+        You may be liable to investigation and enforcement action, including prosecution, if you knowingly submit false,
+        misleading, or otherwise inaccurate data.
+      </strong>
+    </div>
+
+    <!-- Final submission -->
+    <h2 class="govuk-heading-m">Now create your non-manipulation document</h2>
+
+    <p class="govuk-body">By submitting this non-manipulation document, you confirm that:</p>
+    <ul class="govuk-list govuk-list--bullet">
+      <li>you understand that you are under a duty not to knowingly submit information that is false or otherwise
+        inaccurate</li>
+      <li>the fisheries administrations may undertake checks on the accuracy and validity of the data, cross-reference
+        it with data held and submitted by others in the supply chain, and exchange data with other relevant fisheries
+        administrations, including those in the country of export</li>
+      <li>you understand that you may be liable to investigation and potentially to enforcement action, including
+        prosecution, if you knowingly submit false, misleading, or otherwise inaccurate data</li>
+    </ul>
+
+    <br>
+    <a href="../sd/non-manipulation-document-complete.html" role="button" draggable="false"
+      class="govuk-button govuk-button--start" data-module="govuk-button">
+      Accept and create non-manipulation document
+    </a>
+
+    </form>
+
+  </div>
+</div>
+{% endblock %}
+
+<div class="app-contact-panel">
+  <h2 class="app-contact-panel__heading">Get help with your application</h2>
+
+  <p class="app-contact-panel__body">
+    If you have a non-manipulation document unique reference number, have it with you when you call.
+  </p>
+
+  <ul class="govuk-list">
+    <li>Phone: 0330 159 1989 </li>
+    <li>Monday to Friday, 9am to 5pm (except public holidays)</li>
+  </ul>
+
+  <p class="govuk-body">
+    <a class="govuk-link" href="#">Find out about call charges</a>
+  </p>
+
+  <p>Read the guidance on <a
+      href="https://www.gov.uk/guidance/exporting-or-moving-fish-from-the-uk#get-help-with-fish-export-documents"
+      class="govuk-link" rel="noreferrer noopener" target="_blank">exporting or moving fish from the UK
+      (opens in new tab).</a>
+  </p>

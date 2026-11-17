@@ -1,0 +1,299 @@
+{% set serviceName = "Create a UK non-manipulation document" %}
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+GOV.UK Prototype Kit
+{% endblock %}
+
+{% block content %}
+{% include "../../includes/phase.html" %}
+
+<style>
+  .govuk-fieldset {
+    margin-bottom: 30px;
+  }
+
+  .govuk-fieldset__legend {
+    font-weight: bold;
+  }
+
+  #cmr-hint {
+    margin-bottom: 50px;
+  }
+
+  .black {
+    color: #0b0c0c;
+  }
+
+  .govuk-button-group {
+    margin-top: 50px;
+  }
+</style>
+
+<style>
+  .app-contact-panel {
+    margin-top: 60px;
+    /* govuk-responsive-margin(9, "top") equivalent */
+    padding-top: 20px;
+    /* govuk-spacing(3) equivalent */
+    border-top: 2px solid #1d70b8;
+    /* govuk-colour("blue") */
+  }
+
+  .app-contact-panel__heading,
+  .app-contact-panel__body,
+  .app-contact-panel__link {
+    max-width: 100%;
+  }
+
+  .app-contact-panel__heading {
+    font-family: "GDS Transport", Arial, sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 1.25;
+    padding-top: 10px;
+  }
+
+  .app-contact-panel__heading:first-child {
+    padding-top: 0;
+  }
+
+  .app-contact-panel__body:last-child {
+    margin-bottom: 0;
+  }
+</style>
+
+<style>
+  input[readonly] {
+    background-color: #e8effe; /* GOV.UK light grey */
+    border-color: #0b0c0c;     /* GOV.UK mid grey */
+    color: #0b0c0c;            /* GOV.UK black */
+  }
+</style>
+
+
+
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <a href="javascript:history.back()" class="govuk-back-link">Back</a>
+
+    <h1 class="govuk-heading-xl">Check and confirm your consignment weight</h1>
+
+      <div class="govuk-warning-text">
+      <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+      <strong class="govuk-warning-text__text">
+        <span class="govuk-visually-hidden"></span>
+        You must check and confirm the storage departure weights are correct before you can submit your non-manipulation document.
+      </strong>
+    </div>
+
+        <form method="post" action="departure-summary">
+
+
+<div class="govuk-tabs" data-module="govuk-tabs">
+  <h2 class="govuk-tabs__title">Contents</h2>
+  <ul class="govuk-tabs__list">
+    <li class="govuk-tabs__list-item">
+      <a class="govuk-tabs__tab" href="#arrival-weights">Storage arrival</a>
+    </li>
+    <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
+      <a class="govuk-tabs__tab" href="#departure-weights">Storage departure</a>
+    </li>
+  </ul>
+
+<!-- Arrival weights tab -->
+ <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="arrival-weights">
+  <h2 class="govuk-heading-l">Storage arrival</h2>
+  <table class="govuk-table">
+    <thead class="govuk-table__head">
+      <tr class="govuk-table__row">
+        <th scope="col" class="govuk-table__header">Product</th>
+        <th scope="col" class="govuk-table__header">Net weight on arrival</th>
+        <th scope="col" class="govuk-table__header">Fishery product weight on arrival</th>
+        <th scope="col" class="govuk-table__header"></th>
+      </tr>
+    </thead>
+    <tbody class="govuk-table__body">
+  {% if data.productEntries and data.productEntries.length > 0 %}
+    {% for entry in data.productEntries %}
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">{{ entry.species }}</td>
+        <td class="govuk-table__cell">
+          <div class="govuk-form-group">
+            <div class="govuk-input__wrapper">
+              <input class="govuk-input govuk-input--width-5" name="fish-weight-{{ loop.index0 }}" type="text" value="{{ entry.fishWeight }}" readonly>
+              <div class="govuk-input__suffix" aria-hidden="true">kg</div>
+            </div>
+          </div>
+        </td>
+        <td class="govuk-table__cell">
+          <div class="govuk-form-group">
+            <div class="govuk-input__wrapper">
+              <input class="govuk-input govuk-input--width-5" name="net-weight-{{ loop.index0 }}" type="text" value="{{ entry.netWeight }}" readonly>
+              <div class="govuk-input__suffix" aria-hidden="true">kg</div>
+            </div>
+          </div>
+        </td>
+        <td class="govuk-table__cell">
+          <a class="govuk-link" href="edit-product/{{ loop.index0 }}">Edit</a><br>
+          <a href="remove-product/{{ loop.index0 }}" class="govuk-link govuk-link--destructive remove-row">Remove</a>
+        </td>
+      </tr>
+    {% endfor %}
+  {% else %}
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell" colspan="4">No species data available.</td>
+    </tr>
+  {% endif %}
+</tbody>
+
+  </table>
+</div>
+
+
+
+
+  <!-- Departure weights tab -->
+  <div class="govuk-tabs__panel" id="departure-weights">
+    <h2 class="govuk-heading-l">Storage departure</h2>
+    <table class="govuk-table">
+      <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+          <th scope="col" class="govuk-table__header">Product</th>
+          <th scope="col" class="govuk-table__header">Net weight on departure</th>
+          <th scope="col" class="govuk-table__header">Fishery product weight on departure</th>
+        </tr>
+      </thead>
+      <tbody class="govuk-table__body">
+  {% if data.productEntries and data.productEntries.length > 0 %}
+    {% for entry in data.productEntries %}
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">{{ entry.species }}</td>
+        <td class="govuk-table__cell">
+          <div class="govuk-form-group">
+            <div class="govuk-input__wrapper">
+              <input class="govuk-input govuk-input--width-5" name="departure-net-weight-{{ loop.index0 }}" type="text" value="{{ entry.fishWeight }}">
+              <div class="govuk-input__suffix" aria-hidden="true">kg</div>
+            </div>
+          </div>
+        </td>
+        <td class="govuk-table__cell">
+          <div class="govuk-form-group">
+            <div class="govuk-input__wrapper">
+              <input class="govuk-input govuk-input--width-5" name="departure-fish-weight-{{ loop.index0 }}" type="text" value="{{ entry.netWeight }}">
+              <div class="govuk-input__suffix" aria-hidden="true">kg</div>
+            </div>
+          </div>
+        </td>
+      </tr>
+    {% endfor %}
+  {% else %}
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell" colspan="3">No species data available.</td>
+    </tr>
+  {% endif %}
+</tbody>
+    </table>
+  </div>
+</div>
+
+
+
+
+
+
+      
+
+<details class="govuk-details" data-module="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Help with product and fishery net weights
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+    <p>The net weights can be found on the UK entry documents, or they may be calculated manually if not explicitly listed.</p>
+
+    <p><strong>Net weight of the product on arrival:</strong></p>
+    <p>This is the total weight of everything you received, including all ingredients and packaging. For example:</p>
+    <ul class="govuk-list govuk-list--bullet">
+      <li>A box of fish pies (2kg)</li>
+      <li>Canned tuna in oil (0.5kg per tin)</li>
+      <li>Fish fillets in sauce (1.5kg)</li>
+    </ul>
+
+    <p><strong>Net weight of fishery products on arrival:</strong></p>
+    <p>This is only the weight of the fish content, without any other ingredients such as brine, breadcrumbs or sauce. The fish weight cannot exceed the total product weight because the fish is part of the whole product.</p>
+    <p>For example:</p>
+    <ul class="govuk-list govuk-list--bullet">
+      <li>The cod in a fish pie (0.8kg out of 2kg total)</li>
+      <li>The tuna in a tin (0.3kg out of 0.5kg total with oil)</li>
+      <li>The fillets without sauce (1.2kg out of 1.5kg total)</li>
+    </ul>
+
+    <p><strong>On departure:</strong></p>
+    <p>If you export the same amount as you received, both "arrival" and "departure" weights will be the same. If you export only part of what you received, the departure weights will be lower.</p>
+  </div>
+</details>
+
+
+
+      <div class="govuk-button-group">
+        <button class="govuk-button" data-module="govuk-button" type="submit">
+          I confirm
+        </button>
+        <button class="govuk-button govuk-button--secondary" data-module="govuk-button"
+          formaction="../storage-document.html">
+          Save as draft
+        </button>
+
+      </div>
+    </form>
+
+
+ <p class="govuk-body">
+                <a href="../sd/progress.html" class="govuk-link">Back to your progress</a>
+              </p>
+
+
+              <div class="app-contact-panel">
+                <h2 class="app-contact-panel__heading">Get help with your application</h2>
+
+                <p class="app-contact-panel__body">
+                  If you have a non-manipulation document unique reference number, have it with you when you call.
+                </p>
+
+                <ul class="govuk-list">
+                  <li>Phone: 0330 159 1989 </li>
+                  <li>Monday to Friday, 9am to 5pm (except public holidays)</li>
+                </ul>
+
+                <p class="govuk-body">
+                  <a class="govuk-link" href="#">Find out about call charges</a>
+                </p>
+
+                <p>Read the guidance on <a
+                    href="https://www.gov.uk/guidance/exporting-or-moving-fish-from-the-uk#get-help-with-fish-export-documents"
+                    class="govuk-link" rel="noreferrer noopener" target="_blank">exporting or moving fish from the UK
+                    (opens in new tab).</a>
+                </p>
+              </div>
+                </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.remove-row').forEach(function (link) {
+      link.addEventListener('click', function (e) {
+        e.preventDefault(); // Prevent navigation
+        const row = this.closest('tr'); // Find the closest table row
+        if (row) {
+          row.remove(); // Remove the row from the DOM
+        }
+      });
+    });
+  });
+</script>
+
+
+{% endblock %}

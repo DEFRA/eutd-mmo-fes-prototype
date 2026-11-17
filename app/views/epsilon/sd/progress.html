@@ -1,0 +1,470 @@
+{% set serviceName = "Create a UK non-manipulation document" %}
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+Progress - Catch Certificates
+{% endblock %}
+
+
+{% block content %}
+
+<style>
+  .app-contact-panel {
+    margin-top: 60px;
+    /* govuk-responsive-margin(9, "top") equivalent */
+    padding-top: 20px;
+    /* govuk-spacing(3) equivalent */
+    border-top: 2px solid #1d70b8;
+    /* govuk-colour("blue") */
+  }
+
+  .app-contact-panel__heading,
+  .app-contact-panel__body,
+  .app-contact-panel__link {
+    max-width: 100%;
+  }
+
+  .app-contact-panel__heading {
+    font-family: "GDS Transport", Arial, sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 1.25;
+    padding-top: 10px;
+  }
+
+  .app-contact-panel__heading:first-child {
+    padding-top: 0;
+  }
+
+  .app-contact-panel__body:last-child {
+    margin-bottom: 0;
+  }
+</style>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+
+    <div class="govuk-phase-banner" style="position:relative;top:-50px;">
+      <p class="govuk-phase-banner__content">
+        <strong class="govuk-tag govuk-phase-banner__content__tag">Beta</strong>
+        <span class="govuk-phase-banner__text">
+          This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
+        </span>
+      </p>
+    </div>
+
+    <!-- Back link -->
+    <a href="../catch/landings-entry.html" class="govuk-back-link">Back</a>
+
+
+    <h1 class="govuk-heading-xl govuk-!-margin-bottom-2" data-testid="progress-titling">Your progress</h1>
+    <span class="govuk-caption-xl">Non-manipulation document: GBR-2025-SD-DB9443BBF</span>
+    <br>
+    <h2 class="govuk-heading-l" id="application-status" class="govuk-!-margin-bottom-2">Application incomplete</h2>
+    <p class="govuk-body" id="progress-counter" class="govuk-body govuk-!-margin-bottom-7">
+      You have completed 0 of 5 required sections.
+    </p>
+
+
+
+
+    <ol class="app-task-list">
+
+      <!-- Section 1 - Exporter -->
+
+      <li>
+        <h2 class="govuk-heading-m govuk-!-font-weight-bold govuk-!-font-size-36 app-task-list__section">
+          <span class="app-task-list__section-number">1. </span> Exporter
+        </h2>
+        <ul class="app-task-list__items">
+
+          <!-- Your reference -->
+          <li class="app-task-list__item">
+            <span class="app-task-list__task-name">
+              <a href="your-reference.html" aria-describedby="your-reference-status">Your reference (optional)</a>
+            </span>
+            {% if data['your-reference'] %}
+            <strong class="govuk-tag app-task-list__tag govuk-tag--green">Completed</strong>
+            {% else %}
+            <strong class="govuk-tag app-task-list__tag govuk-tag--blue">Incomplete</strong>
+            {% endif %}
+          </li>
+
+          <!-- Exporter details -->
+          <li class="app-task-list__item">
+            <span class="app-task-list__task-name">
+              <a href="exporter-details.html" aria-describedby="exporter-details-status">Exporter details</a>
+            </span>
+            {% if data['company-name'] %}
+            <strong class="govuk-tag app-task-list__tag govuk-tag--green">Completed</strong>
+            {% else %}
+            <strong class="govuk-tag app-task-list__tag govuk-tag--blue">Incomplete</strong>
+            {% endif %}
+          </li>
+        </ul>
+      </li>
+
+
+  <!-- Section 2 - Products -->
+<li>
+  <h2 class="govuk-heading-m govuk-!-font-weight-bold govuk-!-font-size-36 app-task-list__section">
+    <span class="app-task-list__section-number">2. </span> Products
+  </h2>
+  <ul class="app-task-list__items">
+
+  
+   <!-- Product details -->
+<!-- Product details -->
+<li class="app-task-list__item">
+  <span class="app-task-list__task-name">
+    <a href="product-details.html" aria-describedby="product-details-status">Product details</a>
+  </span>
+
+  {% set allComplete = true %}
+  {% if not data.productEntries or data.productEntries.length == 0 %}
+    {% set allComplete = false %}
+  {% else %}
+    {% for entry in data.productEntries %}
+      {% if not entry.ukDocument or not entry.entryDocumentReference or
+            not entry.species or not entry.commodityCode or
+            not entry.description or
+            not entry.netWeight or not entry.fishWeight %}
+        {% set allComplete = false %}
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+
+  {% if allComplete %}
+    <strong class="govuk-tag app-task-list__tag govuk-tag--green" id="product-details-status">Completed</strong>
+  {% else %}
+    <strong class="govuk-tag app-task-list__tag govuk-tag--blue" id="product-details-status">Incomplete</strong>
+  {% endif %}
+</li>
+
+
+
+  </ul>
+</li>
+
+
+<!-- Section 3 - Arrival at storage -->
+<li>
+  <h2 class="govuk-heading-m govuk-!-font-weight-bold govuk-!-font-size-36 app-task-list__section">
+    <span class="app-task-list__section-number">3. </span> Arrival at storage facility
+  </h2>
+  <ul class="app-task-list__items">
+
+<!-- Transport details -->
+<!-- Transport details -->
+<li class="app-task-list__item">
+  <span class="app-task-list__task-name">
+    {% set allProductDetailsComplete = true %}
+    {% if not data.productEntries or data.productEntries.length == 0 %}
+      {% set allProductDetailsComplete = false %}
+    {% else %}
+      {% for entry in data.productEntries %}
+        {% if not entry.ukDocument or not entry.entryDocumentReference or
+              not entry.species or not entry.commodityCode or
+              not entry.description or
+              not entry.netWeight or not entry.fishWeight %}
+          {% set allProductDetailsComplete = false %}
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+
+    {% if allProductDetailsComplete %}
+      {% if data['transport-type'] == 'Truck' %}
+        <a href="transport-truck.html" aria-describedby="transport-details-status">UK arrival transport details</a>
+      {% elif data['transport-type'] == 'Plane' %}
+        <a href="transport-plane.html" aria-describedby="transport-details-status">UK arrival transport details</a>
+      {% elif data['transport-type'] == 'Train' %}
+        <a href="transport-train.html" aria-describedby="transport-details-status">UK arrival transport details</a>
+      {% elif data['transport-type'] == 'Container vessel' %}
+        <a href="transport-container-vessel.html" aria-describedby="transport-details-status">UK arrival transport details</a>
+      {% else %}
+        <a href="transport-type.html" aria-describedby="transport-details-status">UK arrival transport details</a>
+      {% endif %}
+    {% else %}
+      UK arrival transport details
+    {% endif %}
+  </span>
+
+  {% if not allProductDetailsComplete %}
+    <strong class="govuk-tag app-task-list__tag govuk-tag--grey" id="transport-details-status">Cannot start yet</strong>
+
+  {% elif data['transport-type'] and data['documentName'] and data['referenceNumber'] %}
+    <strong class="govuk-tag app-task-list__tag govuk-tag--green" id="transport-details-status">Completed</strong>
+
+  {% else %}
+    <strong class="govuk-tag app-task-list__tag govuk-tag--blue" id="transport-details-status">Incomplete</strong>
+  {% endif %}
+</li>
+
+
+
+
+
+  </ul>
+</li>
+
+
+
+  <!-- Section 4 - Storage facility -->
+<li>
+  <h2 class="govuk-heading-m govuk-!-font-weight-bold govuk-!-font-size-36 app-task-list__section">
+    <span class="app-task-list__section-number">4. </span> Storage facility
+  </h2>
+  <ul class="app-task-list__items">
+
+    <!-- Storage details -->
+    <li class="app-task-list__item">
+      <span class="app-task-list__task-name">
+        <a href="storage-facility-details.html" aria-describedby="storage-details-status">Storage facility details</a>
+      </span>
+      {% if data['facility-name'] and data['building-number'] and data['building-name'] and data['street-name'] and data['postcode'] %}
+  <strong class="govuk-tag app-task-list__tag govuk-tag--green" id="storage-details-status">Completed</strong>
+{% else %}
+  <strong class="govuk-tag app-task-list__tag govuk-tag--blue" id="storage-details-status">Incomplete</strong>
+{% endif %}
+    </li>
+
+  </ul>
+</li>
+
+
+
+                        <!-- Section 5 - Products (depature from storage) -->
+      <li>
+        <h2 class="govuk-heading-m govuk-!-font-weight-bold govuk-!-font-size-36 app-task-list__section">
+          <span class="app-task-list__section-number">5. </span> Departure from storage facility 
+        </h2>
+        <ul class="app-task-list__items">
+
+      
+<!-- Transport details -->
+<!-- Transport details -->
+<li class="app-task-list__item">
+  <span class="app-task-list__task-name">
+    {% set storageFacilityComplete = data['facility-name'] and data['building-number'] and data['building-name'] and data['street-name'] and data['postcode'] %}
+
+    {% if storageFacilityComplete %}
+      {% if data['departure-transport-type'] == 'Truck' %}
+        <a href="departure-transport-truck.html" aria-describedby="transport-details-status">UK departure transport details</a>
+      {% elif data['departure-transport-type'] == 'Plane' %}
+        <a href="departure-transport-plane.html" aria-describedby="transport-details-status">UK departure transport details</a>
+      {% elif data['departure-transport-type'] == 'Train' %}
+        <a href="departure-transport-train.html" aria-describedby="transport-details-status">UK departure transport details</a>
+      {% elif data['departure-transport-type'] == 'Container vessel' %}
+        <a href="departure-transport-container-vessel.html" aria-describedby="transport-details-status">UK departure transport details</a>
+      {% else %}
+        <a href="departure-transport.html" aria-describedby="transport-details-status">UK departure transport details</a>
+      {% endif %}
+    {% else %}
+      UK departure transport details
+    {% endif %}
+  </span>
+
+  {% set allDepartureWeightsEntered = true %}
+  {% for entry in data.productEntries %}
+    {% if not entry.departureNetWeight or not entry.departureFishWeight %}
+      {% set allDepartureWeightsEntered = false %}
+    {% endif %}
+  {% endfor %}
+
+  {% if data['departure-transport-type'] == 'Truck' and data['departure-truck-registration'] and data['departure-truck-nationality'] and data['departure-export-place'] and data['departure-freight-number'] and allDepartureWeightsEntered %}
+    <strong class="govuk-tag app-task-list__tag govuk-tag--green" id="transport-details-status">Completed</strong>
+
+  {% elif data['departure-transport-type'] == 'Plane' and data['departure-airway-bill'] and data['departure-flight-number'] and data['departure-plane-departure'] and data['departure-container-identification'] and allDepartureWeightsEntered %}
+    <strong class="govuk-tag app-task-list__tag govuk-tag--green" id="transport-details-status">Completed</strong>
+
+  {% elif data['departure-transport-type'] == 'Train' and data['departure-railway-bill'] and data['departure-train-departure'] and data['departure-freight-bill'] and allDepartureWeightsEntered %}
+    <strong class="govuk-tag app-task-list__tag govuk-tag--green" id="transport-details-status">Completed</strong>
+
+  {% elif data['departure-transport-type'] == 'Container vessel' and data['departure-vessel-name'] and data['departure-flag-state'] and data['departure-container-vessel-departure'] and data['departure-freight-bill'] and allDepartureWeightsEntered %}
+    <strong class="govuk-tag app-task-list__tag govuk-tag--green" id="transport-details-status">Completed</strong>
+
+  {% elif storageFacilityComplete %}
+    <strong class="govuk-tag app-task-list__tag govuk-tag--blue" id="transport-details-status">Incomplete</strong>
+
+  {% else %}
+    <strong class="govuk-tag app-task-list__tag govuk-tag--grey" id="transport-details-status">Cannot start yet</strong>
+  {% endif %}
+</li>
+
+
+
+
+        </ul>
+      </li>
+
+   
+
+    <!-- Page navigation -->
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-full">
+        <div class="govuk-button-group">
+
+
+
+
+{% set allComplete = true %}
+
+{# Section 1: Exporter #}
+{% if not data['company-name'] %}
+  {% set allComplete = false %}
+{% endif %}
+
+{# Section 2: Products (including transport details) #}
+{% set firstProduct = data.productEntries[0] %}
+{% if not (
+  firstProduct.ukDocument and
+  firstProduct.entryDocumentReference and
+  data.productEntries and data.productEntries.length > 0 and
+  data['transport-type'] and
+  (
+    (data['transport-type'] == 'Truck' and data['truck-registration'] and data['truck-nationality'] and data['export-place'] and data['freight-number']) or
+    (data['transport-type'] == 'Plane' and data['airway-bill'] and data['flight-number'] and data['plane-departure'] and data['container-identification']) or
+    (data['transport-type'] == 'Train' and data['railway-bill'] and data['train-departure'] and data['freight-bill']) or
+    (data['transport-type'] == 'Container vessel' and data['vessel-name'] and data['flag-state'] and data['container-vessel-departure'] and data['freight-bill'])
+  ) and
+  data['documentName'] and
+  data['referenceNumber']
+) %}
+  {% set allComplete = false %}
+{% else %}
+  {% set allComplete = true %}
+{% endif %}
+
+
+
+{# Section 4: Storage facility #}
+{% if not (
+  data['facility-name'] and
+  data['arrival-date'] and
+  data['building-number'] and
+  data['building-name'] and
+  data['street-name'] and
+  data['postcode']
+) %}
+  {% set allComplete = false %}
+{% endif %}
+
+{# Section 5: Departure from storage facility #}
+{% set departureTransportType = (data['departure-transport-type'] or '') | trim %}
+{% set departureTransportComplete = false %}
+
+{% if departureTransportType == 'Truck' %}
+  {% if data['departure-truck-registration'] and data['departure-truck-nationality'] and data['departure-export-place'] and data['departure-freight-number'] %}
+    {% set departureTransportComplete = true %}
+  {% endif %}
+{% elif departureTransportType == 'Plane' %}
+  {% if data['departure-airway-bill'] and data['departure-flight-number'] and data['departure-plane-departure'] and data['departure-container-identification'] %}
+    {% set departureTransportComplete = true %}
+  {% endif %}
+{% elif departureTransportType == 'Train' %}
+  {% if data['departure-railway-bill'] and data['departure-train-departure'] and data['departure-freight-bill'] %}
+    {% set departureTransportComplete = true %}
+  {% endif %}
+{% elif departureTransportType == 'Container vessel' %}
+  {% if data['departure-vessel-name'] and data['departure-flag-state'] and data['departure-container-vessel-departure'] and data['departure-freight-bill'] %}
+    {% set departureTransportComplete = true %}
+  {% endif %}
+{% endif %}
+
+{% if not (
+  data['departure-net-weight-0'] and data['departure-fish-weight-0'] and
+  data['departure-transport-type'] and
+  departureTransportComplete
+) %}
+  {% set allComplete = false %}
+{% endif %}
+
+
+{# Show button if all sections are complete #}
+{% if allComplete %}
+  <a href="check-your-answers" role="button" class="dcx-button govuk-button"
+     draggable="false" data-module="govuk-button" data-testid="continue-button">
+    Check your answers and submit
+  </a>
+{% endif %}
+
+
+
+          <a href="../storage-document.html" role="button"
+            class="dcx-button govuk-button govuk-button--secondary" draggable="false" data-module="govuk-button"
+            data-testid="return-to-dashboard-button">
+            Return to your dashboard
+          </a>
+
+
+
+
+
+
+
+        </div>
+      </div>
+    </div>
+
+
+     <div class="app-contact-panel">
+                <h2 class="app-contact-panel__heading">Get help with your application</h2>
+
+                <p class="app-contact-panel__body">
+                  If you have a non-manipulation document unique reference number, have it with you when you call.
+                </p>
+
+                <ul class="govuk-list">
+                  <li>Phone: 0330 159 1989 </li>
+                  <li>Monday to Friday, 9am to 5pm (except public holidays)</li>
+                </ul>
+
+                <p class="govuk-body">
+                  <a class="govuk-link" href="#">Find out about call charges</a>
+                </p>
+
+                <p>Read the guidance on <a
+                    href="https://www.gov.uk/guidance/exporting-or-moving-fish-from-the-uk#get-help-with-fish-export-documents"
+                    class="govuk-link" rel="noreferrer noopener" target="_blank">exporting or moving fish from the UK
+                    (opens in new tab).</a>
+                </p>
+              </div>
+
+
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const allTags = document.querySelectorAll('.app-task-list__item .govuk-tag');
+    let completedCount = 0;
+    let checkedSections = 0;
+
+    allTags.forEach(tag => {
+      if (checkedSections < 5) {
+        const isCompleted = tag.textContent.trim() === 'Completed';
+        const isVisible = window.getComputedStyle(tag).display !== 'none';
+        if (isCompleted && isVisible) {
+          completedCount++;
+        }
+        checkedSections++;
+      }
+    });
+
+    // Update progress counter
+    const counter = document.getElementById('progress-counter');
+    if (counter) {
+      counter.textContent = `You have completed ${completedCount} of 5 required sections.`;
+    }
+
+    // Update application status heading
+    const statusHeading = document.getElementById('application-status');
+    if (statusHeading) {
+      statusHeading.textContent = completedCount === 5 ? 'Application complete' : 'Application incomplete';
+    }
+  });
+</script>
+
+
+
+{% endblock %}

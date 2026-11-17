@@ -1,0 +1,54 @@
+<nav aria-label="History pagination" class="govuk-pagination catch-records-pagination">
+  <ul class="govuk-pagination__list" id="history-pagination-list"></ul>
+</nav>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var history = document.querySelector('#history')
+    var pagination = document.querySelector('#history-pagination-list')
+    var entries = Array.prototype.slice.call(history.querySelectorAll('tbody tr, .moj-timeline__item'))
+    var currentPage = 1
+    var pageSize = 5
+
+    function render() {
+      entries.forEach(function (entry, index) {
+        entry.hidden = index < (currentPage - 1) * pageSize || index >= currentPage * pageSize
+      })
+      pagination.innerHTML = ''
+      var pageCount = Math.ceil(entries.length / pageSize)
+      if (pageCount < 2) return
+
+      function addLink(page, label, relation) {
+        var item = document.createElement('li')
+        item.className = 'govuk-pagination__item' + (page === currentPage ? ' govuk-pagination__item--current' : '')
+        var link = document.createElement('a')
+        link.className = 'govuk-link govuk-pagination__link'
+        link.href = '#history'
+        link.dataset.page = page
+        link.textContent = label
+        link.setAttribute('aria-label', relation ? label + ' page' : 'Page ' + page)
+        if (relation) link.rel = relation
+        else if (page === currentPage) link.setAttribute('aria-current', 'page')
+        item.appendChild(link)
+        pagination.appendChild(item)
+      }
+
+      if (currentPage > 1) addLink(currentPage - 1, 'Previous', 'prev')
+      for (var page = 1; page <= pageCount; page += 1) addLink(page, String(page))
+      if (currentPage < pageCount) addLink(currentPage + 1, 'Next', 'next')
+    }
+
+    pagination.addEventListener('click', function (event) {
+      var link = event.target.closest('a[data-page]')
+      if (!link) return
+      event.preventDefault()
+      currentPage = Number(link.dataset.page)
+      render()
+    })
+    history.addEventListener('catch-records:sorted', function () {
+      entries = Array.prototype.slice.call(history.querySelectorAll('tbody tr, .moj-timeline__item'))
+      currentPage = 1
+      render()
+    })
+    render()
+  })
+</script>

@@ -1,0 +1,137 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  GOV.UK Prototype Kit
+{% endblock %}
+
+{% block content %}
+	{% include "../../includes/phase.html" %}
+
+<style>
+  .govuk-warning-text__icon {margin-top:20px;}
+  .black {color:#0b0c0c;}
+	.govuk-button-group {margin-top:50px;}
+</style>
+
+<style>
+  .app-contact-panel {
+    margin-top: 60px;
+    /* govuk-responsive-margin(9, "top") equivalent */
+    padding-top: 20px;
+    /* govuk-spacing(3) equivalent */
+    border-top: 2px solid #1d70b8;
+    /* govuk-colour("blue") */
+  }
+
+  .app-contact-panel__heading,
+  .app-contact-panel__body,
+  .app-contact-panel__link {
+    max-width: 100%;
+  }
+
+  .app-contact-panel__heading {
+    font-family: "GDS Transport", Arial, sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 1.25;
+    padding-top: 10px;
+  }
+
+  .app-contact-panel__heading:first-child {
+    padding-top: 0;
+  }
+
+  .app-contact-panel__body:last-child {
+    margin-bottom: 0;
+  }
+</style>
+
+  
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      
+		<a href="add-landings.html" class="govuk-back-link">Back</a>
+		
+		<h1 class="govuk-heading-xl">Whose waters were the fish or shellfish caught in?</h1>
+     
+
+   <form id="form" method="post" action="/epsilon/catch/catch-waters">
+     
+      <!-- Waters -->
+      <div class="govuk-form-group">
+        <fieldset class="govuk-fieldset" aria-describedby="waters-hint">
+         <legend class="govuk-fieldset__legend"><b>Select all the waters where the catch took place</b></legend>
+           <div id="waters-hint" class="govuk-hint">This helps us understand which countries' waters the catch came from. You can select more than one area.
+           </div>
+
+          <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="waters-1" name="waters" type="checkbox" value="UK, British Isles">
+              <label class="govuk-label govuk-checkboxes__label" for="waters-1">UK, British Isles</label>
+            </div>
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="waters-2" name="waters" type="checkbox" value="EU">
+              <label class="govuk-label govuk-checkboxes__label" for="waters-2">EU</label>
+            </div>
+            <div class="govuk-checkboxes__divider">or</div>
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="waters-3" name="waters" type="checkbox" value="Other" data-aria-controls="conditional-waters-3">
+              <label class="govuk-label govuk-checkboxes__label" for="waters-3">Other</label>
+            </div>
+            <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-waters-3">
+              <div class="govuk-form-group">
+                <label class="govuk-label" for="other-waters-detail"><b>Enter the name of the other waters</b></label>
+                <div id="other-waters-detail-hint" class="govuk-hint">
+                  The details entered here will appear on your document and must be legible in English.
+                </div>
+                <input class="govuk-input govuk-input--width-20" id="other-waters-detail" name="other-waters-detail" type="text" aria-describedby="other-waters-detail-hint">
+              </div>
+            </div>
+          </div>
+
+        </fieldset>
+      </div>
+      
+      <!-- Form controls -->
+<div class="govuk-button-group">
+   <button type="submit" class="govuk-button" data-module="govuk-button" formaction="/epsilon/catch/export-journey">
+    Save and continue
+  </button>
+  <button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button" formaction="/epsilon/catch/progress">
+    Save as draft
+  </button>
+</div>
+
+			
+		</form>
+
+      <div class="app-contact-panel">
+                <h2 class="app-contact-panel__heading">Get help with your application</h2>
+
+                <p class="app-contact-panel__body">
+                  If you have a catch certificate unique reference number, have it with you when you call.
+                </p>
+
+                <ul class="govuk-list">
+                  <li>Phone: 0330 159 1989 </li>
+                  <li>Monday to Friday, 9am to 5pm (except public holidays)</li>
+                </ul>
+
+                <p class="govuk-body">
+                  <a class="govuk-link" href="#">Find out about call charges</a>
+                </p>
+
+                <p>Read the guidance on <a
+                    href="https://www.gov.uk/guidance/exporting-or-moving-fish-from-the-uk#get-help-with-fish-export-documents"
+                    class="govuk-link" rel="noreferrer noopener" target="_blank">exporting or moving fish from the UK
+                    (opens in new tab).</a>
+                </p>
+
+              </div>
+
+	  </div>
+  </div>
+
+{% endblock %}
+

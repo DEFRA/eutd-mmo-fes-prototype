@@ -1,0 +1,610 @@
+{% extends "layouts/layout-defra.html" %}
+
+{% block pageTitle %}
+Web Admin Portal: Vessels
+{% endblock %}
+
+{% set serviceName %}
+Web Admin Portal
+{% endset %}
+
+{% set activeNavSection = "vessels" %}
+
+{% block content %}
+<style>
+  .search-container {
+    max-width: none;
+  }
+
+  .search-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 0.5rem;
+  }
+
+  .search-controls .form-search {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .form-search {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+    width: 100%;
+  }
+
+  .search-input-wrapper {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.5em;
+    width: 100%;
+  }
+
+  input[type="search"] {
+    flex: 1;
+    width: 100%;
+    height: 44px;
+    font-family: "GDS Transport", arial, sans-serif;
+    border-radius: 0;
+    padding: 5px;
+    border: 2px solid #0b0c0c;
+    margin-bottom: 0;
+    appearance: none;
+    -webkit-appearance: none;
+    box-sizing: border-box;
+    font-weight: 400;
+    font-size: 1.1875rem;
+    line-height: 1.3157894737;
+    color: #0b0c0c;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  input[type="search"]:focus {
+    outline: 3px solid #fd0;
+    box-shadow: inset 0 0 0 2px #0b0c0c;
+    z-index: 1;
+  }
+
+  .btn {
+    flex: 0 0 auto;
+    width: 52px;
+    height: 44px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    background-color: #1d70b8;
+    color: white;
+    border: none;
+    font-size: 1.1875rem;
+    font-family: "GDS Transport", arial, sans-serif;
+    cursor: pointer;
+    line-height: 1.3157894737;
+    border-radius: 0;
+  }
+
+  .btn .gem-c-search__icon {
+    width: 28px;
+    height: 28px;
+    flex: 0 0 28px;
+  }
+
+  .btn:hover {
+    background-color: #1d70b8;
+  }
+
+  .btn:focus {
+    outline: 3px solid #fd0;
+    box-shadow: inset 0 0 0 4px #0b0c0c;
+    z-index: 1;
+  }
+
+  .catch-records-filters {
+    margin-top: 1.5rem;
+    padding: 1.5rem;
+    background-color: #f3f2f1;
+    border-top: 1px solid #b1b4b6;
+    position: relative;
+  }
+
+  .catch-records-filter-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: #0b0c0c;
+    font-family: Arial, sans-serif;
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .catch-records-filter-close:hover {
+    background: #dbdad9;
+  }
+
+  .catch-records-filter-close:focus {
+    outline: 3px solid #fd0;
+    box-shadow: inset 0 0 0 2px #0b0c0c;
+  }
+
+  .catch-records-filter-form {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem 2rem;
+  }
+
+  .catch-records-filter-form > h2,
+  .catch-records-filter-form > button {
+    grid-column: 1 / -1;
+  }
+
+  .catch-records-filter-form__actions {
+    grid-column: 1 / -1;
+  }
+
+  .catch-records-filter-form .govuk-form-group {
+    margin-bottom: 0;
+    min-width: 0;
+    align-self: start;
+  }
+
+  .catch-records-filter-form .govuk-fieldset,
+  .catch-records-typeahead {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .catch-records-filter-form .govuk-checkboxes {
+    columns: 2;
+  }
+
+  .catch-records-filter-form .govuk-checkboxes__item {
+    break-inside: avoid;
+  }
+
+  .catch-records-filter-form .govuk-checkboxes__input {
+    background-color: #fff;
+  }
+
+  .catch-records-filter-form .govuk-checkboxes__input + .govuk-checkboxes__label::before {
+    background-color: #fff;
+  }
+
+  .catch-records-typeahead {
+    position: relative;
+  }
+
+  .catch-records-typeahead__listbox {
+    display: none;
+    position: absolute;
+    z-index: 1000;
+    width: 100%;
+    margin: 0;
+    padding: 0.5em;
+    border: 1px solid #b1b4b6;
+    background: #fff;
+    box-sizing: border-box;
+    list-style: none;
+  }
+
+  .catch-records-typeahead__option {
+    padding: 0.25em 0;
+    cursor: pointer;
+  }
+
+  .catch-records-typeahead__option:hover,
+  .catch-records-typeahead__option:focus {
+    background: #f3f2f1;
+    outline: 3px solid #fd0;
+  }
+
+  .catch-records-filter-toggle {
+    display: contents;
+  }
+
+  .catch-records-filter-summary {
+    display: inline-block;
+    white-space: nowrap;
+    margin-bottom: 0;
+    padding: 0.5em 1em;
+    background-color: #f3f2f1;
+    color: #0b0c0c;
+    font-family: "GDS Transport", arial, sans-serif;
+    font-size: 1.1875rem;
+    line-height: 1.3157894737;
+    border: 1px solid #b1b4b6;
+    height: 44px;
+    box-sizing: border-box;
+    cursor: pointer;
+  }
+
+  .catch-records-filter-summary:hover {
+    background-color: #dbdad9;
+  }
+
+  .catch-records-filter-summary:focus {
+    outline: 3px solid #fd0;
+    box-shadow: inset 0 0 0 2px #0b0c0c;
+  }
+
+  .catch-records-pagination {
+    margin-top: 2rem;
+  }
+
+  .catch-records-table-wrapper {
+    overflow-x: auto;
+    margin-bottom: 1rem;
+  }
+
+  .catch-records-table-wrapper .govuk-table {
+    margin-bottom: 0;
+  }
+
+  .catch-records-table-wrapper .catch-records-table--vessels {
+    width: 100%;
+    min-width: 1200px;
+    table-layout: fixed;
+  }
+
+  .catch-records-table-wrapper .govuk-table__cell,
+  .catch-records-table-wrapper .govuk-table__header {
+    white-space: nowrap;
+  }
+
+  @media (max-width: 40.0625em) {
+    .search-controls {
+      display: block;
+    }
+
+    .catch-records-filter-toggle {
+      margin-top: 0.75rem;
+      display: block;
+    }
+
+    .catch-records-filter-form {
+      grid-template-columns: 1fr;
+    }
+
+    .catch-records-filter-form .govuk-checkboxes {
+      columns: 1;
+    }
+  }
+</style>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+    <h1 class="govuk-heading-xl">Vessels</h1>
+
+    <div class="bottom search-container">
+      <div class="search-controls">
+        <form action="vessels" class="form-search" id="searchform" method="get" role="search">
+        <label class="govuk-label govuk-label--s" for="s">Search vessels</label>
+        <div class="govuk-hint" id="vessel-search-hint">
+          Search by vessel name, PLN, RSS or CFR number
+        </div>
+        <div class="search-input-wrapper">
+          <input class="search-query" enterkeyhint="search" id="s" name="s" title="Search" type="search" value="">
+          <button class="btn" type="submit" aria-label="Search vessels">
+            <svg aria-hidden="true" class="gem-c-search__icon" fill="none" focusable="false" height="28" viewbox="0 0 27 27" width="28" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12.0161" cy="11.0161" r="8.51613" stroke="currentColor" stroke-width="3"></circle>
+              <line stroke="currentColor" stroke-width="3" x1="17.8668" x2="26.4475" y1="17.3587" y2="25.9393"></line>
+            </svg>
+          </button>
+        </div>
+        </form>
+
+        <details class="catch-records-filter-toggle">
+          <summary class="catch-records-filter-summary">Filters</summary>
+          <div class="catch-records-filters">
+            <button class="catch-records-filter-close" type="button" aria-label="Close filters">x</button>
+            <form action="vessels" class="catch-records-filter-form" method="get">
+              <h2 class="govuk-heading-m">Filters</h2>
+
+              <div class="govuk-form-group">
+                <label class="govuk-label govuk-label--s" for="vessel">Vessel</label>
+                <div class="govuk-hint" id="vessel-filter-hint">Search by vessel name or PLN</div>
+                <div class="catch-records-typeahead">
+                  <input class="govuk-input" id="vessel" name="vessel" type="text" minlength="2" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="vessel-listbox" aria-describedby="vessel-filter-hint">
+                  <ul class="catch-records-typeahead__listbox" id="vessel-listbox" role="listbox"></ul>
+                </div>
+              </div>
+
+              <div class="govuk-form-group">
+                <fieldset class="govuk-fieldset">
+                  <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Status</legend>
+                  <div class="govuk-checkboxes catch-records-checkboxes--inline">
+                    {% for status in ["Active", "Inactive"] %}
+                    <div class="govuk-checkboxes__item">
+                      <input class="govuk-checkboxes__input" id="status-{{ status | lower }}" name="status" type="checkbox" value="{{ status | lower }}">
+                      <label class="govuk-label govuk-checkboxes__label" for="status-{{ status | lower }}">{{ status }}</label>
+                    </div>
+                    {% endfor %}
+                  </div>
+                </fieldset>
+              </div>
+
+              <div class="govuk-form-group">
+                <fieldset class="govuk-fieldset">
+                  <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Administration</legend>
+                  <div class="govuk-checkboxes">
+                    {% for administration in ["England", "Northern Ireland", "Scotland", "Wales", "Isle of Man"] %}
+                    <div class="govuk-checkboxes__item">
+                      <input class="govuk-checkboxes__input" id="administration-{{ administration | lower | replace(' ', '-') }}" name="administration" type="checkbox" value="{{ administration | lower }}">
+                      <label class="govuk-label govuk-checkboxes__label" for="administration-{{ administration | lower | replace(' ', '-') }}">{{ administration }}</label>
+                    </div>
+                    {% endfor %}
+                  </div>
+                </fieldset>
+              </div>
+
+              <div class="govuk-button-group catch-records-filter-form__actions">
+                <button class="govuk-button" type="submit">Apply filters</button>
+                <button class="govuk-button govuk-button--secondary" type="reset">Clear filters</button>
+              </div>
+            </form>
+          </div>
+        </details>
+      </div>
+    </div>
+<br>
+    <div class="catch-records-table-wrapper" role="region" aria-label="Vessels table, scroll to see more columns" tabindex="0">
+    <table class="govuk-table govuk-table--m catch-records-table--vessels" data-module="moj-sortable-table">
+      <colgroup>
+        <col style="width: 18%">
+        <col style="width: 8%">
+        <col style="width: 12%">
+        <col style="width: 14%">
+        <col style="width: 14%">
+        <col style="width: 9%">
+        <col style="width: 16%">
+        <col style="width: 9%">
+      </colgroup>
+      <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+          <th class="govuk-table__header" scope="col">Vessel</th>
+          <th class="govuk-table__header" scope="col">PLN</th>
+          <th class="govuk-table__header" scope="col">RSS</th>
+          <th class="govuk-table__header" scope="col">Administration</th>
+          <th class="govuk-table__header" scope="col">Admin port</th>
+          <th class="govuk-table__header" scope="col">Port code</th>
+          <th class="govuk-table__header" scope="col">CFR number</th>
+          <th class="govuk-table__header" scope="col">Status</th>
+        </tr>
+      </thead>
+      <tbody class="govuk-table__body">
+        {% set vessels = [
+          { name: "Lady Jane", pln: "PZ1", registration: "X10001", administration: "England", adminPort: "Newlyn", portCode: "GBNLY", cfr: "GBR000198765", status: "active", href: "vessel-profile?vessel=Lady+Jane" },
+          { name: "Quatro", pln: "WY43", registration: "Q12345", administration: "Wales", adminPort: "Milford Haven", portCode: "GBMLF", cfr: "GBR000100020", status: "active", href: "vessel-profile?vessel=Quatro" },
+          { name: "Obsession", pln: "FR56", registration: "RSS456", administration: "Scotland", adminPort: "Fraserburgh", portCode: "FR", cfr: "GBR000456789", status: "active" },
+          { name: "Morning Star", pln: "GY23", registration: "RSS789", administration: "England", adminPort: "Grimsby", portCode: "GY", cfr: "GBR000789012", status: "active" },
+          { name: "Sea Bird", pln: "LT89", registration: "RSS234", administration: "England", adminPort: "Lowestoft", portCode: "LT", cfr: "GBR000234567", status: "active" },
+          { name: "Ocean Pearl", pln: "MH12", registration: "RSS567", administration: "Wales", adminPort: "Milford Haven", portCode: "MH", cfr: "GBR000567890", status: "inactive" },
+          { name: "Silver Wave", pln: "BA45", registration: "RSS890", administration: "Northern Ireland", adminPort: "Kilkeel", portCode: "KL", cfr: "GBR000890123", status: "active" },
+          { name: "Northern Star", pln: "PZ45", registration: "X10002", administration: "England", adminPort: "Newlyn", portCode: "GBNLY", cfr: "GBR000100001", status: "active", href: "vessel-profile?vessel=Northern+Star" },
+          { name: "Sea Spray", pln: "FR12", registration: "X10003", administration: "Scotland", adminPort: "Fraserburgh", portCode: "FR", cfr: "GBR000100002", status: "active" },
+          { name: "Kingfisher", pln: "GY67", registration: "X10004", administration: "England", adminPort: "Grimsby", portCode: "GY", cfr: "GBR000100003", status: "inactive" },
+          { name: "Golden Dawn", pln: "LT34", registration: "X10005", administration: "England", adminPort: "Lowestoft", portCode: "LT", cfr: "GBR000100004", status: "active" },
+          { name: "Celtic Star", pln: "MH89", registration: "X10006", administration: "Wales", adminPort: "Milford Haven", portCode: "MH", cfr: "GBR000100005", status: "active" },
+          { name: "Ocean Voyager", pln: "BA23", registration: "X10007", administration: "Northern Ireland", adminPort: "Kilkeel", portCode: "KL", cfr: "GBR000100006", status: "active" },
+          { name: "Bonnie Lass", pln: "FR78", registration: "X10008", administration: "Scotland", adminPort: "Fraserburgh", portCode: "FR", cfr: "GBR000100007", status: "active" },
+          { name: "Harvest Moon", pln: "PZ56", registration: "X10009", administration: "England", adminPort: "Newlyn", portCode: "GBNLY", cfr: "GBR000100008", status: "inactive" },
+          { name: "Sea Otter", pln: "RX09", registration: "X10010", administration: "England", adminPort: "Hastings", portCode: "GBHTG", cfr: "GBR000100009", status: "active", href: "vessel-profile?vessel=Sea+Otter" },
+          { name: "Fair Wind", pln: "SW45", registration: "X10011", administration: "Wales", adminPort: "Swansea", portCode: "GBSWA", cfr: "GBR000100010", status: "active" },
+          { name: "Sunbeam", pln: "NS78", registration: "X10012", administration: "England", adminPort: "Newlyn", portCode: "GBNLY", cfr: "GBR000100011", status: "active" },
+          { name: "Moonlight", pln: "WY12", registration: "X10013", administration: "Wales", adminPort: "Milford Haven", portCode: "MH", cfr: "GBR000100012", status: "active" },
+          { name: "Atlantic Rose", pln: "M56", registration: "X10014", administration: "Isle of Man", adminPort: "Douglas", portCode: "IMDGS", cfr: "GBR000100013", status: "active" },
+          { name: "Cornish Maid", pln: "PZ89", registration: "X10015", administration: "England", adminPort: "Newlyn", portCode: "GBNLY", cfr: "GBR000100014", status: "active" },
+          { name: "Highland Piper", pln: "FR34", registration: "X10016", administration: "Scotland", adminPort: "Fraserburgh", portCode: "FR", cfr: "GBR000100015", status: "active" },
+          { name: "Ocean Drifter", pln: "GY12", registration: "X10017", administration: "England", adminPort: "Grimsby", portCode: "GY", cfr: "GBR000100016", status: "inactive" },
+          { name: "Sea Fever", pln: "LT67", registration: "X10018", administration: "England", adminPort: "Lowestoft", portCode: "LT", cfr: "GBR000100017", status: "active" },
+          { name: "Welsh Dragon", pln: "MH34", registration: "X10019", administration: "Wales", adminPort: "Milford Haven", portCode: "MH", cfr: "GBR000100018", status: "active" },
+          { name: "Manx Pride", pln: "M23", registration: "X10020", administration: "Isle of Man", adminPort: "Douglas", portCode: "IMDGS", cfr: "GBR000100019", status: "active" },
+          { name: "Bubbles", pln: "PZ99", registration: "X10021", administration: "England", adminPort: "Newlyn", portCode: "GBNLY", cfr: "GBR000100021", status: "active", href: "vessel-profile?vessel=Bubbles" }
+        ] %}
+        {% for vessel in vessels %}
+        <tr class="govuk-table__row" data-vessel="{{ vessel.name }}" data-pln="{{ vessel.pln }}" data-registration="{{ vessel.registration }}" data-cfr="{{ vessel.cfr }}" data-status="{{ vessel.status }}" data-administration="{{ vessel.administration | lower }}">
+          <td class="govuk-table__cell"><a class="govuk-link" href="{{ vessel.href | default('#') }}">{{ vessel.name }}</a></td>
+          <td class="govuk-table__cell">{{ vessel.pln }}</td>
+          <td class="govuk-table__cell">{{ vessel.registration }}</td>
+          <td class="govuk-table__cell">{{ vessel.administration }}</td>
+          <td class="govuk-table__cell">{{ vessel.adminPort }}</td>
+          <td class="govuk-table__cell">{{ vessel.portCode }}</td>
+          <td class="govuk-table__cell">{{ vessel.cfr }}</td>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--{{ 'green' if vessel.status == 'active' else 'grey' }}">{{ vessel.status | capitalize }}</strong></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    </div>
+    <nav aria-label="Pagination" class="govuk-pagination catch-records-pagination">
+      <ul class="govuk-pagination__list" id="pagination-list"></ul>
+    </nav>
+    <p class="govuk-body" id="no-results" hidden>No vessels match your search or filters.</p>
+  </div>
+</div>
+{% endblock %}
+
+{% block pageScripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var input = document.querySelector('#vessel')
+    var listbox = document.querySelector('#vessel-listbox')
+    var vesselSearchOptions = Array.from(document.querySelectorAll('tbody tr[data-vessel]')).reduce(function (options, row) {
+      ;[row.dataset.vessel, row.dataset.pln].forEach(function (value) {
+        if (options.indexOf(value) === -1) options.push(value)
+      })
+      return options
+    }, [])
+
+    input.addEventListener('input', function () {
+      var value = input.value.trim().toLowerCase()
+      listbox.innerHTML = ''
+      input.setAttribute('aria-expanded', 'false')
+
+      if (value.length < 2) {
+        listbox.style.display = 'none'
+        return
+      }
+
+      vesselSearchOptions.filter(function (vessel) {
+        return vessel.toLowerCase().indexOf(value) !== -1
+      }).forEach(function (vessel, index) {
+        var item = document.createElement('li')
+        item.className = 'catch-records-typeahead__option'
+        item.id = 'vessel-option-' + index
+        item.setAttribute('role', 'option')
+        item.setAttribute('tabindex', '0')
+        item.textContent = vessel
+        item.addEventListener('click', function () {
+          input.value = vessel
+          listbox.style.display = 'none'
+          input.setAttribute('aria-expanded', 'false')
+        })
+        listbox.appendChild(item)
+      })
+
+      if (listbox.children.length) {
+        listbox.style.display = 'block'
+        input.setAttribute('aria-expanded', 'true')
+      }
+    })
+
+    document.addEventListener('click', function (event) {
+      if (!input.contains(event.target) && !listbox.contains(event.target)) {
+        listbox.style.display = 'none'
+        input.setAttribute('aria-expanded', 'false')
+      }
+    })
+
+    var searchForm = document.querySelector('#searchform')
+    var filterForm = document.querySelector('.catch-records-filter-form')
+    var filterDetails = document.querySelector('.catch-records-filter-toggle')
+    var filterClose = document.querySelector('.catch-records-filter-close')
+    var rows = Array.prototype.slice.call(document.querySelectorAll('tbody .govuk-table__row[data-vessel]'))
+    var noResults = document.querySelector('#no-results')
+    var paginationList = document.querySelector('#pagination-list')
+    var currentPage = 1
+    var pageSize = 10
+
+    document.querySelector('.catch-records-table--vessels').addEventListener('catch-records:sorted', function () {
+      rows = Array.prototype.slice.call(this.tBodies[0].rows)
+      applyFilters(true)
+    })
+
+    function renderPagination(matchingRows) {
+      var pageCount = Math.ceil(matchingRows.length / pageSize)
+      paginationList.innerHTML = ''
+
+      if (pageCount < 2) return
+
+      if (currentPage > 1) {
+        var previousItem = document.createElement('li')
+        previousItem.className = 'govuk-pagination__item govuk-pagination__prev'
+        previousItem.innerHTML = '<a class="govuk-link govuk-pagination__link" href="#" rel="prev"><span class="govuk-pagination__link-title">Previous<span class="govuk-visually-hidden"> page</span></span></a>'
+        previousItem.querySelector('a').dataset.page = currentPage - 1
+        paginationList.appendChild(previousItem)
+      }
+
+      for (var page = 1; page <= pageCount; page += 1) {
+        var pageItem = document.createElement('li')
+        pageItem.className = 'govuk-pagination__item' + (page === currentPage ? ' govuk-pagination__item--current' : '')
+        pageItem.innerHTML = '<a class="govuk-link govuk-pagination__link" href="#" aria-label="Page ' + page + '">' + page + '</a>'
+        var pageLink = pageItem.querySelector('a')
+        pageLink.dataset.page = page
+        if (page === currentPage) pageLink.setAttribute('aria-current', 'page')
+        paginationList.appendChild(pageItem)
+      }
+
+      if (currentPage < pageCount) {
+        var nextItem = document.createElement('li')
+        nextItem.className = 'govuk-pagination__item govuk-pagination__next'
+        nextItem.innerHTML = '<a class="govuk-link govuk-pagination__link" href="#" rel="next"><span class="govuk-pagination__link-title">Next<span class="govuk-visually-hidden"> page</span></span></a>'
+        nextItem.querySelector('a').dataset.page = currentPage + 1
+        paginationList.appendChild(nextItem)
+      }
+    }
+
+    function renderPage(matchingRows) {
+      var start = (currentPage - 1) * pageSize
+      var visibleRows = matchingRows.slice(start, start + pageSize)
+
+      rows.forEach(function (row) {
+        row.hidden = visibleRows.indexOf(row) === -1
+      })
+
+      renderPagination(matchingRows)
+    }
+
+    function applyFilters(resetPage) {
+      if (resetPage) currentPage = 1
+
+      var query = document.querySelector('#s').value.trim().toLowerCase()
+      var vesselValue = input.value.trim().toLowerCase()
+      var statuses = Array.prototype.slice.call(document.querySelectorAll('input[name="status"]:checked')).map(function (checkbox) {
+        return checkbox.value
+      })
+      var administrations = Array.prototype.slice.call(document.querySelectorAll('input[name="administration"]:checked')).map(function (checkbox) {
+        return checkbox.value
+      })
+      var matchingRows = []
+
+      rows.forEach(function (row) {
+        var searchableText = [row.dataset.vessel, row.dataset.pln, row.dataset.registration, row.dataset.cfr].join(' ').toLowerCase()
+        var matches = (!query || searchableText.indexOf(query) !== -1) &&
+          (!vesselValue || row.dataset.vessel.toLowerCase().indexOf(vesselValue) !== -1 || row.dataset.pln.toLowerCase().indexOf(vesselValue) !== -1) &&
+          (!statuses.length || statuses.indexOf(row.dataset.status) !== -1) &&
+          (!administrations.length || administrations.indexOf(row.dataset.administration) !== -1)
+
+        row.dataset.matchesFilters = matches
+        if (matches) matchingRows.push(row)
+      })
+
+      noResults.hidden = matchingRows.length !== 0
+      renderPage(matchingRows)
+    }
+
+    searchForm.addEventListener('submit', function (event) {
+      event.preventDefault()
+      applyFilters(true)
+    })
+
+    filterForm.addEventListener('submit', function (event) {
+      event.preventDefault()
+      applyFilters(true)
+    })
+
+    filterForm.addEventListener('reset', function () {
+      window.setTimeout(function () {
+        applyFilters(true)
+      }, 0)
+    })
+
+    paginationList.addEventListener('click', function (event) {
+      var pageLink = event.target.closest('a[data-page]')
+      if (!pageLink) return
+      event.preventDefault()
+      currentPage = Number(pageLink.dataset.page)
+      var matchingRows = rows.filter(function (row) {
+        return row.dataset.matchesFilters === 'true'
+      })
+      renderPage(matchingRows)
+    })
+
+    filterClose.addEventListener('click', function () {
+      filterDetails.removeAttribute('open')
+      document.querySelector('.catch-records-filter-summary').focus()
+    })
+
+    applyFilters(true)
+  })
+</script>
+{% endblock %}

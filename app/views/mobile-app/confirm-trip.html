@@ -1,0 +1,93 @@
+{% set serviceName = "Record your catch" %}
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Check your catch record
+{% endblock %}
+
+{% block content %}
+  {% include "../includes/phase.html" %}
+
+<style>
+  .summary-section {margin-bottom:30px; padding:15px; background:#f3f2f1; border-left:4px solid #1d70b8;}
+  .summary-section h3 {margin-top:0;}
+  .summary-item {margin-bottom:10px;}
+  .govuk-warning-text {margin-bottom:30px;}
+  .govuk-button-group {margin-top:50px;}
+</style>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+
+    <a href="javascript:history.back()" class="govuk-back-link">Back</a>
+
+    <h1 class="govuk-heading-xl">Check your catch record</h1>
+
+    <div class="summary-section">
+      <h3 class="govuk-heading-s">Trip details</h3>
+      <div class="summary-item"><strong>Vessel:</strong> ACHILLES</div>
+      <div class="summary-item"><strong>Departure:</strong> 15 June 2026 from Grimsby</div>
+      <div class="summary-item"><strong>Return:</strong> Grimsby</div>
+    </div>
+
+    <div class="summary-section">
+      <h3 class="govuk-heading-s">Fishing details</h3>
+      <div class="summary-item"><strong>Statistical area:</strong> 27.6.a</div>
+      <div class="summary-item"><strong>Gear:</strong> Nephrops trawls (3 times shot)</div>
+    </div>
+
+    <div class="summary-section">
+      <h3 class="govuk-heading-s">Species caught (2 species)</h3>
+      <div class="summary-item">Atlantic Cod: 250kg</div>
+      <div class="summary-item">Haddock: 180kg</div>
+    </div>
+
+    <div class="summary-section">
+      <h3 class="govuk-heading-s">Species retained (1 species)</h3>
+      <div class="summary-item">Atlantic Salmon: 50kg</div>
+    </div>
+
+    <div class="govuk-warning-text">
+      <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+      <strong class="govuk-warning-text__text">
+        <span class="govuk-visually-hidden">Warning</span>
+        By submitting your catch record, you're confirming:
+        <ul style="margin-top:10px; padding-left:20px;">
+          <li>The weight of fish you have landed is accurate</li>
+          <li>This is within permitted tolerance levels</li>
+          <li>Fishing authorities may take action in respect of inaccurate catch recording</li>
+        </ul>
+      </strong>
+    </div>
+
+    <form method="post" action="/mobile-app/trip-submitted">
+
+      <div class="govuk-form-group">
+        <fieldset class="govuk-fieldset">
+          <div class="govuk-checkboxes">
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="confirm" name="confirm" type="checkbox" value="yes">
+              <label class="govuk-label govuk-checkboxes__label" for="confirm">
+                I confirm the information is complete and accurate
+              </label>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+
+      <div class="govuk-body">
+        By submitting this record, you agree that the information you've given is complete and correct.
+      </div>
+
+      <div class="govuk-button-group">
+        <button type="submit" class="govuk-button govuk-button--primary" data-module="govuk-button">
+          Accept and submit trip details
+        </button>
+      </div>
+
+    </form>
+
+  </div>
+</div>
+
+{% endblock %}

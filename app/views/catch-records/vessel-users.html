@@ -1,0 +1,274 @@
+{% extends "layouts/layout-defra.html" %}
+
+{% block pageTitle %}{% if action == 'remove' %}Remove a user from{% else %}Add a user to{% endif %} {{ vessel.name }} - Web Admin Portal{% endblock %}
+
+{% set serviceName %}
+Web Admin Portal
+{% endset %}
+
+{% set activeNavSection = "vessels" %}
+
+{% block beforeContent %}
+<a class="govuk-back-link" href="vessel-profile?vessel={{ vessel.name | replace(' ', '+') }}#users">Back to {{ vessel.name }}</a>
+{% endblock %}
+
+{% block content %}
+<style>
+  .catch-records-vessel-users__control {
+    box-sizing: border-box;
+    width: 390px;
+    max-width: 100%;
+  }
+
+  .catch-records-user-picker {
+    position: relative;
+  }
+
+  .catch-records-user-picker__results {
+    position: absolute;
+    z-index: 10;
+    width: 100%;
+    max-height: 280px;
+    overflow-y: auto;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border: 1px solid #b1b4b6;
+    background: #fff;
+  }
+
+  .catch-records-user-picker__results li {
+    padding: 12px 16px;
+    cursor: pointer;
+    overflow-wrap: anywhere;
+  }
+
+  .catch-records-user-picker__results li[aria-selected="true"],
+  .catch-records-user-picker__results li:hover {
+    background: #f3f2f1;
+    outline: 3px solid #fd0;
+    outline-offset: -3px;
+  }
+
+  .catch-records-user-picker__results strong,
+  .catch-records-user-picker__results span {
+    display: block;
+  }
+</style>
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    {% if errors.length %}
+    <div class="govuk-error-summary" data-module="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1">
+      <h2 class="govuk-error-summary__title" id="error-summary-title">There is a problem</h2>
+      <div class="govuk-error-summary__body">
+        <ul class="govuk-list govuk-error-summary__list">
+          {% for error in errors %}<li><a href="#{{ error.field }}">{{ error.text }}</a></li>{% endfor %}
+        </ul>
+      </div>
+    </div>
+    {% endif %}
+
+    {% set userError = '' %}
+    {% set roleError = '' %}
+    {% for error in errors %}
+      {% if error.field == 'user-id' %}{% set userError = error.text %}{% endif %}
+      {% if error.field == 'role' %}{% set roleError = error.text %}{% endif %}
+    {% endfor %}
+
+    <p class="govuk-caption-l">Vessel {{ vessel.reference }}</p>
+    <h1 class="govuk-heading-xl">{% if action == 'remove' %}Remove a user from{% else %}Add a user to{% endif %} {{ vessel.name }}</h1>
+
+    {% if action == 'add' %}
+    {% if skipperOnly %}
+    <p class="govuk-body">Choose an existing user to link as a skipper.</p>
+    {% else %}
+    <p class="govuk-body">Choose an existing user and their role on this vessel.</p>
+    <div class="govuk-inset-text">
+      Vessel owners receive an email invitation to register when their vessel is added to the system. Skippers should ask their vessel owner to add them from their account.
+    </div>
+    {% endif %}
+    {% if availableUsers.length %}
+    <form action="/catch-records/vessel-users" method="post" novalidate>
+      <input type="hidden" name="action" value="add">
+      <input type="hidden" name="vessel" value="{{ vessel.name }}">
+      <div class="govuk-form-group{% if userError %} govuk-form-group--error{% endif %}">
+        <label class="govuk-label govuk-label--s" for="user-id">User</label>
+        <div class="govuk-hint" id="user-search-hint">Search by name, email address or user ID.</div>
+        {% if userError %}<p class="govuk-error-message" id="user-id-error"><span class="govuk-visually-hidden">Error:</span> {{ userError }}</p>{% endif %}
+        {% set selectedUserLabel = '' %}
+        {% for user in availableUsers %}
+          {% if selectedUserId == user.userId %}{% set selectedUserLabel = user.name + ' (' + user.userId + ')' %}{% endif %}
+        {% endfor %}
+        <div class="catch-records-user-picker catch-records-vessel-users__control">
+          <input class="govuk-input{% if userError %} govuk-input--error{% endif %}" id="user-id" type="text" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="user-results" aria-describedby="user-search-hint{% if userError %} user-id-error{% endif %}" value="{{ selectedUserLabel }}">
+          <ul id="user-results" class="govuk-body catch-records-user-picker__results" role="listbox" hidden></ul>
+        </div>
+        <p class="govuk-body-s" id="user-search-status" role="status"></p>
+        <select id="user-options" name="user-id" hidden tabindex="-1" aria-hidden="true">
+          <option value="">Select a user</option>
+          {% for user in availableUsers %}
+          <option value="{{ user.userId }}" data-name="{{ user.name }}" data-email="{{ user.email }}"{% if selectedUserId == user.userId %} selected{% endif %}>{{ user.name }} ({{ user.userId }})</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      {% if skipperOnly %}
+      <input type="hidden" name="role" value="Skipper (Master)">
+      {% else %}
+      <div class="govuk-form-group{% if roleError %} govuk-form-group--error{% endif %}">
+        <fieldset class="govuk-fieldset"{% if roleError %} aria-describedby="role-error"{% endif %}>
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">User role</legend>
+          {% if roleError %}<p class="govuk-error-message" id="role-error"><span class="govuk-visually-hidden">Error:</span> {{ roleError }}</p>{% endif %}
+          <div class="govuk-radios">
+            {% set roles = [
+              { id: 'owner-nominee', value: 'Owner (Nominee)' },
+              { id: 'skipper-master', value: 'Skipper (Master)' }
+            ] %}
+            {% for role in roles %}
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="role-{{ role.id }}" name="role" type="radio" value="{{ role.value }}"{% if selectedRole == role.value %} checked{% endif %}>
+              <label class="govuk-label govuk-radios__label" for="role-{{ role.id }}">{{ role.value }}</label>
+            </div>
+            {% endfor %}
+          </div>
+        </fieldset>
+      </div>
+      {% endif %}
+
+      <div class="govuk-button-group">
+        <button class="govuk-button" type="submit">{% if skipperOnly %}Add skipper to vessel{% else %}Add user to vessel{% endif %}</button>
+        <a class="govuk-button govuk-button--secondary" href="vessel-profile?vessel={{ vessel.name | replace(' ', '+') }}#users" role="button" draggable="false">Cancel</a>
+      </div>
+    </form>
+    {% else %}
+    <p class="govuk-body">All available users are already linked to this vessel.</p>
+    <a class="govuk-button" href="vessel-profile?vessel={{ vessel.name | replace(' ', '+') }}#users">Return to vessel</a>
+    {% endif %}
+    {% else %}
+    <p class="govuk-body">{% if skipperOnly %}Choose the skipper to remove from this vessel. Their user account will not be deleted.{% else %}Choose the user to remove from this vessel. Their user account will not be deleted.{% endif %}</p>
+    {% if linkedUsers.length %}
+    <form action="/catch-records/vessel-users" method="post" novalidate>
+      <input type="hidden" name="action" value="remove">
+      <input type="hidden" name="vessel" value="{{ vessel.name }}">
+      <div class="govuk-form-group{% if userError %} govuk-form-group--error{% endif %}">
+        <fieldset class="govuk-fieldset"{% if userError %} aria-describedby="user-id-error"{% endif %}>
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">{% if skipperOnly %}Select a skipper{% else %}Select a user{% endif %}</legend>
+          {% if userError %}<p class="govuk-error-message" id="user-id-error"><span class="govuk-visually-hidden">Error:</span> {{ userError }}</p>{% endif %}
+          <div class="govuk-radios">
+            {% for user in linkedUsers %}
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="user-{{ user.userId }}" name="user-id" type="radio" value="{{ user.userId }}">
+              <label class="govuk-label govuk-radios__label" for="user-{{ user.userId }}">{{ user.name }} ({{ user.role }}, user ID {{ user.userId }})</label>
+            </div>
+            {% endfor %}
+          </div>
+        </fieldset>
+      </div>
+      <div class="govuk-button-group">
+        <button class="govuk-button govuk-button--warning" type="submit">{% if skipperOnly %}Remove skipper from vessel{% else %}Remove user from vessel{% endif %}</button>
+        <a class="govuk-button govuk-button--secondary" href="vessel-profile?vessel={{ vessel.name | replace(' ', '+') }}#users" role="button" draggable="false">Cancel</a>
+      </div>
+    </form>
+    {% else %}
+    <p class="govuk-body">There are no users linked to this vessel.</p>
+    <a class="govuk-button" href="vessel-profile?vessel={{ vessel.name | replace(' ', '+') }}#users">Return to vessel</a>
+    {% endif %}
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+
+{% block pageScripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var select = document.querySelector('select[name="user-id"]')
+    if (!select) return
+    var users = Array.prototype.slice.call(select.options).filter(function (option) {
+      return option.value
+    })
+    var input = document.querySelector('#user-id')
+    var results = document.querySelector('#user-results')
+    var status = document.querySelector('#user-search-status')
+    var matches = []
+    var activeIndex = -1
+
+    function closeResults() {
+      results.hidden = true
+      input.setAttribute('aria-expanded', 'false')
+      input.removeAttribute('aria-activedescendant')
+      activeIndex = -1
+    }
+
+    function chooseUser(index) {
+      var option = matches[index]
+      if (!option) return
+      select.value = option.value
+      input.value = option.textContent
+      closeResults()
+      status.textContent = option.dataset.name + ' selected.'
+    }
+
+    function searchUsers() {
+      var query = input.value.trim().toLowerCase()
+      select.value = ''
+      results.replaceChildren()
+      matches = []
+      activeIndex = -1
+      input.removeAttribute('aria-activedescendant')
+      if (!query) {
+        closeResults()
+        status.textContent = ''
+        return
+      }
+      matches = users.filter(function (option) {
+        return [option.dataset.name, option.dataset.email, option.value].join(' ').toLowerCase().indexOf(query) !== -1
+      })
+      matches.forEach(function (option, index) {
+        var item = document.createElement('li')
+        item.id = 'user-result-' + index
+        item.setAttribute('role', 'option')
+        item.setAttribute('aria-selected', 'false')
+        var name = document.createElement('span')
+        name.textContent = option.dataset.name
+        var details = document.createElement('span')
+        details.className = 'govuk-body-s govuk-!-margin-bottom-0'
+        details.textContent = option.dataset.email + ' · User ID ' + option.value
+        item.appendChild(name)
+        item.appendChild(details)
+        item.addEventListener('mousedown', function (event) { event.preventDefault() })
+        item.addEventListener('click', function () { chooseUser(index) })
+        results.appendChild(item)
+      })
+      results.hidden = matches.length === 0
+      input.setAttribute('aria-expanded', String(matches.length > 0))
+      status.textContent = matches.length ? matches.length + ' users found.' : 'No users found. Check the name, email address or user ID.'
+    }
+
+    input.addEventListener('input', searchUsers)
+    input.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape') { closeResults(); return }
+      if (event.key === 'Tab') { closeResults(); return }
+      if (event.key === 'Enter' && !results.hidden) {
+        event.preventDefault()
+        if (activeIndex >= 0) chooseUser(activeIndex)
+        return
+      }
+      if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') return
+      event.preventDefault()
+      if (results.hidden) searchUsers()
+      if (!matches.length) return
+      activeIndex = event.key === 'ArrowDown'
+        ? (activeIndex + 1) % matches.length
+        : (activeIndex <= 0 ? matches.length - 1 : activeIndex - 1)
+      Array.prototype.forEach.call(results.children, function (item, index) {
+        item.setAttribute('aria-selected', String(index === activeIndex))
+      })
+      var activeItem = results.children[activeIndex]
+      input.setAttribute('aria-activedescendant', activeItem.id)
+      activeItem.scrollIntoView({ block: 'nearest' })
+    })
+    input.addEventListener('blur', closeResults)
+  })
+</script>
+{% endblock %}

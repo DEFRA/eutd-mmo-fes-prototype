@@ -1,0 +1,166 @@
+{% extends "layouts/layout-defra-v2.html" %}
+{% set activeNavSection = 'users' %}
+{% set pageHeading = 'Remove a vessel' if action == 'remove' else 'Add a vessel' %}
+{% block pageTitle %}{{ pageHeading }} - Web Admin Portal{% endblock %}
+{% block beforeContent %}<a class="govuk-back-link" href="new-user-profile?userId={{ profileUser.userId }}">Back to user profile</a>{% endblock %}
+{% block content %}
+<style>
+  .catch-records-vessel-picker {
+    position: relative;
+    width: 390px;
+    max-width: 100%;
+  }
+
+  .catch-records-vessel-picker__results {
+    position: absolute;
+    z-index: 10;
+    box-sizing: border-box;
+    width: 100%;
+    max-height: 280px;
+    overflow-y: auto;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border: 1px solid #b1b4b6;
+    background: #fff;
+  }
+
+  .catch-records-vessel-picker__results li {
+    padding: 12px 16px;
+    cursor: pointer;
+    overflow-wrap: anywhere;
+  }
+
+  .catch-records-vessel-picker__results li[aria-selected="true"],
+  .catch-records-vessel-picker__results li:hover {
+    background: #f3f2f1;
+    outline: 3px solid #fd0;
+    outline-offset: -3px;
+  }
+
+  .catch-records-vessel-picker__control {
+    box-sizing: border-box;
+    width: 390px;
+    max-width: 100%;
+  }
+</style>
+<div class="govuk-grid-row"><div class="govuk-grid-column-two-thirds">
+  <span class="govuk-caption-l">{{ profileUser.name }}</span>
+  <h1 class="govuk-heading-xl">{{ pageHeading }}</h1>
+  {% if vessels.length %}
+  <form action="/catch-records-v2/vessel-users" method="post">
+    <input type="hidden" name="action" value="{{ action }}">
+    <input type="hidden" name="user-id" value="{{ profileUser.userId }}">
+    <input type="hidden" name="return-user-id" value="{{ profileUser.userId }}">
+    <div class="govuk-form-group">
+      <label class="govuk-label govuk-label--s" for="vessel">Vessel</label>
+      <div class="govuk-hint" id="vessel-search-hint">Search by vessel name, PLN or RSS number.</div>
+      <div class="catch-records-vessel-picker" id="vessel-picker" hidden>
+        <input class="govuk-input" id="vessel-search" type="text" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="vessel-results" aria-describedby="vessel-search-hint">
+        <ul class="govuk-body catch-records-vessel-picker__results" id="vessel-results" role="listbox" hidden></ul>
+      </div>
+      <p class="govuk-visually-hidden" id="vessel-search-status" role="status" aria-live="polite"></p>
+      <select class="govuk-select catch-records-vessel-picker__control" id="vessel" name="vessel" required>
+        <option value="">Select a vessel</option>
+        {% for vessel in vessels %}<option value="{{ vessel.reference }}" data-name="{{ vessel.name }}" data-rss="{{ vessel.rss }}">{{ vessel.name }} ({{ vessel.reference }})</option>{% endfor %}
+      </select>
+    </div>
+    {% if action == 'add' and not skipperOnly %}
+    <div class="govuk-form-group">
+      <label class="govuk-label govuk-label--s" for="role">User role on vessel</label>
+      <select class="govuk-select catch-records-vessel-picker__control" id="role" name="role"><option value="Owner (Nominee)">Owner (Nominee)</option><option value="Skipper (Master)">Skipper (Master)</option></select>
+    </div>
+    {% elif action == 'add' %}<p class="govuk-body">User role: Skipper (Master)</p>{% endif %}
+    <div class="govuk-button-group"><button class="govuk-button" type="submit">{{ pageHeading }}</button><a class="govuk-link" href="new-user-profile?userId={{ profileUser.userId }}">Cancel</a></div>
+  </form>
+  {% else %}<p class="govuk-body">No eligible vessels are available to {{ action }}{% if skipperOnly %} as a skipper{% endif %}.</p>{% endif %}
+</div></div>
+{% endblock %}
+
+{% block pageScripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var select = document.querySelector('#vessel')
+    if (!select) return
+    var vessels = Array.prototype.slice.call(select.options).filter(function (option) { return option.value })
+    var input = document.querySelector('#vessel-search')
+    var results = document.querySelector('#vessel-results')
+    var status = document.querySelector('#vessel-search-status')
+    var matches = []
+    var activeIndex = -1
+    document.querySelector('#vessel-picker').hidden = false
+    document.querySelector('label[for="vessel"]').setAttribute('for', 'vessel-search')
+    select.hidden = true
+    select.required = false
+    select.setAttribute('aria-hidden', 'true')
+    select.setAttribute('tabindex', '-1')
+    input.required = true
+
+    function closeResults() {
+      results.hidden = true
+      input.setAttribute('aria-expanded', 'false')
+      input.removeAttribute('aria-activedescendant')
+      activeIndex = -1
+    }
+
+    function chooseVessel(index) {
+      var option = matches[index]
+      if (!option) return
+      select.value = option.value
+      input.value = option.textContent
+      input.setCustomValidity('')
+      closeResults()
+      status.textContent = option.textContent + ' selected.'
+    }
+
+    function searchVessels() {
+      var query = input.value.trim().toLowerCase()
+      select.value = ''
+      input.setCustomValidity('Select a vessel from the results')
+      results.replaceChildren()
+      matches = []
+      closeResults()
+      if (query.length < 2) {
+        status.textContent = ''
+        return
+      }
+      matches = vessels.filter(function (option) { return (option.textContent + ' ' + option.dataset.rss).toLowerCase().indexOf(query) !== -1 })
+      matches.forEach(function (option, index) {
+        var item = document.createElement('li')
+        item.id = 'vessel-result-' + index
+        item.setAttribute('role', 'option')
+        item.setAttribute('aria-selected', 'false')
+        item.textContent = option.textContent
+        item.addEventListener('mousedown', function (event) { event.preventDefault() })
+        item.addEventListener('click', function () { chooseVessel(index) })
+        results.appendChild(item)
+      })
+      results.hidden = matches.length === 0
+      input.setAttribute('aria-expanded', String(matches.length > 0))
+      status.textContent = matches.length ? matches.length + ' vessels found.' : 'No vessels found. Check the name or reference.'
+    }
+
+    input.addEventListener('input', searchVessels)
+    input.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' || event.key === 'Tab') { closeResults(); return }
+      if (event.key === 'Enter' && !results.hidden) {
+        event.preventDefault()
+        if (activeIndex >= 0) chooseVessel(activeIndex)
+        return
+      }
+      if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') return
+      event.preventDefault()
+      if (results.hidden) searchVessels()
+      if (!matches.length) return
+      activeIndex = event.key === 'ArrowDown'
+        ? (activeIndex + 1) % matches.length
+        : (activeIndex <= 0 ? matches.length - 1 : activeIndex - 1)
+      Array.prototype.forEach.call(results.children, function (item, index) { item.setAttribute('aria-selected', String(index === activeIndex)) })
+      var activeItem = results.children[activeIndex]
+      input.setAttribute('aria-activedescendant', activeItem.id)
+      activeItem.scrollIntoView({ block: 'nearest' })
+    })
+    input.addEventListener('blur', closeResults)
+  })
+</script>
+{% endblock %}

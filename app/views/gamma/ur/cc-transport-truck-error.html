@@ -1,0 +1,296 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Error: Truck details - GOV.UK
+{% endblock %}
+
+{% block content %}
+  {% include "../../includes/phase.html" %}
+
+  <style>
+  .secondary-button-style {
+    display: inline-block;
+    position: relative;
+    padding: 6px 10px 5px;
+    margin: 0 10px 20px 0;
+    min-width: 80px;
+    width: auto;
+    font-family: "GDS Transport", arial, sans-serif;
+    font-size: 1.1875rem;
+    font-weight: 400;
+    line-height: 1.3157894737;
+    color: #0b0c0c;
+    background: rgba(0, 0, 0, 0);
+    border: 1px solid #0b0c0c;
+    box-shadow: 0 3px 0 #0b0c0c;
+    text-align: center;
+    text-decoration: none;
+    vertical-align: top;
+    cursor: pointer;
+    border-radius: 0;
+    box-sizing: border-box;
+    -webkit-appearance: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
+  }
+
+  .secondary-button-style:hover {
+    background-color: #f3f2f1;
+    color: #0b0c0c;
+  }
+
+  .secondary-button-style:focus {
+    outline: 3px solid #fd0;
+    outline-offset: 0;
+    box-shadow: inset 0 0 0 1px #0b0c0c;
+  }
+
+  .secondary-button-style:active {
+    top: 2px;
+    box-shadow: 0 1px 0 #0b0c0c;
+  }
+</style>
+
+  <style>
+    .govuk-table {
+      margin-top: 30px;
+    }
+
+    .govuk-form-group {
+      margin-bottom: 20px;
+    }
+
+    .govuk-button-group {
+      margin-top: 30px;
+    }
+
+    .document-field {
+      position: relative;
+      padding-bottom: 20px;
+    }
+
+    .delete-link {
+      margin-left: 10px;
+    }
+
+    .govuk-label--m {
+      font-size: 16px;
+    }
+
+    .govuk-input {
+      font-size: 16px;
+    }
+  </style>
+
+  <style>
+  .app-contact-panel {
+    margin-top: 60px;
+    /* govuk-responsive-margin(9, "top") equivalent */
+    padding-top: 20px;
+    /* govuk-spacing(3) equivalent */
+    border-top: 2px solid #1d70b8;
+    /* govuk-colour("blue") */
+  }
+
+  .app-contact-panel__heading,
+  .app-contact-panel__body,
+  .app-contact-panel__link {
+    max-width: 100%;
+  }
+
+  .app-contact-panel__heading {
+    font-family: "GDS Transport", Arial, sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 1.25;
+    padding-top: 10px;
+  }
+
+  .app-contact-panel__heading:first-child {
+    padding-top: 0;
+  }
+
+  .app-contact-panel__body:last-child {
+    margin-bottom: 0;
+  }
+</style>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <a href="javascript:history.back()" class="govuk-back-link">Back</a>
+
+      <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" data-module="govuk-error-summary">
+        <h2 class="govuk-error-summary__title" id="error-summary-title">
+          There is a problem
+        </h2>
+        <div class="govuk-error-summary__body">
+          <ul class="govuk-list govuk-error-summary__list">
+            <li>
+              <a href="#container-identification-truck">Enter a container number in the correct format. This must be 11 characters: 3 letters, then U, J, Z or R, then 7 numbers.</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <h1 class="govuk-heading-xl">Truck details</h1>
+
+      <form id="details-form" method="post" action="/gamma/ur/cc-transport-truck">
+           <div class="govuk-form-group">
+          <label class="govuk-label govuk-label--s" for="truck-nationality">Truck nationality</label>
+           <div style="position: relative;">
+      <input name="truck-nationality" type="text"
+  class="govuk-input govuk-!-width-two-thirds"
+        id="truck-nationality" autocomplete="off"
+        aria-expanded="false" role="combobox" aria-autocomplete="list"
+        aria-owns="truck-nationality-listbox" aria-activedescendant="">
+      <ul id="truck-nationality-listbox" role="listbox"
+        class="govuk-list"
+        style="display: none; border: 1px solid #b1b4b6; padding: 0.5em; background: white; position: absolute; z-index: 1000; width: 63%;">
+      </ul>
+    </div>
+  </div>
+    <br>
+
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-label--s" for="registration-number">Registration number</label>
+          <div id="registration-number-hint" class="govuk-hint">
+            For example, A123 4567 or BD51SMR
+          </div>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const containerFields = document.getElementById('container-fields');
+    const addButton = document.getElementById('add-container-button');
+    let containerCount = 1;
+
+    addButton.addEventListener('click', function () {
+      containerCount++;
+
+      const wrapper = document.createElement('div');
+      wrapper.classList.add('govuk-form-group', 'container-field');
+      wrapper.id = `container-field-${containerCount}`;
+
+      const label = document.createElement('label');
+      label.classList.add('govuk-label');
+      label.setAttribute('for', `container-identification-${containerCount}`);
+      label.innerHTML = '<b>Container identification number</b>';
+
+      const input = document.createElement('input');
+      input.classList.add('govuk-input', 'govuk-!-width-one-third');
+      input.id = `container-identification-${containerCount}`;
+      input.name = 'container-identification[]';
+      input.type = 'text';
+
+      const buttonWrapper = document.createElement('div');
+      buttonWrapper.classList.add('govuk-!-margin-top-2');
+
+      const removeButton = document.createElement('button');
+      removeButton.type = 'button';
+      removeButton.classList.add('govuk-button', 'govuk-button--secondary', 'secondary-button-style');
+      removeButton.textContent = 'Remove';
+      removeButton.addEventListener('click', function () {
+        wrapper.remove();
+      });
+
+      buttonWrapper.appendChild(removeButton);
+      wrapper.appendChild(label);
+      wrapper.appendChild(input);
+      wrapper.appendChild(buttonWrapper);
+      containerFields.appendChild(wrapper);
+    });
+  });
+</script>
+
+
+          <input class="govuk-input govuk-input--width-10" id="registration-number" name="registration-number" type="text" aria-describedby="registration-number-hint">
+        </div>
+
+        <div class="govuk-form-group">
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--s" for="export-place">Place export leaves the UK</legend>
+          <div id="export-place-hint" class="govuk-hint">
+            For example, Hull
+          </div>
+          <input class="govuk-input govuk-!-width-two-thirds" id="export-place" name="export-place" type="text" aria-describedby="export-place-hint">
+        </div>
+
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-label--s" for="destination-point-truck">Point of destination</label>
+          <div id="destination-point-truck-hint" class="govuk-hint">
+            Enter the final intended destination for the export. For example, Bologna or Port of Rotterdam.
+          </div>
+          <input class="govuk-input govuk-!-width-two-thirds" id="destination-point-truck" name="destination-point-truck" type="text" aria-describedby="destination-point-truck-hint">
+        </div>
+
+        <details class="govuk-details" data-module="govuk-details">
+          <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+              Help with point of destination
+            </span>
+          </summary>
+          <div class="govuk-details__text">
+            If you do not know the final destination of the export, enter the first EU entry point. For example, Port of Rotterdam.
+          </div>
+        </details>
+
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-label--s" for="freight-number">Freight bill number (optional)</label>
+          <div id="freight-number-hint" class="govuk-hint">
+            For example, AA1234567
+          </div>
+          <input class="govuk-input govuk-input--width-10" id="freight-number" name="freight-number" type="text" aria-describedby="freight-number-hint">
+        </div>
+
+        <!-- Container identification with error -->
+        <div id="container-fields">
+          <div class="govuk-form-group govuk-form-group--error container-field">
+            <label class="govuk-label" for="container-identification-truck"><b>Container identification number (optional)</b></label>
+            <div id="container-identification-truck-hint" class="govuk-hint">Enter the container or trailer identification number. For example, ABCJ0123456.</div>
+            <p id="container-identification-truck-error" class="govuk-error-message">
+              <span class="govuk-visually-hidden">Error:</span> Enter a container number in the correct format. This must be 11 characters: 3 letters, then U, J, Z or R, then 7 numbers.
+            </p>
+            <input class="govuk-input govuk-input--error govuk-!-width-one-third" id="container-identification-truck" name="container-identification-truck" type="text" value="{{ data['container-identification-truck'] }}" aria-describedby="container-identification-truck-hint container-identification-truck-error">
+          </div>
+        </div>
+
+        <div class="govuk-button-group govuk-!-margin-top-2">
+          <button type="button" class="secondary-button-style govuk-button--secondary" id="add-container-button">Add another container</button>
+        </div>
+
+        <!-- Form controls -->
+        <div class="govuk-button-group">
+          <button class="govuk-button" data-module="govuk-button" type="submit">
+            Save and continue
+          </button>
+          <button class="govuk-button govuk-button--secondary" data-module="govuk-button" formaction="/gamma/progress" type="submit">
+            Save as draft
+          </button>
+        </div>
+      </form>
+
+      <div class="app-contact-panel">
+        <h2 class="app-contact-panel__heading">Get help with your application</h2>
+
+        <p class="app-contact-panel__body">
+          If you have a catch certificate unique reference number, have it with you when you call.
+        </p>
+
+        <ul class="govuk-list">
+          <li>Phone: 0330 159 1989</li>
+          <li>Monday to Friday, 9am to 5pm (except public holidays)</li>
+        </ul>
+
+        <p class="govuk-body">
+          <a class="govuk-link" href="#">Find out about call charges</a>
+        </p>
+
+        <p>Read the guidance on <a
+            href="https://www.gov.uk/guidance/exporting-or-moving-fish-from-the-uk#get-help-with-fish-export-documents"
+            class="govuk-link" rel="noreferrer noopener" target="_blank">exporting or moving fish from the UK
+            (opens in new tab).</a>
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+{% endblock %}
