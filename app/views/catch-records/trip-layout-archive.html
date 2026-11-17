@@ -1,0 +1,27 @@
+{% extends "layouts/layout-defra.html" %}
+
+{% set serviceName = "Web Admin Portal" %}
+{% set activeNavSection = "fishing-trips" %}
+
+{% block pageTitle %}Archived trip details layouts - Web Admin Portal{% endblock %}
+
+{% block beforeContent %}
+<a class="govuk-back-link" href="index">Back to Back office</a>
+{% endblock %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <p class="govuk-caption-l">Trip details layout testing</p>
+    <h1 class="govuk-heading-xl">Archived layouts</h1>
+    <p class="govuk-body">These earlier layout options are kept for reference and are not part of the current selection.</p>
+    <ul class="govuk-list govuk-list--bullet">
+      <li><a class="govuk-link" href="trip-profile?trip=C34245202608171402&amp;status=submitted&amp;gearDisplay=grouped&amp;layout=b" target="_blank" rel="noopener">B: two columns, labels above values</a></li>
+      <li><a class="govuk-link" href="trip-profile?trip=C34245202608171402&amp;status=submitted&amp;gearDisplay=grouped&amp;layout=b2" target="_blank" rel="noopener">B2: split table with vessel and user details</a></li>
+      <li><a class="govuk-link" href="trip-profile?trip=C34245202608171402&amp;status=submitted&amp;gearDisplay=grouped&amp;layout=e" target="_blank" rel="noopener">E: all sections on one page</a></li>
+      <li><a class="govuk-link" href="trip-profile?trip=C34245202608171402&amp;status=submitted&amp;gearDisplay=grouped&amp;layout=e2" target="_blank" rel="noopener">E2: vessel and user in trip information</a></li>
+      <li><a class="govuk-link" href="trip-profile?trip=C34245202608171402&amp;status=submitted&amp;gearDisplay=grouped&amp;layout=f" target="_blank" rel="noopener">F: balanced content columns</a></li>
+    </ul>
+  </div>
+</div>
+{% endblock %}

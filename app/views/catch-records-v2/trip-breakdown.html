@@ -1,0 +1,881 @@
+{% extends "layouts/layout-defra-v2.html" %}
+
+{% block pageTitle %}
+Web Admin Portal: Trip breakdown
+{% endblock %}
+
+{% set serviceName %}
+Web Admin Portal
+{% endset %}
+
+{% set activeNavSection = "trip-breakdown" %}
+
+{% block content %}
+<style>
+  .search-container {
+    max-width: none;
+  }
+
+  .search-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 0.5rem;
+  }
+
+  .search-controls .form-search {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .form-search {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+    width: 100%;
+  }
+
+  .search-input-wrapper {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.5em;
+    width: 100%;
+  }
+
+  input[type="search"] {
+    flex: 1;
+    width: 100%;
+    height: 44px;
+    font-family: "GDS Transport", arial, sans-serif;
+    border-radius: 0;
+    padding: 5px;
+    border: 2px solid #0b0c0c;
+    margin-bottom: 0;
+    appearance: none;
+    -webkit-appearance: none;
+    box-sizing: border-box;
+    font-weight: 400;
+    font-size: 1.1875rem;
+    line-height: 1.3157894737;
+    color: #0b0c0c;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  input[type="search"]:focus {
+    outline: 3px solid #fd0;
+    box-shadow: inset 0 0 0 2px #0b0c0c;
+    z-index: 1;
+  }
+
+  .btn {
+    flex: 0 0 auto;
+    width: 52px;
+    height: 44px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    background-color: #1d70b8;
+    color: white;
+    border: none;
+    font-size: 1.1875rem;
+    font-family: "GDS Transport", arial, sans-serif;
+    cursor: pointer;
+    line-height: 1.3157894737;
+    border-radius: 0;
+  }
+
+  .btn .gem-c-search__icon {
+    width: 28px;
+    height: 28px;
+    flex: 0 0 28px;
+  }
+
+  .btn:hover {
+    background-color: #1d70b8;
+  }
+
+  .btn:focus {
+    outline: 3px solid #fd0;
+    box-shadow: inset 0 0 0 4px #0b0c0c;
+    z-index: 1;
+  }
+
+  .catch-records-filters {
+    margin-top: 1.5rem;
+    padding: 1.5rem;
+    background-color: #f3f2f1;
+    border-top: 1px solid #b1b4b6;
+    position: relative;
+    flex: 0 0 100%;
+    box-sizing: border-box;
+  }
+
+  .catch-records-filter-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: #0b0c0c;
+    font-family: Arial, sans-serif;
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .catch-records-filter-close:hover {
+    background: #dbdad9;
+  }
+
+  .catch-records-filter-close:focus {
+    outline: 3px solid #fd0;
+    box-shadow: inset 0 0 0 2px #0b0c0c;
+  }
+
+  .catch-records-filter-form {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem 2rem;
+  }
+
+  .catch-records-filter-form > h2,
+  .catch-records-filter-form > button {
+    grid-column: 1 / -1;
+  }
+
+  .catch-records-filter-form__actions {
+    grid-column: 1 / -1;
+  }
+
+  .catch-records-filter-form .govuk-form-group {
+    margin-bottom: 0;
+    min-width: 0;
+    align-self: start;
+  }
+
+  .catch-records-filter-form .govuk-fieldset,
+  .catch-records-filter-form .govuk-date-input,
+  .catch-records-typeahead {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .catch-records-filter-form__date-range {
+    grid-column: 1 / -1;
+  }
+
+  .catch-records-date-range {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .catch-records-typeahead {
+    position: relative;
+  }
+
+  .catch-records-typeahead__listbox {
+    display: none;
+    position: absolute;
+    z-index: 1000;
+    width: 100%;
+    margin: 0;
+    padding: 0.5em;
+    border: 1px solid #b1b4b6;
+    background: #fff;
+    box-sizing: border-box;
+    list-style: none;
+  }
+
+  .catch-records-typeahead__option {
+    padding: 0.25em 0;
+    cursor: pointer;
+  }
+
+  .catch-records-typeahead__option:hover,
+  .catch-records-typeahead__option:focus {
+    background: #f3f2f1;
+    outline: 3px solid #fd0;
+  }
+
+  .catch-records-filter-form__weight-range {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .catch-records-filter-summary {
+    display: inline-block;
+    white-space: nowrap;
+    margin-bottom: 0;
+    padding: 0.5em 1em;
+    background-color: #f3f2f1;
+    color: #0b0c0c;
+    font-family: "GDS Transport", arial, sans-serif;
+    font-size: 1.1875rem;
+    line-height: 1.3157894737;
+    border: 1px solid #b1b4b6;
+    height: 44px;
+    box-sizing: border-box;
+    cursor: pointer;
+  }
+
+  .catch-records-filter-summary:hover {
+    background-color: #dbdad9;
+  }
+
+  .catch-records-filter-summary:focus {
+    outline: 3px solid #fd0;
+    box-shadow: inset 0 0 0 2px #0b0c0c;
+  }
+
+  .catch-records-pagination {
+    margin-top: 2rem;
+  }
+
+  .catch-records-table-wrapper {
+    overflow-x: auto;
+    margin-bottom: 1rem;
+  }
+
+  .catch-records-table-wrapper .govuk-table {
+    margin-bottom: 0;
+  }
+
+  .catch-records-table-wrapper .catch-records-table--trip-breakdown {
+    width: 100%;
+    min-width: 1380px;
+    table-layout: fixed;
+  }
+
+  .catch-records-table--trip-breakdown [aria-sort] button {
+    display: inline-flex;
+    max-width: 100%;
+    align-items: flex-start;
+    white-space: normal;
+  }
+
+  .catch-records-table--trip-breakdown [aria-sort] button svg {
+    flex: 0 0 auto;
+    margin-top: 1px;
+  }
+
+  .catch-records-table-wrapper .govuk-table__cell,
+  .catch-records-table-wrapper .govuk-table__header {
+    white-space: nowrap;
+  }
+
+  .catch-records-table--trip-breakdown .govuk-table__cell,
+  .catch-records-table--trip-breakdown .govuk-table__header {
+    white-space: normal;
+    overflow-wrap: break-word;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .catch-records-table--trip-breakdown th:nth-child(2),
+  .catch-records-table--trip-breakdown td:nth-child(2) {
+    white-space: nowrap;
+    overflow-wrap: normal;
+    padding-right: 0;
+  }
+
+  @media (max-width: 40.0625em) {
+    .catch-records-table-wrapper .catch-records-table--trip-breakdown {
+      min-width: 1600px;
+    }
+  }
+
+  @media (max-width: 40.0625em) {
+    .search-controls {
+      display: block;
+    }
+
+    .catch-records-filter-summary {
+      margin-top: 0.75rem;
+      display: block;
+    }
+
+    .catch-records-filter-form {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+    <h1 class="govuk-heading-xl">Trip breakdown</h1>
+    {% if catchRecordsRole.permissions.exportTripData %}
+    <button class="govuk-button govuk-button--secondary" id="export-trip-data" type="button">Export trip data</button>
+    {% endif %}
+
+    <div class="bottom search-container">
+      <div class="search-controls">
+        <form action="trip-breakdown" class="form-search" id="searchform" method="get" role="search">
+        <label class="govuk-label govuk-label--s" for="s">Search trip breakdown</label>
+        <div class="govuk-hint" id="breakdown-search-hint">
+          Search by trip ID, vessel, PLN or species
+        </div>
+        <div class="search-input-wrapper">
+          <input class="search-query" enterkeyhint="search" id="s" name="s" title="Search" type="search" value="">
+          <button class="btn" type="submit" aria-label="Search trip breakdown">
+            <svg aria-hidden="true" class="gem-c-search__icon" fill="none" focusable="false" height="28" viewbox="0 0 27 27" width="28" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12.0161" cy="11.0161" r="8.51613" stroke="currentColor" stroke-width="3"></circle>
+              <line stroke="currentColor" stroke-width="3" x1="17.8668" x2="26.4475" y1="17.3587" y2="25.9393"></line>
+            </svg>
+          </button>
+        </div>
+        </form>
+
+        <button class="catch-records-filter-summary" type="button" id="filter-toggle-button" aria-expanded="false" aria-controls="filter-panel">Filters</button>
+
+        <div class="catch-records-filters" id="filter-panel" hidden>
+          <button class="catch-records-filter-close" type="button" aria-label="Close filters">x</button>
+          <form action="trip-breakdown" class="catch-records-filter-form" method="get">
+            <h2 class="govuk-heading-m">Filters</h2>
+
+            <div class="govuk-form-group catch-records-filter-form__date-range">
+              <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Trip end date</legend>
+                <div class="catch-records-date-range">
+                  <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">From</legend>
+                    <div class="govuk-date-input" id="trip-end-date-from">
+                      <div class="govuk-date-input__item">
+                        <label class="govuk-label govuk-date-input__label" for="trip-end-date-from-day">Day</label>
+                        <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="trip-end-date-from-day" name="trip-end-date-from-day" type="text" inputmode="numeric">
+                      </div>
+                      <div class="govuk-date-input__item">
+                        <label class="govuk-label govuk-date-input__label" for="trip-end-date-from-month">Month</label>
+                        <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="trip-end-date-from-month" name="trip-end-date-from-month" type="text" inputmode="numeric">
+                      </div>
+                      <div class="govuk-date-input__item">
+                        <label class="govuk-label govuk-date-input__label" for="trip-end-date-from-year">Year</label>
+                        <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="trip-end-date-from-year" name="trip-end-date-from-year" type="text" inputmode="numeric">
+                      </div>
+                    </div>
+                  </fieldset>
+                  <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">To</legend>
+                    <div class="govuk-date-input" id="trip-end-date-to">
+                      <div class="govuk-date-input__item">
+                        <label class="govuk-label govuk-date-input__label" for="trip-end-date-to-day">Day</label>
+                        <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="trip-end-date-to-day" name="trip-end-date-to-day" type="text" inputmode="numeric">
+                      </div>
+                      <div class="govuk-date-input__item">
+                        <label class="govuk-label govuk-date-input__label" for="trip-end-date-to-month">Month</label>
+                        <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="trip-end-date-to-month" name="trip-end-date-to-month" type="text" inputmode="numeric">
+                      </div>
+                      <div class="govuk-date-input__item">
+                        <label class="govuk-label govuk-date-input__label" for="trip-end-date-to-year">Year</label>
+                        <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="trip-end-date-to-year" name="trip-end-date-to-year" type="text" inputmode="numeric">
+                      </div>
+                    </div>
+                  </fieldset>
+                </div>
+              </fieldset>
+            </div>
+
+            <div class="govuk-form-group">
+              <label class="govuk-label govuk-label--s" for="vessel">Vessel</label>
+              <div class="govuk-hint" id="vessel-search-hint">Search by vessel name or PLN</div>
+              <div class="catch-records-typeahead">
+                <input class="govuk-input" id="vessel" name="vessel" type="text" minlength="2" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="vessel-listbox" aria-describedby="vessel-search-hint">
+                <ul class="catch-records-typeahead__listbox" id="vessel-listbox" role="listbox"></ul>
+              </div>
+            </div>
+
+            <div class="govuk-form-group">
+              <label class="govuk-label govuk-label--s" for="admin-port">Admin port</label>
+              <div class="catch-records-typeahead">
+                <input class="govuk-input" id="admin-port" name="admin-port" type="text" minlength="2" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="admin-port-listbox">
+                <ul class="catch-records-typeahead__listbox" id="admin-port-listbox" role="listbox"></ul>
+              </div>
+            </div>
+
+            <div class="govuk-form-group">
+              <label class="govuk-label govuk-label--s" for="species">Species or FAO code</label>
+              <div class="catch-records-typeahead">
+                <input class="govuk-input" id="species" name="species" type="text" minlength="2" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="species-listbox">
+                <ul class="catch-records-typeahead__listbox" id="species-listbox" role="listbox"></ul>
+              </div>
+            </div>
+
+            <div class="govuk-form-group">
+              <label class="govuk-label govuk-label--s" for="gear-type">Gear type</label>
+              <div class="catch-records-typeahead">
+                <input class="govuk-input" id="gear-type" name="gear-type" type="text" minlength="2" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="gear-type-listbox">
+                <ul class="catch-records-typeahead__listbox" id="gear-type-listbox" role="listbox"></ul>
+              </div>
+            </div>
+
+            <div class="govuk-form-group">
+              <label class="govuk-label govuk-label--s" for="port">Port</label>
+              <div class="catch-records-typeahead">
+                <input class="govuk-input" id="port" name="port" type="text" minlength="2" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="port-listbox">
+                <ul class="catch-records-typeahead__listbox" id="port-listbox" role="listbox"></ul>
+              </div>
+            </div>
+
+            <div class="govuk-form-group">
+              <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Weight (kg)</legend>
+                <div class="catch-records-filter-form__weight-range">
+                  <div class="govuk-form-group govuk-!-margin-bottom-0">
+                    <label class="govuk-label" for="weight-min">Minimum</label>
+                    <input class="govuk-input govuk-input--width-5" id="weight-min" name="weight-min" type="text" inputmode="decimal">
+                  </div>
+                  <div class="govuk-form-group govuk-!-margin-bottom-0">
+                    <label class="govuk-label" for="weight-max">Maximum</label>
+                    <input class="govuk-input govuk-input--width-5" id="weight-max" name="weight-max" type="text" inputmode="decimal">
+                  </div>
+                </div>
+              </fieldset>
+            </div>
+
+            <div class="govuk-button-group catch-records-filter-form__actions">
+              <button class="govuk-button" type="submit">Apply filters</button>
+              <button class="govuk-button govuk-button--secondary" type="reset">Clear filters</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+<br>
+    <div class="catch-records-table-wrapper" role="region" aria-label="Trip breakdown table, scroll to see more columns" tabindex="0">
+    <table class="govuk-table govuk-table--m catch-records-table--trip-breakdown" data-module="moj-sortable-table">
+      <colgroup>
+        <col style="width: 6%">
+        <col style="width: 13%">
+        <col style="width: 5%">
+        <col style="width: 8%">
+        <col style="width: 8%">
+        <col style="width: 7%">
+        <col style="width: 6%">
+        <col style="width: 8%">
+        <col style="width: 8%">
+        <col style="width: 14%">
+        <col style="width: 9%">
+        <col style="width: 8%">
+      </colgroup>
+      <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+          <th class="govuk-table__header" scope="col">Trip end date</th>
+          <th class="govuk-table__header" scope="col">Trip ID</th>
+          <th class="govuk-table__header" scope="col">PLN</th>
+          <th class="govuk-table__header" scope="col">Vessel name</th>
+          <th class="govuk-table__header" scope="col">Departure date</th>
+          <th class="govuk-table__header" scope="col">Departure port</th>
+          <th class="govuk-table__header" scope="col">Return port</th>
+          <th class="govuk-table__header" scope="col">Species</th>
+          <th class="govuk-table__header" scope="col">FAO code</th>
+          <th class="govuk-table__header" scope="col">Gear type</th>
+          <th class="govuk-table__header" scope="col">Weight (kg)</th>
+          <th class="govuk-table__header" scope="col">Retained weight (kg)</th>
+        </tr>
+      </thead>
+      <tbody class="govuk-table__body">
+        {% set tripGearTypes = {
+          'A12345202606171701': 'Beam trawl',
+          'B43254202606161654': 'Bottom otter trawl',
+          'C54235202606161532': 'Pots',
+          'B23441202606151456': 'Pots',
+          'A45352202606151201': 'Bottom otter trawl',
+          'C34245202608171402': 'Pots',
+          'A12345202606151302': 'Beam trawl',
+          'A10001202606131200': 'Seine nets (not specified)',
+          'B10002202606121100': 'Bottom otter trawl',
+          'C10003202606111000': 'Bottom otter trawl',
+          'D10004202606100900': 'Beam trawl',
+          'E10005202606090800': 'Bottom otter trawl',
+          'I10009202606050400': 'Beam trawl',
+          'J10010202606040300': 'Handlines and pole lines (hand operated)',
+          'K10011202606030200': 'Handlines and pole lines (hand operated)'
+        } %}
+        {% set tripAdminPorts = {
+          'J12345202608301410': 'Newlyn',
+          'I12345202608281410': 'Newlyn',
+          'H12345202608261410': 'Newlyn',
+          'G12345202608241410': 'Newlyn',
+          'F34245202608221410': 'Newlyn',
+          'E45352202608201402': 'Newlyn',
+          'D12345202608181401': 'Newlyn',
+          'A12345202606171701': 'Newlyn',
+          'B43254202606161654': 'Shoreham',
+          'C54235202606161532': 'Milford Haven',
+          'B23441202606151456': 'Newlyn',
+          'A45352202606151201': 'Milford Haven',
+          'C34245202608171402': 'Hastings',
+          'A12345202606151302': 'Newlyn',
+          'A10001202606131200': 'Newlyn',
+          'B10002202606121100': 'Fraserburgh',
+          'C10003202606111000': 'Grimsby',
+          'D10004202606100900': 'Lowestoft',
+          'E10005202606090800': 'Milford Haven',
+          'I10009202606050400': 'Hastings',
+          'J10010202606040300': 'Swansea',
+          'K10011202606030200': 'Newlyn'
+        } %}
+        {% set rssByPln = { PZ1: 'X10001', WY43: 'Q12345', PZ45: 'X10002', RX09: 'X10010', FR12: 'X10003', GY67: 'X10004', LT34: 'X10005', MH89: 'X10006', BA23: 'X10007', FR78: 'X10008', PZ56: 'X10009', SW45: 'X10011', NS78: 'X10012', WY12: 'X10013', M56: 'X10014', PZ89: 'X10015', FR34: 'X10016', GY12: 'X10017', LT67: 'X10018', MH34: 'X10019' } %}
+        {% set catches = [
+          { endDate: "2026-08-30", endDisplay: "30 August 2026", tripId: "J12345202608301410", pln: "PZ45", vessel: "Northern Star", departureDate: "30 August 2026", departurePort: "Newlyn", returnPort: "Newlyn", species: "Cod", faoCode: "COD", gearType: "Longlines not specified", weight: "36.00", retainedWeight: "30.00" },
+          { endDate: "2026-08-30", endDisplay: "30 August 2026", tripId: "J12345202608301410", pln: "PZ45", vessel: "Northern Star", departureDate: "30 August 2026", departurePort: "Newlyn", returnPort: "Newlyn", species: "Ling", faoCode: "LIN", gearType: "Longlines not specified", weight: "18.00", retainedWeight: "16.00" },
+          { endDate: "2026-08-28", endDisplay: "28 August 2026", tripId: "I12345202608281410", pln: "PZ45", vessel: "Northern Star", departureDate: "28 August 2026", departurePort: "Newlyn", returnPort: "Newlyn", species: "Cod", faoCode: "COD", gearType: "Hooks and lines (not specified)", weight: "25.00", retainedWeight: "22.00" },
+          { endDate: "2026-08-28", endDisplay: "28 August 2026", tripId: "I12345202608281410", pln: "PZ45", vessel: "Northern Star", departureDate: "28 August 2026", departurePort: "Newlyn", returnPort: "Newlyn", species: "Haddock", faoCode: "HAD", gearType: "Hooks and lines (not specified)", weight: "15.00", retainedWeight: "14.00" },
+          { endDate: "2026-08-26", endDisplay: "26 August 2026", tripId: "H12345202608261410", pln: "PZ45", vessel: "Northern Star", departureDate: "26 August 2026", departurePort: "Newlyn", returnPort: "Newlyn", species: "Herring", faoCode: "HER", gearType: "Handlines and pole lines (mechanised)", weight: "30.00", retainedWeight: "25.00" },
+          { endDate: "2026-08-26", endDisplay: "26 August 2026", tripId: "H12345202608261410", pln: "PZ45", vessel: "Northern Star", departureDate: "26 August 2026", departurePort: "Newlyn", returnPort: "Newlyn", species: "Mackerel", faoCode: "MAC", gearType: "Handlines and pole lines (mechanised)", weight: "20.00", retainedWeight: "17.00" },
+          { endDate: "2026-08-24", endDisplay: "24 August 2026", tripId: "G12345202608241410", pln: "PZ45", vessel: "Northern Star", departureDate: "24 August 2026", departurePort: "Newlyn", returnPort: "Newlyn", species: "Pollack", faoCode: "POL", gearType: "Handlines and pole lines (hand operated)", weight: "12.00", retainedWeight: "10.00" },
+          { endDate: "2026-08-24", endDisplay: "24 August 2026", tripId: "G12345202608241410", pln: "PZ45", vessel: "Northern Star", departureDate: "24 August 2026", departurePort: "Newlyn", returnPort: "Newlyn", species: "European seabass", faoCode: "BSS", gearType: "Handlines and pole lines (hand operated)", weight: "8.00", retainedWeight: "7.00" },
+          { endDate: "2026-08-22", endDisplay: "22 August 2026", tripId: "F34245202608221410", pln: "PZ45", vessel: "Northern Star", departureDate: "22 August 2026", departurePort: "Newlyn", returnPort: "Newlyn", species: "Herring", faoCode: "HER", gearType: "Gillnets (drift)", weight: "35.00", retainedWeight: "30.00" },
+          { endDate: "2026-08-22", endDisplay: "22 August 2026", tripId: "F34245202608221410", pln: "PZ45", vessel: "Northern Star", departureDate: "22 August 2026", departurePort: "Newlyn", returnPort: "Newlyn", species: "Cod", faoCode: "COD", gearType: "Gillnets (drift)", weight: "18.00", retainedWeight: "15.00" },
+          { endDate: "2026-08-20", endDisplay: "20 August 2026", tripId: "E45352202608201402", pln: "PZ45", vessel: "Northern Star", departureDate: "20 August 2026", departurePort: "Newlyn", returnPort: "Newlyn", species: "Herring", faoCode: "HER", gearType: "Seine nets (not specified)", weight: "40.00", retainedWeight: "32.00" },
+          { endDate: "2026-08-20", endDisplay: "20 August 2026", tripId: "E45352202608201402", pln: "PZ45", vessel: "Northern Star", departureDate: "20 August 2026", departurePort: "Newlyn", returnPort: "Newlyn", species: "Mackerel", faoCode: "MAC", gearType: "Seine nets (not specified)", weight: "25.00", retainedWeight: "20.00" },
+          { endDate: "2026-08-18", endDisplay: "18 August 2026", tripId: "D12345202608181401", pln: "PZ45", vessel: "Northern Star", departureDate: "18 August 2026", departurePort: "Newlyn", returnPort: "Newlyn", species: "King scallop", faoCode: "SCE", gearType: "Dredge", weight: "24.00", retainedWeight: "18.00" },
+          { endDate: "2026-08-18", endDisplay: "18 August 2026", tripId: "D12345202608181401", pln: "PZ45", vessel: "Northern Star", departureDate: "18 August 2026", departurePort: "Newlyn", returnPort: "Newlyn", species: "Queen scallop", faoCode: "QSC", gearType: "Dredge", weight: "12.00", retainedWeight: "9.00" },
+          { endDate: "2026-06-16", endDisplay: "16 June 2026", tripId: "A12345202606171701", pln: "PZ1", vessel: "Lady Jane", departureDate: "16 June 2026", departurePort: "Newlyn", returnPort: "Newlyn", species: "Common sole", faoCode: "SOL", weight: "15.00", retainedWeight: "" },
+          { endDate: "2026-06-16", endDisplay: "16 June 2026", tripId: "A12345202606171701", pln: "PZ1", vessel: "Lady Jane", departureDate: "16 June 2026", departurePort: "Newlyn", returnPort: "Newlyn", species: "John Dory", faoCode: "JOD", weight: "20.00", retainedWeight: "" },
+          { endDate: "2026-06-16", endDisplay: "16 June 2026", tripId: "B43254202606161654", pln: "RX5", vessel: "Gone Fishin'", departureDate: "16 June 2026", departurePort: "Shoreham", returnPort: "Shoreham", species: "Common dab", faoCode: "DAB", weight: "1.50", retainedWeight: "" },
+          { endDate: "2026-06-16", endDisplay: "16 June 2026", tripId: "B43254202606161654", pln: "RX5", vessel: "Gone Fishin'", departureDate: "16 June 2026", departurePort: "Shoreham", returnPort: "Shoreham", species: "Starry smooth-hound", faoCode: "SDS", weight: "2.70", retainedWeight: "" },
+          { endDate: "2026-06-16", endDisplay: "16 June 2026", tripId: "B43254202606161654", pln: "RX5", vessel: "Gone Fishin'", departureDate: "16 June 2026", departurePort: "Shoreham", returnPort: "Shoreham", species: "Blue ling", faoCode: "BLI", weight: "13.00", retainedWeight: "" },
+          { endDate: "2026-06-15", endDisplay: "15 June 2026", tripId: "C54235202606161532", pln: "SW123", vessel: "Wallaby Way", departureDate: "15 June 2026", departurePort: "Swansea", returnPort: "Swansea", species: "Edible crab", faoCode: "CRE", weight: "30.00", retainedWeight: "20.00" },
+          { endDate: "2026-06-15", endDisplay: "15 June 2026", tripId: "B23441202606151456", pln: "NS22", vessel: "Susie", departureDate: "15 June 2026", departurePort: "Newlyn", returnPort: "Newlyn", species: "European lobster", faoCode: "LBE", weight: "12.00", retainedWeight: "" },
+          { endDate: "2026-06-15", endDisplay: "15 June 2026", tripId: "B23441202606151456", pln: "NS22", vessel: "Susie", departureDate: "15 June 2026", departurePort: "Newlyn", returnPort: "Newlyn", species: "Edible crab", faoCode: "CRE", weight: "32.00", retainedWeight: "" },
+          { endDate: "2026-06-15", endDisplay: "15 June 2026", tripId: "A45352202606151201", pln: "WY43", vessel: "Quatro", departureDate: "15 June 2026", departurePort: "Milford Haven", returnPort: "Milford Haven", species: "Spinous spider crab", faoCode: "SCR", weight: "16.00", retainedWeight: "3.00" },
+          { endDate: "2026-08-17", endDisplay: "17 August 2026", tripId: "C34245202608171402", pln: "RX09", vessel: "Sea Otter", departureDate: "17 August 2026", departurePort: "Hastings", returnPort: "Hastings", species: "Edible crab", faoCode: "CRE", gearType: "Pots", weight: "18", retainedWeight: "14" },
+          { endDate: "2026-08-17", endDisplay: "17 August 2026", tripId: "C34245202608171402", pln: "RX09", vessel: "Sea Otter", departureDate: "17 August 2026", departurePort: "Hastings", returnPort: "Hastings", species: "Whelk", faoCode: "WHE", gearType: "Pots", weight: "26", retainedWeight: "22" },
+          { endDate: "2026-08-17", endDisplay: "17 August 2026", tripId: "C34245202608171402", pln: "RX09", vessel: "Sea Otter", departureDate: "17 August 2026", departurePort: "Hastings", returnPort: "Hastings", species: "Common sole", faoCode: "SOL", gearType: "Trammel net", weight: "8", retainedWeight: "6" },
+          { endDate: "2026-08-17", endDisplay: "17 August 2026", tripId: "C34245202608171402", pln: "RX09", vessel: "Sea Otter", departureDate: "17 August 2026", departurePort: "Hastings", returnPort: "Hastings", species: "King scallop", faoCode: "SCE", gearType: "Dredge", weight: "24.00", retainedWeight: "18.00" },
+          { endDate: "2026-08-17", endDisplay: "17 August 2026", tripId: "C34245202608171402", pln: "RX09", vessel: "Sea Otter", departureDate: "17 August 2026", departurePort: "Hastings", returnPort: "Hastings", species: "Queen scallop", faoCode: "QSC", gearType: "Dredge", weight: "12.00", retainedWeight: "9.00" },
+          { endDate: "2026-06-14", endDisplay: "14 June 2026", tripId: "A12345202606151302", pln: "PZ1", vessel: "Lady Jane", departureDate: "14 June 2026", departurePort: "Newlyn", returnPort: "Newlyn", species: "Common sole", faoCode: "SOL", gearType: "Beam trawl", weight: "6.70", retainedWeight: "" },
+          { endDate: "2026-06-14", endDisplay: "14 June 2026", tripId: "A12345202606151302", pln: "PZ1", vessel: "Lady Jane", departureDate: "14 June 2026", departurePort: "Newlyn", returnPort: "Newlyn", species: "John Dory", faoCode: "JOD", gearType: "Beam trawl", weight: "18.00", retainedWeight: "" },
+          { endDate: "2026-06-14", endDisplay: "14 June 2026", tripId: "A12345202606151302", pln: "PZ1", vessel: "Lady Jane", departureDate: "14 June 2026", departurePort: "Newlyn", returnPort: "Newlyn", species: "Lemon sole", faoCode: "LEM", gearType: "Bottom otter trawl", weight: "22.00", retainedWeight: "" },
+          { endDate: "2026-06-14", endDisplay: "14 June 2026", tripId: "A12345202606151302", pln: "PZ1", vessel: "Lady Jane", departureDate: "14 June 2026", departurePort: "Newlyn", returnPort: "Newlyn", species: "European plaice", faoCode: "PLE", gearType: "Bottom otter trawl", weight: "19.00", retainedWeight: "" },
+          { endDate: "2026-06-14", endDisplay: "14 June 2026", tripId: "A12345202606151302", pln: "PZ1", vessel: "Lady Jane", departureDate: "14 June 2026", departurePort: "Newlyn", returnPort: "Newlyn", species: "Megrim", faoCode: "MEG", gearType: "Trammel net", weight: "9.50", retainedWeight: "" },
+          { endDate: "2026-06-13", endDisplay: "13 June 2026", tripId: "A10001202606131200", pln: "PZ45", vessel: "Northern Star", departureDate: "13 June 2026", departurePort: "Newlyn", returnPort: "Newlyn", species: "Mackerel", faoCode: "MAC", weight: "25.00", retainedWeight: "" },
+          { endDate: "2026-06-13", endDisplay: "13 June 2026", tripId: "A10001202606131200", pln: "PZ45", vessel: "Northern Star", departureDate: "13 June 2026", departurePort: "Newlyn", returnPort: "Newlyn", species: "Herring", faoCode: "HER", weight: "18.00", retainedWeight: "" },
+          { endDate: "2026-06-12", endDisplay: "12 June 2026", tripId: "B10002202606121100", pln: "FR12", vessel: "Sea Spray", departureDate: "12 June 2026", departurePort: "Fraserburgh", returnPort: "Fraserburgh", species: "Haddock", faoCode: "HAD", weight: "40.00", retainedWeight: "35.00" },
+          { endDate: "2026-06-11", endDisplay: "11 June 2026", tripId: "C10003202606111000", pln: "GY67", vessel: "Kingfisher", departureDate: "11 June 2026", departurePort: "Grimsby", returnPort: "Grimsby", species: "Cod", faoCode: "COD", weight: "22.00", retainedWeight: "" },
+          { endDate: "2026-06-10", endDisplay: "10 June 2026", tripId: "D10004202606100900", pln: "LT34", vessel: "Golden Dawn", departureDate: "10 June 2026", departurePort: "Lowestoft", returnPort: "Lowestoft", species: "Sole", faoCode: "SOL", weight: "10.00", retainedWeight: "" },
+          { endDate: "2026-06-09", endDisplay: "9 June 2026", tripId: "E10005202606090800", pln: "MH89", vessel: "Celtic Star", departureDate: "9 June 2026", departurePort: "Milford Haven", returnPort: "Milford Haven", species: "Whiting", faoCode: "WHG", weight: "12.00", retainedWeight: "" },
+          { endDate: "2026-06-05", endDisplay: "5 June 2026", tripId: "I10009202606050400", pln: "RX09", vessel: "Sea Otter", departureDate: "5 June 2026", departurePort: "Hastings", returnPort: "Hastings", species: "European plaice", faoCode: "PLE", weight: "8.00", retainedWeight: "" },
+          { endDate: "2026-06-04", endDisplay: "4 June 2026", tripId: "J10010202606040300", pln: "SW45", vessel: "Fair Wind", departureDate: "4 June 2026", departurePort: "Swansea", returnPort: "Swansea", species: "European seabass", faoCode: "BSS", weight: "14.00", retainedWeight: "" },
+          { endDate: "2026-06-03", endDisplay: "3 June 2026", tripId: "K10011202606030200", pln: "NS78", vessel: "Sunbeam", departureDate: "3 June 2026", departurePort: "Newlyn", returnPort: "Newlyn", species: "Pollack", faoCode: "POL", weight: "9.00", retainedWeight: "" }
+        ] %}
+        {% for row in catches %}
+        {% set rowGearType = row.gearType or tripGearTypes[row.tripId] or '' %}
+        {% set exportKey = [row.tripId, row.species, row.faoCode, rowGearType] | join('|') %}
+        {% set exportDetails = catchRecordsTripBreakdownExportByRow[exportKey] %}
+        {% set rowAdminPort = tripAdminPorts[row.tripId] or row.departurePort %}
+        <tr class="govuk-table__row" data-end-date="{{ row.endDate }}" data-vessel="{{ row.vessel }}" data-pln="{{ row.pln }}" data-species="{{ row.species }}" data-fao-code="{{ row.faoCode }}" data-gear-type="{{ rowGearType }}" data-admin-port="{{ rowAdminPort }}" data-rss-number="{{ rssByPln[row.pln] | default('') }}" data-weight="{{ row.weight }}" data-trip-id="{{ row.tripId }}" data-departure-port="{{ row.departurePort }}" data-return-port="{{ row.returnPort }}" data-export-user-id="{{ exportDetails.userId if exportDetails and not catchRecordsRole.permissions.limitedUserDetails else '' }}" data-export-created-by="{{ exportDetails.createdBy if exportDetails and not catchRecordsRole.permissions.limitedUserDetails else '' }}" data-export-user-role="{{ catchRecordsTripUserRoleById[row.tripId] if not catchRecordsRole.permissions.limitedUserDetails else '' }}" data-export-created-on="{{ exportDetails.createdOn if exportDetails else '' }}" data-export-received-on="{{ exportDetails.receivedOn if exportDetails else '' }}" data-export-submission-method="{{ exportDetails.submissionMethod if exportDetails else '' }}" data-export-retained-catch="{{ exportDetails.retainedCatch if exportDetails else '' }}" data-export-trip-status="{{ exportDetails.tripStatus if exportDetails else '' }}" data-export-amendment-reason="{{ exportDetails.amendmentReason if exportDetails else '' }}" data-export-gear-measurements="{{ exportDetails.gearMeasurements if exportDetails else '' }}" data-export-gear-subrectangle="{{ exportDetails.gearSubrectangle if exportDetails else '' }}" data-export-weight-below-minimum-size="{{ exportDetails.weightBelowMinimumSize if exportDetails else '' }}" data-export-weight-discarded="{{ exportDetails.weightDiscarded if exportDetails else '' }}" data-export-trip-notes="{{ exportDetails.notes if exportDetails else '' }}">
+          <td class="govuk-table__cell">{{ row.endDisplay }}</td>
+          <td class="govuk-table__cell">{% if row.tripId == 'A12345202606151302' or row.tripId == 'A45352202606151201' %}<a class="govuk-link" href="trip-profile?trip={{ row.tripId }}&amp;status=amended">{{ row.tripId }}</a>{% elif row.tripId in ['C34245202608171402', 'D12345202608181401', 'E45352202608201402', 'F34245202608221410'] %}<a class="govuk-link" href="trip-profile?trip={{ row.tripId }}&amp;status=submitted">{{ row.tripId }}</a>{% else %}{{ row.tripId }}{% endif %}</td>
+          <td class="govuk-table__cell">{{ row.pln }}</td>
+          <td class="govuk-table__cell">{{ row.vessel }}</td>
+          <td class="govuk-table__cell">{{ row.departureDate }}</td>
+          <td class="govuk-table__cell">{{ row.departurePort }}</td>
+          <td class="govuk-table__cell">{{ row.returnPort }}</td>
+          <td class="govuk-table__cell">{{ row.species }}</td>
+          <td class="govuk-table__cell">{{ row.faoCode }}</td>
+          <td class="govuk-table__cell">{{ rowGearType }}</td>
+          <td class="govuk-table__cell">{{ row.weight }}</td>
+          <td class="govuk-table__cell">{{ row.retainedWeight or '&ndash;' | safe }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    </div>
+    <nav aria-label="Pagination" class="govuk-pagination catch-records-pagination">
+      <ul class="govuk-pagination__list" id="pagination-list"></ul>
+    </nav>
+    <p class="govuk-body" id="no-results" hidden>No catch entries match your search or filters.</p>
+  </div>
+</div>
+{% endblock %}
+
+{% block pageScripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    function setupTypeahead(inputId, listId, options) {
+      var input = document.querySelector('#' + inputId)
+      var listbox = document.querySelector('#' + listId)
+
+      input.addEventListener('input', function () {
+        var value = input.value.trim().toLowerCase()
+        listbox.innerHTML = ''
+        input.setAttribute('aria-expanded', 'false')
+
+        if (value.length < 2) {
+          listbox.style.display = 'none'
+          return
+        }
+
+        options.filter(function (option) {
+          return option.toLowerCase().indexOf(value) !== -1
+        }).forEach(function (option, index) {
+          var item = document.createElement('li')
+          item.className = 'catch-records-typeahead__option'
+          item.id = inputId + '-option-' + index
+          item.setAttribute('role', 'option')
+          item.setAttribute('tabindex', '0')
+          item.textContent = option
+          item.addEventListener('click', function () {
+            input.value = option
+            listbox.style.display = 'none'
+            input.setAttribute('aria-expanded', 'false')
+          })
+          listbox.appendChild(item)
+        })
+
+        if (listbox.children.length) {
+          listbox.style.display = 'block'
+          input.setAttribute('aria-expanded', 'true')
+        }
+      })
+
+      document.addEventListener('click', function (event) {
+        if (!input.contains(event.target) && !listbox.contains(event.target)) {
+          listbox.style.display = 'none'
+          input.setAttribute('aria-expanded', 'false')
+        }
+      })
+    }
+
+    var vesselSearchOptions = Array.from(document.querySelectorAll('tbody tr[data-vessel]')).reduce(function (options, row) {
+      ;[row.dataset.vessel, row.dataset.pln].forEach(function (value) {
+        if (options.indexOf(value) === -1) options.push(value)
+      })
+      return options
+    }, [])
+    setupTypeahead('vessel', 'vessel-listbox', vesselSearchOptions)
+    var adminPortOptions = Array.from(document.querySelectorAll('tbody tr[data-admin-port]')).reduce(function (options, row) {
+      var adminPort = row.dataset.adminPort
+      if (adminPort && options.indexOf(adminPort) === -1) options.push(adminPort)
+      return options
+    }, [])
+    setupTypeahead('admin-port', 'admin-port-listbox', adminPortOptions)
+    setupTypeahead('species', 'species-listbox', ['Common sole', 'John Dory', 'Common dab', 'Starry smooth-hound', 'Blue ling', 'Edible crab', 'European lobster', 'Spinous spider crab', 'Lemon sole', 'European plaice', 'Megrim', 'Mackerel', 'Herring', 'Haddock', 'Cod', 'Sole', 'Whiting', 'European seabass', 'Pollack', 'SOL', 'JOD', 'DAB', 'SDS', 'BLI', 'CRE', 'LBE', 'SCR', 'LEM', 'PLE', 'MEG', 'MAC', 'HER', 'HAD', 'COD', 'WHG', 'BSS', 'POL'])
+    var gearSearchOptions = Array.from(document.querySelectorAll('tbody tr[data-gear-type]')).reduce(function (options, row) {
+      var gearType = row.dataset.gearType
+      if (gearType && options.indexOf(gearType) === -1) options.push(gearType)
+      return options
+    }, [])
+    setupTypeahead('gear-type', 'gear-type-listbox', gearSearchOptions)
+    setupTypeahead('port', 'port-listbox', ['Newlyn', 'Shoreham', 'Swansea', 'Douglas', 'Fraserburgh', 'Grimsby', 'Lowestoft', 'Milford Haven', 'Hastings'])
+
+    var searchForm = document.querySelector('#searchform')
+    var filterForm = document.querySelector('.catch-records-filter-form')
+    var filterToggleButton = document.querySelector('#filter-toggle-button')
+    var filterPanel = document.querySelector('#filter-panel')
+    var filterClose = document.querySelector('.catch-records-filter-close')
+    var rows = Array.prototype.slice.call(document.querySelectorAll('tbody .govuk-table__row[data-end-date]'))
+    var noResults = document.querySelector('#no-results')
+    var paginationList = document.querySelector('#pagination-list')
+    var currentPage = 1
+    var pageSize = 10
+
+    document.querySelector('.catch-records-table--trip-breakdown').addEventListener('catch-records:sorted', function () {
+      rows = Array.prototype.slice.call(this.tBodies[0].rows)
+      applyFilters(true)
+    })
+
+    function openFilterPanel() {
+      filterPanel.hidden = false
+      filterToggleButton.setAttribute('aria-expanded', 'true')
+    }
+
+    function closeFilterPanel() {
+      filterPanel.hidden = true
+      filterToggleButton.setAttribute('aria-expanded', 'false')
+    }
+
+    filterToggleButton.addEventListener('click', function () {
+      if (filterPanel.hidden) {
+        openFilterPanel()
+      } else {
+        closeFilterPanel()
+      }
+    })
+
+    filterClose.addEventListener('click', function () {
+      closeFilterPanel()
+      filterToggleButton.focus()
+    })
+
+    function getDateValue(prefix) {
+      var day = document.querySelector('#' + prefix + '-day').value
+      var month = document.querySelector('#' + prefix + '-month').value
+      var year = document.querySelector('#' + prefix + '-year').value
+
+      if (!day || !month || !year) return null
+      return new Date(Date.UTC(Number(year), Number(month) - 1, Number(day)))
+    }
+
+    function renderPagination(matchingRows) {
+      var pageCount = Math.ceil(matchingRows.length / pageSize)
+      paginationList.innerHTML = ''
+
+      if (pageCount < 2) return
+
+      if (currentPage > 1) {
+        var previousItem = document.createElement('li')
+        previousItem.className = 'govuk-pagination__item govuk-pagination__prev'
+        previousItem.innerHTML = '<a class="govuk-link govuk-pagination__link" href="#" rel="prev"><span class="govuk-pagination__link-title">Previous<span class="govuk-visually-hidden"> page</span></span></a>'
+        previousItem.querySelector('a').dataset.page = currentPage - 1
+        paginationList.appendChild(previousItem)
+      }
+
+      for (var page = 1; page <= pageCount; page += 1) {
+        var pageItem = document.createElement('li')
+        pageItem.className = 'govuk-pagination__item' + (page === currentPage ? ' govuk-pagination__item--current' : '')
+        pageItem.innerHTML = '<a class="govuk-link govuk-pagination__link" href="#" aria-label="Page ' + page + '">' + page + '</a>'
+        var pageLink = pageItem.querySelector('a')
+        pageLink.dataset.page = page
+        if (page === currentPage) pageLink.setAttribute('aria-current', 'page')
+        paginationList.appendChild(pageItem)
+      }
+
+      if (currentPage < pageCount) {
+        var nextItem = document.createElement('li')
+        nextItem.className = 'govuk-pagination__item govuk-pagination__next'
+        nextItem.innerHTML = '<a class="govuk-link govuk-pagination__link" href="#" rel="next"><span class="govuk-pagination__link-title">Next<span class="govuk-visually-hidden"> page</span></span></a>'
+        nextItem.querySelector('a').dataset.page = currentPage + 1
+        paginationList.appendChild(nextItem)
+      }
+    }
+
+    function renderPage(matchingRows) {
+      var start = (currentPage - 1) * pageSize
+      var visibleRows = matchingRows.slice(start, start + pageSize)
+
+      rows.forEach(function (row) {
+        row.hidden = visibleRows.indexOf(row) === -1
+      })
+
+      renderPagination(matchingRows)
+    }
+
+    function applyFilters(resetPage) {
+      if (resetPage) currentPage = 1
+
+      var query = document.querySelector('#s').value.trim().toLowerCase()
+      var vesselValue = document.querySelector('#vessel').value.trim().toLowerCase()
+      var adminPortValue = document.querySelector('#admin-port').value.trim().toLowerCase()
+      var speciesValue = document.querySelector('#species').value.trim().toLowerCase()
+      var gearTypeValue = document.querySelector('#gear-type').value.trim().toLowerCase()
+      var portValue = document.querySelector('#port').value.trim().toLowerCase()
+      var weightMin = parseFloat(document.querySelector('#weight-min').value)
+      var weightMax = parseFloat(document.querySelector('#weight-max').value)
+      var endDateFrom = getDateValue('trip-end-date-from')
+      var endDateTo = getDateValue('trip-end-date-to')
+      var matchingRows = []
+
+      rows.forEach(function (row) {
+        var rowDate = new Date(row.dataset.endDate + 'T00:00:00Z')
+        var rowWeight = parseFloat(row.dataset.weight)
+        var searchableText = row.dataset.tripId.toLowerCase() + ' ' + row.dataset.vessel.toLowerCase() + ' ' + row.dataset.pln.toLowerCase() + ' ' + row.dataset.species.toLowerCase() + ' ' + row.dataset.faoCode.toLowerCase() + ' ' + row.dataset.gearType.toLowerCase() + ' ' + row.dataset.adminPort.toLowerCase()
+        var matches = (!query || searchableText.indexOf(query) !== -1) &&
+          (!vesselValue || row.dataset.vessel.toLowerCase().indexOf(vesselValue) !== -1 || row.dataset.pln.toLowerCase().indexOf(vesselValue) !== -1) &&
+          (!adminPortValue || row.dataset.adminPort.toLowerCase().indexOf(adminPortValue) !== -1) &&
+          (!speciesValue || row.dataset.species.toLowerCase().indexOf(speciesValue) !== -1 || row.dataset.faoCode.toLowerCase().indexOf(speciesValue) !== -1) &&
+          (!gearTypeValue || row.dataset.gearType.toLowerCase().indexOf(gearTypeValue) !== -1) &&
+          (!portValue || row.dataset.departurePort.toLowerCase().indexOf(portValue) !== -1 || row.dataset.returnPort.toLowerCase().indexOf(portValue) !== -1) &&
+          (!endDateFrom || rowDate.getTime() >= endDateFrom.getTime()) &&
+          (!endDateTo || rowDate.getTime() <= endDateTo.getTime()) &&
+          (isNaN(weightMin) || rowWeight >= weightMin) &&
+          (isNaN(weightMax) || rowWeight <= weightMax)
+
+        row.dataset.matchesFilters = matches
+        if (matches) matchingRows.push(row)
+      })
+
+      noResults.hidden = matchingRows.length !== 0
+      renderPage(matchingRows)
+    }
+
+    searchForm.addEventListener('submit', function (event) {
+      event.preventDefault()
+      applyFilters(true)
+    })
+
+    filterForm.addEventListener('submit', function (event) {
+      event.preventDefault()
+      applyFilters(true)
+      closeFilterPanel()
+    })
+
+    filterForm.addEventListener('reset', function () {
+      window.setTimeout(function () {
+        applyFilters(true)
+      }, 0)
+    })
+
+    var exportButton = document.querySelector('#export-trip-data')
+    if (exportButton) {
+      exportButton.addEventListener('click', function () {
+        var headers = Array.prototype.slice.call(document.querySelector('.catch-records-table--trip-breakdown').tHead.rows[0].cells).map(function (cell) {
+          return cell.textContent.trim()
+        }).concat([
+          'Admin port', 'RSS number', 'User ID', 'Created by', 'User role', 'Created on', 'Received on', 'Submission method',
+          'Retained catch', 'Trip status', 'Amendment reason', 'Gear measurements',
+          'Gear subrectangle', 'Weight below minimum size (kg)', 'Weight discarded (kg)', 'Trip notes'
+        ])
+        var matchingRows = rows.filter(function (row) {
+          return row.dataset.matchesFilters === 'true'
+        })
+        var csvRows = [headers].concat(matchingRows.map(function (row) {
+          var values = Array.prototype.slice.call(row.cells).map(function (cell) {
+            return cell.textContent.trim()
+          }).concat([
+            row.dataset.adminPort,
+            row.dataset.rssNumber,
+            row.dataset.exportUserId,
+            row.dataset.exportCreatedBy,
+            row.dataset.exportUserRole,
+            row.dataset.exportCreatedOn,
+            row.dataset.exportReceivedOn,
+            row.dataset.exportSubmissionMethod,
+            row.dataset.exportRetainedCatch,
+            row.dataset.exportTripStatus,
+            row.dataset.exportAmendmentReason,
+            row.dataset.exportGearMeasurements,
+            row.dataset.exportGearSubrectangle,
+            row.dataset.exportWeightBelowMinimumSize,
+            row.dataset.exportWeightDiscarded,
+            row.dataset.exportTripNotes
+          ])
+          return values.map(function (value) {
+            value = (value || '').trim()
+            if (/^[=+\-@]/.test(value)) value = "'" + value
+            return '"' + value.replace(/"/g, '""') + '"'
+          })
+        }))
+        var csv = '\uFEFF' + csvRows.map(function (row) { return row.join(',') }).join('\r\n')
+        var downloadUrl = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8;' }))
+        var downloadLink = document.createElement('a')
+        downloadLink.href = downloadUrl
+        downloadLink.download = 'trip-breakdown.csv'
+        downloadLink.click()
+        URL.revokeObjectURL(downloadUrl)
+      })
+    }
+
+    paginationList.addEventListener('click', function (event) {
+      var pageLink = event.target.closest('a[data-page]')
+      if (!pageLink) return
+      event.preventDefault()
+      currentPage = Number(pageLink.dataset.page)
+      var matchingRows = rows.filter(function (row) {
+        return row.dataset.matchesFilters === 'true'
+      })
+      renderPage(matchingRows)
+    })
+
+    applyFilters(true)
+  })
+</script>
+{% endblock %}

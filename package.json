@@ -1,9 +1,4 @@
 {
-  "name": "mmo-fes-prototype",
-  "description": "Prototype of the FES service for creating a UK catch certificate, built with the GOV.UK Prototype Kit",
-  "version": "1.0.0",
-  "private": true,
-  "license": "MIT",
   "engines": {
     "node": "26.x",
     "npm": "11.x || 12.x"

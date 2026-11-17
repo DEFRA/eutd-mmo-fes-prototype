@@ -182,7 +182,9 @@ GOV.UK Prototype Kit
     You have added {{ productCount }} processed product{% if productCount > 1 %}s{% endif %} to this consignment
   </h1>
 
-{% if validDocuments | length < 5 and not searchQuery %}
+
+
+{% if validEntries.length == 1 and not searchQuery %}
 
 <h1 class="govuk-heading-l">
   You have added {{ validDocuments.length }} document{% if validDocuments.length > 1 %}s{% endif %} for ‘{{ validEntries[0].description }}’
@@ -194,7 +196,7 @@ GOV.UK Prototype Kit
 <th class="govuk-table__header" scope="col">Product description</th>
 <th class="govuk-table__header" scope="col">Species name (FAO)</th>
 <th class="govuk-table__header" scope="col">Catch certificate</th>
-<th class="govuk-table__header" scope="col">Weight on catch certificate</th>
+<th class="govuk-table__header" scope="col">Catch certificate weight</th>
 <th class="govuk-table__header" scope="col">Export weight before processing</th>
 <th class="govuk-table__header" scope="col">Export weight after processing</th>
 <th class="govuk-table__header" scope="col">Actions</th>
@@ -221,7 +223,7 @@ GOV.UK Prototype Kit
 <td class="govuk-table__cell">
 <div class="govuk-form-group">
 <label class="govuk-label govuk-visually-hidden" for="catch-certificate-weight-{{ loop.index0 }}">
-                    Weight on catch certificate for {{ entry.species }}
+                    Catch certificate weight for {{ entry.species }}
                   </label>
 <div class="govuk-input__wrapper">
 <input class="govuk-input govuk-input--width-5" id="catch-certificate-weight-{{ loop.index0 }}" name="catch-certificate-weight-{{ loop.index0 }}" readonly="" spellcheck="false" type="number" value="{{ entry['catch-certificate-weight'] }}"/>
@@ -252,8 +254,8 @@ GOV.UK Prototype Kit
 </div>
 </td>
 <td class="govuk-table__cell">
-<a class="govuk-link" href="/gamma/ps/edit-product/{{ loop.index0 }}">Edit</a><br/>
-<a class="govuk-link govuk-link--destructive remove-row" href="/gamma/ps/remove-product/{{ loop.index0 }}">Remove</a>
+<a class="govuk-link" href="">Change</a><br/>
+<a class="govuk-link govuk-link--destructive remove-row" href="/gamma/ps/product-description.html?edit={{ loop.index0 }}">Remove</a>
 </td>
 </tr>
             {% endif %}
@@ -290,7 +292,7 @@ GOV.UK Prototype Kit
 <th class="govuk-table__header" scope="col">Product description</th>
 <th class="govuk-table__header" scope="col">Species name (FAO)</th>
 <th class="govuk-table__header" scope="col">Catch certificate</th>
-<th class="govuk-table__header" scope="col">Weight on catch certificate</th>
+<th class="govuk-table__header" scope="col">Catch certificate weight</th>
 <th class="govuk-table__header" scope="col">Export weight before processing</th>
 <th class="govuk-table__header" scope="col">Export weight after processing</th>
 <th class="govuk-table__header" scope="col">Actions</th>
@@ -317,7 +319,7 @@ GOV.UK Prototype Kit
 <td class="govuk-table__cell">
 <div class="govuk-form-group">
 <label class="govuk-label govuk-visually-hidden" for="catch-certificate-weight-{{ loop.index0 }}">
-                    Weight on catch certificate for {{ entry.species }}
+                    Catch certificate weight for {{ entry.species }}
                   </label>
 <div class="govuk-input__wrapper">
 <input class="govuk-input govuk-input--width-5" id="catch-certificate-weight-{{ loop.index0 }}" name="catch-certificate-weight-{{ loop.index0 }}" readonly="" spellcheck="false" type="number" value="{{ entry['catch-certificate-weight'] }}"/>
@@ -348,8 +350,8 @@ GOV.UK Prototype Kit
 </div>
 </td>
 <td class="govuk-table__cell">
-<a class="govuk-link" href="/gamma/ps/edit-product/{{ loop.index0 }}">Edit</a><br/>
-<a class="govuk-link govuk-link--destructive remove-row" href="/gamma/ps/remove-product/{{ loop.index0 }}">Remove</a>
+<a class="govuk-link" href="/gamma/ps/edit-product/{{ loop.index0 }}">Change</a><br/>
+<a class="govuk-link govuk-link--destructive remove-row" href="/gamma/ps/product-description.html?edit={{ loop.index0 }}">Remove</a>
 </td>
 </tr>
             {% endif %}

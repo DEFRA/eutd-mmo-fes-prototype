@@ -1,0 +1,700 @@
+{% extends "layouts/layout-defra.html" %}
+
+{% set isQuatroVessel = data['vessel'] == 'Quatro' %}
+{% set isSeaOtterVessel = data['vessel'] == 'Sea Otter' %}
+{% set isNorthernStarVessel = data['vessel'] == 'Northern Star' %}
+{% set isBubblesVessel = data['vessel'] == 'Bubbles' %}
+{% set vesselName = 'Lady Jane' %}
+{% set vesselPln = 'PZ1' %}
+{% set vesselRss = 'X10001' %}
+{% set vesselCfr = 'GBR000198765' %}
+{% set vesselAdminPort = 'Newlyn' %}
+{% set vesselPortCode = 'GBNLY' %}
+{% set profileVesselReference = 'PZ1' %}
+{% set vesselAdministration = 'England' %}
+{% if isQuatroVessel %}
+  {% set vesselName = 'Quatro' %}
+  {% set vesselPln = 'WY43' %}
+  {% set vesselRss = 'Q12345' %}
+  {% set vesselCfr = 'GBR000100020' %}
+  {% set vesselAdminPort = 'Milford Haven' %}
+  {% set vesselPortCode = 'GBMLF' %}
+  {% set profileVesselReference = 'WY43' %}
+  {% set vesselAdministration = 'Wales' %}
+{% elif isSeaOtterVessel %}
+  {% set vesselName = 'Sea Otter' %}
+  {% set vesselPln = 'RX09' %}
+  {% set vesselRss = 'X10010' %}
+  {% set vesselCfr = 'GBR000100009' %}
+  {% set vesselAdminPort = 'Hastings' %}
+  {% set vesselPortCode = 'GBHTG' %}
+  {% set profileVesselReference = 'RX09' %}
+{% elif isNorthernStarVessel %}
+  {% set vesselName = 'Northern Star' %}
+  {% set vesselPln = 'PZ45' %}
+  {% set vesselRss = 'X10002' %}
+  {% set vesselCfr = 'GBR000100001' %}
+  {% set vesselAdminPort = 'Newlyn' %}
+  {% set vesselPortCode = 'GBNLY' %}
+  {% set profileVesselReference = 'PZ45' %}
+{% elif isBubblesVessel %}
+  {% set vesselName = 'Bubbles' %}
+  {% set vesselPln = 'PZ99' %}
+  {% set vesselRss = 'X10021' %}
+  {% set vesselCfr = 'GBR000100021' %}
+  {% set vesselAdminPort = 'Newlyn' %}
+  {% set vesselPortCode = 'GBNLY' %}
+  {% set profileVesselReference = 'PZ99' %}
+  {% set vesselAdministration = 'England' %}
+{% endif %}
+
+{% block pageTitle %}Web Admin Portal: {{ vesselName }}{% endblock %}
+
+{% set serviceName %}
+Web Admin Portal
+{% endset %}
+
+{% set activeNavSection = "vessels" %}
+
+{% block beforeContent %}
+<a class="govuk-back-link" href="vessels">Back to vessels</a>
+{% endblock %}
+
+{% block content %}
+<style>
+  .catch-records-filters {
+    margin-top: 1rem;
+    padding: 1.5rem;
+    background-color: #f3f2f1;
+    border-top: 1px solid #b1b4b6;
+    position: relative;
+  }
+
+  .catch-records-filter-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: #0b0c0c;
+    font-family: Arial, sans-serif;
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .catch-records-filter-close:hover {
+    background: #dbdad9;
+  }
+
+  .catch-records-filter-close:focus {
+    outline: 3px solid #fd0;
+    box-shadow: inset 0 0 0 2px #0b0c0c;
+  }
+
+  .catch-records-filter-form {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem 2rem;
+  }
+
+  .catch-records-filter-form > h2,
+  .catch-records-filter-form > button {
+    grid-column: 1 / -1;
+  }
+
+  .catch-records-filter-form__actions {
+    grid-column: 1 / -1;
+  }
+
+  .catch-records-filter-form .govuk-form-group {
+    margin-bottom: 0;
+    min-width: 0;
+    align-self: start;
+  }
+
+  .catch-records-filter-form .govuk-fieldset,
+  .catch-records-filter-form .govuk-date-input,
+  .catch-records-typeahead {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .catch-records-filter-form .govuk-checkboxes__input {
+    background-color: #fff;
+  }
+
+  .catch-records-filter-form .govuk-checkboxes__input + .govuk-checkboxes__label::before {
+    background-color: #fff;
+  }
+
+  .catch-records-filter-summary {
+    display: inline-block;
+    margin-bottom: 1rem;
+    padding: 0.5em 1em;
+    background-color: #f3f2f1;
+    color: #0b0c0c;
+    font-family: "GDS Transport", arial, sans-serif;
+    font-size: 1.1875rem;
+    line-height: 1.3157894737;
+    cursor: pointer;
+  }
+
+  .catch-records-filter-summary:hover {
+    background-color: #dbdad9;
+  }
+
+  .catch-records-filter-summary:focus {
+    outline: 3px solid #fd0;
+    box-shadow: inset 0 0 0 2px #0b0c0c;
+  }
+
+  .catch-records-tab-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 1rem;
+    margin-top: 1rem;
+  }
+
+  .catch-records-tab-actions .govuk-button {
+    margin-right: 0;
+  }
+
+  .catch-records-note {
+    padding: 1rem 0;
+    border-bottom: 1px solid #b1b4b6;
+  }
+
+  .catch-records-note__meta {
+    color: #505a5f;
+  }
+
+  .catch-records-note__correct {
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+  }
+
+  @media (max-width: 40.0625em) {
+    .catch-records-filter-form {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+    <p class="govuk-caption-l">Vessel details</p>
+    <h1 class="govuk-heading-xl">{{ vesselName }}</h1>
+    {% if data.usersUpdated == 'added' %}<div class="govuk-notification-banner govuk-notification-banner--success" role="alert"><div class="govuk-notification-banner__content"><p class="govuk-notification-banner__heading">User added to {{ vesselName }}.</p></div></div>{% endif %}
+    {% if data.usersUpdated == 'removed' %}<div class="govuk-notification-banner govuk-notification-banner--success" role="alert"><div class="govuk-notification-banner__content"><p class="govuk-notification-banner__heading">User removed from {{ vesselName }}.</p></div></div>{% endif %}
+
+    <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Vessel name</dt>
+        <dd class="govuk-summary-list__value">{{ vesselName }}</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">PLN</dt>
+        <dd class="govuk-summary-list__value">{{ vesselPln }}</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">RSS</dt>
+        <dd class="govuk-summary-list__value">{{ vesselRss }}</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Administration</dt>
+        <dd class="govuk-summary-list__value">{{ vesselAdministration }}</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">CFR number</dt>
+        <dd class="govuk-summary-list__value">{{ vesselCfr }}</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Admin port</dt>
+        <dd class="govuk-summary-list__value">{{ vesselAdminPort }}</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Port code</dt>
+        <dd class="govuk-summary-list__value">{{ vesselPortCode }}</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Vessel type</dt>
+        <dd class="govuk-summary-list__value">Fishing vessel</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Status</dt>
+        <dd class="govuk-summary-list__value">Active</dd>
+      </div>
+    </dl>
+
+    <div class="govuk-tabs" data-module="govuk-tabs">
+      <h2 class="govuk-tabs__title">Contents</h2>
+      <ul class="govuk-tabs__list">
+        <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
+          <a class="govuk-tabs__tab" href="#users">Users</a>
+        </li>
+        <li class="govuk-tabs__list-item">
+          <a class="govuk-tabs__tab" href="#fishing-trips">Fishing trips</a>
+        </li>
+        <li class="govuk-tabs__list-item">
+          <a class="govuk-tabs__tab" href="#history">History</a>
+        </li>
+        <li class="govuk-tabs__list-item">
+          <a class="govuk-tabs__tab" href="#notes">Notes</a>
+        </li>
+      </ul>
+
+      <div class="govuk-tabs__panel" id="users">
+        <h2 class="govuk-heading-l">Users</h2>
+        <table class="govuk-table">
+          <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+              <th class="govuk-table__header" scope="col">Name</th>
+              <th class="govuk-table__header" scope="col">User ID</th>
+              <th class="govuk-table__header" scope="col">Role</th>
+              <th class="govuk-table__header" scope="col">Linked on</th>
+            </tr>
+          </thead>
+          <tbody class="govuk-table__body">
+            {% if catchRecordsVesselUsers.length == 0 %}
+            <tr class="govuk-table__row"><td class="govuk-table__cell" colspan="4">No users are linked to this vessel.</td></tr>
+            {% else %}
+            {% for linkedUser in catchRecordsVesselUsers %}
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">{% if linkedUser.isNewUser %}<a class="govuk-link" href="new-user-profile?userId={{ linkedUser.userId }}">{{ linkedUser.name }}</a>{% else %}<a class="govuk-link" href="user-profile?user={{ linkedUser.name | replace(' ', '+') }}&amp;status=accepted">{{ linkedUser.name }}</a>{% endif %}</td>
+              <td class="govuk-table__cell">{{ linkedUser.userId }}</td>
+              <td class="govuk-table__cell">{{ linkedUser.role }}</td>
+              <td class="govuk-table__cell">{{ linkedUser.linkedOn }}</td>
+            </tr>
+            {% endfor %}
+            {% endif %}
+          </tbody>
+        </table>
+        {% if catchRecordsRole.permissions.manageVessels == 'full' %}
+        <div class="catch-records-tab-actions">
+          <a class="govuk-button" href="vessel-users?action=add&amp;vessel={{ vesselName | replace(' ', '+') }}">Add user</a>
+          <a class="govuk-button govuk-button--warning" href="vessel-users?action=remove&amp;vessel={{ vesselName | replace(' ', '+') }}">Remove user</a>
+        </div>
+        {% elif catchRecordsRole.permissions.manageVessels == 'skipper' %}
+        <div class="catch-records-tab-actions">
+          <a class="govuk-button" href="vessel-users?action=add&amp;vessel={{ vesselName | replace(' ', '+') }}">Add skipper</a>
+          <a class="govuk-button govuk-button--warning" href="vessel-users?action=remove&amp;vessel={{ vesselName | replace(' ', '+') }}">Remove skipper</a>
+        </div>
+        {% endif %}
+      </div>
+
+      <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="fishing-trips">
+        <h2 class="govuk-heading-l">Fishing trips</h2>
+
+        <details class="catch-records-filter-toggle">
+          <summary class="catch-records-filter-summary">Filters</summary>
+          <div class="catch-records-filters">
+            <button class="catch-records-filter-close" type="button" aria-label="Close filters">x</button>
+            <form action="vessel-profile" class="catch-records-filter-form" method="get">
+              <h2 class="govuk-heading-m">Filters</h2>
+
+              <div class="govuk-form-group">
+                <fieldset class="govuk-fieldset">
+                  <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Trip end date</legend>
+                  <div class="govuk-date-input" id="trip-end-date">
+                    <div class="govuk-date-input__item">
+                      <label class="govuk-label govuk-date-input__label" for="trip-end-date-day">Day</label>
+                      <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="trip-end-date-day" name="trip-end-date-day" type="text" inputmode="numeric">
+                    </div>
+                    <div class="govuk-date-input__item">
+                      <label class="govuk-label govuk-date-input__label" for="trip-end-date-month">Month</label>
+                      <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="trip-end-date-month" name="trip-end-date-month" type="text" inputmode="numeric">
+                    </div>
+                    <div class="govuk-date-input__item">
+                      <label class="govuk-label govuk-date-input__label" for="trip-end-date-year">Year</label>
+                      <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="trip-end-date-year" name="trip-end-date-year" type="text" inputmode="numeric">
+                    </div>
+                  </div>
+                </fieldset>
+              </div>
+
+              <div class="govuk-form-group">
+                <label class="govuk-label govuk-label--s" for="trip-user">User</label>
+                <input class="govuk-input" id="trip-user" name="user" type="text">
+              </div>
+
+              <div class="govuk-form-group">
+                <fieldset class="govuk-fieldset">
+                  <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Status</legend>
+                  <div class="govuk-checkboxes">
+                    {% for status in ["Submitted", "Amended", "Late"] %}
+                    <div class="govuk-checkboxes__item">
+                      <input class="govuk-checkboxes__input" id="trip-status-{{ status | lower }}" name="status" type="checkbox" value="{{ status | lower }}">
+                      <label class="govuk-label govuk-checkboxes__label" for="trip-status-{{ status | lower }}">{{ status }}</label>
+                    </div>
+                    {% endfor %}
+                  </div>
+                </fieldset>
+              </div>
+
+              <div class="govuk-button-group catch-records-filter-form__actions">
+                <button class="govuk-button" type="submit">Apply filters</button>
+                <button class="govuk-button govuk-button--secondary" type="reset">Clear filters</button>
+              </div>
+            </form>
+          </div>
+        </details>
+
+        <table class="govuk-table">
+          <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+              <th class="govuk-table__header" scope="col">Trip end date</th>
+              <th class="govuk-table__header" scope="col">Trip ID</th>
+              <th class="govuk-table__header" scope="col">Name</th>
+              <th class="govuk-table__header" scope="col">Status</th>
+            </tr>
+          </thead>
+          <tbody class="govuk-table__body">
+            {% if isQuatroVessel %}
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">15 June 2026</td>
+              <td class="govuk-table__cell"><a class="govuk-link" href="trip-profile?trip=A45352202606151201&amp;status=amended">A45352202606151201</a></td>
+              <td class="govuk-table__cell"><a class="govuk-link" href="user-profile?user=Peter+Petrelli&amp;status=accepted">Peter Petrelli</a></td>
+              <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--blue">Amended</strong></td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">20 August 2026</td>
+              <td class="govuk-table__cell"><a class="govuk-link" href="trip-profile?trip=E45352202608201402&amp;status=submitted">E45352202608201402</a></td>
+              <td class="govuk-table__cell"><a class="govuk-link" href="user-profile?user=Peter+Petrelli&amp;status=accepted">Peter Petrelli</a></td>
+              <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--green">Submitted</strong></td>
+            </tr>
+            {% elif isSeaOtterVessel %}
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">17 August 2026</td>
+              <td class="govuk-table__cell"><a class="govuk-link" href="trip-profile?trip=C34245202608171402&amp;status=submitted">C34245202608171402</a></td>
+              <td class="govuk-table__cell"><a class="govuk-link" href="user-profile?user=Frank+Castle&amp;status=accepted">Frank Castle</a></td>
+              <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--green">Submitted</strong></td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">22 August 2026</td>
+              <td class="govuk-table__cell"><a class="govuk-link" href="trip-profile?trip=F34245202608221410&amp;status=submitted">F34245202608221410</a></td>
+              <td class="govuk-table__cell"><a class="govuk-link" href="user-profile?user=Frank+Castle&amp;status=accepted">Frank Castle</a></td>
+              <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--green">Submitted</strong></td>
+            </tr>
+            {% elif isNorthernStarVessel %}
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">18 August 2026</td>
+              <td class="govuk-table__cell"><a class="govuk-link" href="trip-profile?trip=D12345202608181401&amp;status=submitted">D12345202608181401</a></td>
+              <td class="govuk-table__cell"><a class="govuk-link" href="user-profile?user=Alice+Wilson&amp;status=accepted">Alice Wilson</a></td>
+              <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--green">Submitted</strong></td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">20 August 2026</td>
+              <td class="govuk-table__cell"><a class="govuk-link" href="trip-profile?trip=E45352202608201402&amp;status=submitted">E45352202608201402</a></td>
+              <td class="govuk-table__cell"><a class="govuk-link" href="user-profile?user=Alice+Wilson&amp;status=accepted">Alice Wilson</a></td>
+              <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--green">Submitted</strong></td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">22 August 2026</td>
+              <td class="govuk-table__cell"><a class="govuk-link" href="trip-profile?trip=F34245202608221410&amp;status=submitted">F34245202608221410</a></td>
+              <td class="govuk-table__cell"><a class="govuk-link" href="user-profile?user=Alice+Wilson&amp;status=accepted">Alice Wilson</a></td>
+              <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--green">Submitted</strong></td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">24 August 2026</td>
+              <td class="govuk-table__cell"><a class="govuk-link" href="trip-profile?trip=G12345202608241410&amp;status=submitted">G12345202608241410</a></td>
+              <td class="govuk-table__cell"><a class="govuk-link" href="user-profile?user=Alice+Wilson&amp;status=accepted">Alice Wilson</a></td>
+              <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--green">Submitted</strong></td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">26 August 2026</td>
+              <td class="govuk-table__cell"><a class="govuk-link" href="trip-profile?trip=H12345202608261410&amp;status=submitted">H12345202608261410</a></td>
+              <td class="govuk-table__cell"><a class="govuk-link" href="user-profile?user=Alice+Wilson&amp;status=accepted">Alice Wilson</a></td>
+              <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--green">Submitted</strong></td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">28 August 2026</td>
+              <td class="govuk-table__cell"><a class="govuk-link" href="trip-profile?trip=I12345202608281410&amp;status=submitted">I12345202608281410</a></td>
+              <td class="govuk-table__cell"><a class="govuk-link" href="user-profile?user=Alice+Wilson&amp;status=accepted">Alice Wilson</a></td>
+              <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--green">Submitted</strong></td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">30 August 2026</td>
+              <td class="govuk-table__cell"><a class="govuk-link" href="trip-profile?trip=J12345202608301410&amp;status=submitted">J12345202608301410</a></td>
+              <td class="govuk-table__cell"><a class="govuk-link" href="user-profile?user=Alice+Wilson&amp;status=accepted">Alice Wilson</a></td>
+              <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--green">Submitted</strong></td>
+            </tr>
+            {% elif isBubblesVessel %}
+            <tr class="govuk-table__row"><td class="govuk-table__cell" colspan="4">No fishing trips recorded for Bubbles.</td></tr>
+            {% else %}
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">18 August 2026</td>
+              <td class="govuk-table__cell"><a class="govuk-link" href="trip-profile?trip=D12345202608181401&amp;status=submitted">D12345202608181401</a></td>
+              <td class="govuk-table__cell"><a class="govuk-link" href="user-profile?user=John+Smith&amp;status=accepted">John Smith</a></td>
+              <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--green">Submitted</strong></td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">16 June 2026</td>
+              <td class="govuk-table__cell"><a class="govuk-link" href="#">A12345202606171701</a></td>
+              <td class="govuk-table__cell">John Smith</td>
+              <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--green">Submitted</strong></td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">14 June 2026</td>
+              <td class="govuk-table__cell"><a class="govuk-link" href="trip-profile">A12345202606151302</a></td>
+              <td class="govuk-table__cell">John Smith</td>
+              <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--blue">Amended</strong></td>
+            </tr>
+            {% endif %}
+          </tbody>
+        </table>
+        <p class="govuk-body"><a class="govuk-link" href="fishing-trips?vessel={{ vesselName | replace(' ', '+') }}">View all fishing trips for {{ vesselName }}</a></p>
+      </div>
+
+      <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="history">
+        <h2 class="govuk-heading-l">History</h2>
+        <table class="govuk-table">
+          <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+              <th class="govuk-table__header" scope="col">Date and time</th>
+              <th class="govuk-table__header" scope="col">Action</th>
+              <th class="govuk-table__header" scope="col">Performed by</th>
+            </tr>
+          </thead>
+          <tbody class="govuk-table__body" id="history-table-body">
+            {% for event in catchRecordsAuditEvents %}
+            {% if event.vesselReference == profileVesselReference %}
+            <tr class="govuk-table__row"><td class="govuk-table__cell">{{ event.dateTime }}</td><td class="govuk-table__cell">{{ event.change }}</td><td class="govuk-table__cell">{{ event.performedBy }}</td></tr>
+            {% endif %}
+            {% endfor %}
+          </tbody>
+        </table>
+        <nav aria-label="History pagination" class="govuk-pagination catch-records-pagination">
+          <ul class="govuk-pagination__list" id="history-pagination-list"></ul>
+        </nav>
+        {% if catchRecordsRole.key == 'serviceManager' %}
+        <p class="govuk-body"><a class="govuk-link" href="audit-log?s={{ profileVesselReference }}">View all history for {{ vesselName }}</a></p>
+        {% endif %}
+      </div>
+
+      <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="notes">
+        <h2 class="govuk-heading-l">Notes</h2>
+        <div id="notes-list" data-read-only="{{ 'true' if catchRecordsRole.readOnly else 'false' }}">
+          {% if isQuatroVessel %}
+          <div class="catch-records-note" id="note-1" data-note-id="1" data-note-author="Maia Bates">
+            <p class="govuk-body-s govuk-!-margin-bottom-1 catch-records-note__meta"><strong>Note 1</strong> &middot; <strong>Maia Bates</strong> &mdash; 10 June 2026, 09:10</p>
+            <p class="govuk-body catch-records-note__text">Vessel details reviewed against the latest registration information.</p>
+            <button class="govuk-link catch-records-note__correct" type="button" hidden>Add correction</button>
+          </div>
+          {% elif isSeaOtterVessel %}
+          <p class="govuk-body" id="empty-notes-message">No notes recorded for Sea Otter.</p>
+          {% elif isNorthernStarVessel %}
+          <p class="govuk-body" id="empty-notes-message">No notes recorded for Northern Star.</p>
+          {% elif isBubblesVessel %}
+          <p class="govuk-body" id="empty-notes-message">No notes recorded for Bubbles.</p>
+          {% else %}
+          <p class="govuk-body" id="empty-notes-message">No notes recorded for Lady Jane.</p>
+          {% endif %}
+        </div>
+        <form class="govuk-!-margin-top-6" id="add-note-form"{% if catchRecordsRole.readOnly %} hidden{% endif %}>
+          <p class="govuk-body-s" id="correction-context" hidden>Correction to note <span id="correction-note-number"></span> <button class="govuk-link catch-records-note__correct" id="cancel-correction" type="button">Cancel correction</button></p>
+          <div class="govuk-form-group">
+            <label class="govuk-label govuk-label--s" for="new-note">Add a note</label>
+            <textarea class="govuk-textarea" id="new-note" name="new-note" rows="4"></textarea>
+          </div>
+          <button class="govuk-button" type="submit">Save note</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block pageScripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var tabs = Array.prototype.slice.call(document.querySelectorAll('.govuk-tabs__tab'))
+    var panels = Array.prototype.slice.call(document.querySelectorAll('.govuk-tabs__panel'))
+
+    function showTab(targetId) {
+      tabs.forEach(function (tab) {
+        var selected = tab.getAttribute('href') === '#' + targetId
+        tab.parentElement.classList.toggle('govuk-tabs__list-item--selected', selected)
+        tab.setAttribute('aria-selected', selected ? 'true' : 'false')
+        tab.setAttribute('tabindex', selected ? '0' : '-1')
+      })
+
+      panels.forEach(function (panel) {
+        panel.classList.toggle('govuk-tabs__panel--hidden', panel.id !== targetId)
+      })
+    }
+
+    tabs.forEach(function (tab) {
+      tab.addEventListener('click', function (event) {
+        event.preventDefault()
+        var targetId = tab.getAttribute('href').substring(1)
+        showTab(targetId)
+        window.history.replaceState(null, '', '#' + targetId)
+      })
+    })
+
+    var initialTab = window.location.hash ? window.location.hash.substring(1) : 'users'
+    showTab(document.getElementById(initialTab) ? initialTab : 'users')
+
+    var historyRows = Array.prototype.slice.call(document.querySelectorAll('#history-table-body .govuk-table__row'))
+    var historyPaginationList = document.querySelector('#history-pagination-list')
+    var historyPageSize = 5
+    var historyCurrentPage = 1
+
+    document.querySelector('#history-table-body').closest('table').addEventListener('catch-records:sorted', function () {
+      historyRows = Array.prototype.slice.call(this.tBodies[0].rows)
+      historyCurrentPage = 1
+      renderHistoryPage()
+    })
+
+    function renderHistoryPagination() {
+      var pageCount = Math.ceil(historyRows.length / historyPageSize)
+      historyPaginationList.innerHTML = ''
+
+      if (pageCount < 2) return
+
+      if (historyCurrentPage > 1) {
+        var previousItem = document.createElement('li')
+        previousItem.className = 'govuk-pagination__item govuk-pagination__prev'
+        previousItem.innerHTML = '<a class="govuk-link govuk-pagination__link" href="#" rel="prev"><span class="govuk-pagination__link-title">Previous<span class="govuk-visually-hidden"> page</span></span></a>'
+        previousItem.querySelector('a').dataset.page = historyCurrentPage - 1
+        historyPaginationList.appendChild(previousItem)
+      }
+
+      for (var page = 1; page <= pageCount; page += 1) {
+        var pageItem = document.createElement('li')
+        pageItem.className = 'govuk-pagination__item' + (page === historyCurrentPage ? ' govuk-pagination__item--current' : '')
+        pageItem.innerHTML = '<a class="govuk-link govuk-pagination__link" href="#" aria-label="Page ' + page + '">' + page + '</a>'
+        var pageLink = pageItem.querySelector('a')
+        pageLink.dataset.page = page
+        if (page === historyCurrentPage) pageLink.setAttribute('aria-current', 'page')
+        historyPaginationList.appendChild(pageItem)
+      }
+
+      if (historyCurrentPage < pageCount) {
+        var nextItem = document.createElement('li')
+        nextItem.className = 'govuk-pagination__item govuk-pagination__next'
+        nextItem.innerHTML = '<a class="govuk-link govuk-pagination__link" href="#" rel="next"><span class="govuk-pagination__link-title">Next<span class="govuk-visually-hidden"> page</span></span></a>'
+        nextItem.querySelector('a').dataset.page = historyCurrentPage + 1
+        historyPaginationList.appendChild(nextItem)
+      }
+    }
+
+    function renderHistoryPage() {
+      var start = (historyCurrentPage - 1) * historyPageSize
+      historyRows.forEach(function (row, index) {
+        row.hidden = index < start || index >= start + historyPageSize
+      })
+      renderHistoryPagination()
+    }
+
+    historyPaginationList.addEventListener('click', function (event) {
+      var pageLink = event.target.closest('a[data-page]')
+      if (!pageLink) return
+      event.preventDefault()
+      historyCurrentPage = Number(pageLink.dataset.page)
+      renderHistoryPage()
+    })
+
+    renderHistoryPage()
+
+    var filterDetails = document.querySelector('.catch-records-filter-toggle')
+    var filterClose = document.querySelector('.catch-records-filter-close')
+    filterClose.addEventListener('click', function () {
+      filterDetails.removeAttribute('open')
+      document.querySelector('.catch-records-filter-summary').focus()
+    })
+
+    var notesList = document.querySelector('#notes-list')
+    var addNoteForm = document.querySelector('#add-note-form')
+    var noteTextarea = document.querySelector('#new-note')
+    var correctionContext = document.querySelector('#correction-context')
+    var correctionNoteNumber = document.querySelector('#correction-note-number')
+    var currentUserName = document.querySelector('header strong').textContent.trim()
+    var correctionNoteId = null
+    var nextNoteId = notesList.querySelectorAll('.catch-records-note').length + 1
+
+    Array.prototype.slice.call(notesList.querySelectorAll('.catch-records-note')).forEach(function (note) {
+      var correctionButton = note.querySelector('.catch-records-note__correct')
+      if (notesList.dataset.readOnly !== 'true' && note.dataset.noteAuthor === currentUserName) {
+        correctionButton.hidden = false
+      } else if (correctionButton) {
+        correctionButton.remove()
+      }
+    })
+
+    notesList.addEventListener('click', function (event) {
+      var button = event.target.closest('.catch-records-note__correct')
+      if (!button) return
+      var note = button.closest('.catch-records-note')
+      if (note.dataset.noteAuthor !== currentUserName) return
+      correctionNoteId = note.dataset.noteId
+      correctionNoteNumber.textContent = correctionNoteId
+      correctionContext.hidden = false
+      noteTextarea.focus()
+    })
+
+    document.querySelector('#cancel-correction').addEventListener('click', function () {
+      correctionNoteId = null
+      correctionContext.hidden = true
+      noteTextarea.focus()
+    })
+
+    addNoteForm.addEventListener('submit', function (event) {
+      event.preventDefault()
+      var text = noteTextarea.value.trim()
+      if (!text) return
+
+      var emptyNotesMessage = document.querySelector('#empty-notes-message')
+      if (emptyNotesMessage) emptyNotesMessage.remove()
+
+      var note = document.createElement('div')
+      note.className = 'catch-records-note'
+      note.dataset.noteId = nextNoteId
+      note.dataset.noteAuthor = currentUserName
+      note.id = 'note-' + nextNoteId
+
+      var now = new Date()
+      var meta = document.createElement('p')
+      meta.className = 'govuk-body-s govuk-!-margin-bottom-1 catch-records-note__meta'
+      meta.innerHTML = '<strong>Note ' + nextNoteId + '</strong> &middot; <strong>' + currentUserName + '</strong> &mdash; ' + now.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) + ', ' + now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })
+
+      var textEl = document.createElement('p')
+      textEl.className = 'govuk-body catch-records-note__text'
+      textEl.textContent = text
+
+      note.appendChild(meta)
+      if (correctionNoteId) {
+        var reference = document.createElement('p')
+        reference.className = 'govuk-body-s'
+        var referenceLink = document.createElement('a')
+        referenceLink.className = 'govuk-link'
+        referenceLink.href = '#note-' + correctionNoteId
+        referenceLink.textContent = 'Correction to note ' + correctionNoteId
+        reference.appendChild(referenceLink)
+        note.appendChild(reference)
+      }
+
+      note.appendChild(textEl)
+      if (!correctionNoteId) {
+        var correctionButton = document.createElement('button')
+        correctionButton.className = 'govuk-link catch-records-note__correct'
+        correctionButton.type = 'button'
+        correctionButton.textContent = 'Add correction'
+        note.appendChild(correctionButton)
+      }
+      notesList.insertBefore(note, notesList.firstChild)
+
+      nextNoteId += 1
+      noteTextarea.value = ''
+      correctionNoteId = null
+      correctionContext.hidden = true
+    })
+  })
+</script>
+{% endblock %}

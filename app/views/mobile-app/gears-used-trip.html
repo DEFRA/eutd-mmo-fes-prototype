@@ -1,0 +1,93 @@
+{% set serviceName = "Record your catch" %}
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Gears used on trip
+{% endblock %}
+
+{% block content %}
+  {% include "../includes/phase.html" %}
+
+<style>
+  .govuk-fieldset {margin-bottom:30px;}
+  .conditional-reveal {margin-left:30px; margin-top:20px; padding:15px; background:#f3f2f1;}
+  .govuk-button-group {margin-top:50px;}
+</style>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+
+    <a href="javascript:history.back()" class="govuk-back-link">Back</a>
+
+    <h1 class="govuk-heading-xl">What gear did you use?</h1>
+
+    <p class="govuk-body">Select all that apply.</p>
+
+    <form method="post" action="/mobile-app/statistical-area">
+
+      <div class="govuk-form-group">
+        <fieldset class="govuk-fieldset">
+          <div class="govuk-checkboxes">
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="gear-1" name="gears" type="checkbox" value="Handlines">
+              <label class="govuk-label govuk-checkboxes__label" for="gear-1">
+                Handlines and pole lines (hand operated)
+              </label>
+            </div>
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="gear-2" name="gears" type="checkbox" value="Pots">
+              <label class="govuk-label govuk-checkboxes__label" for="gear-2">
+                Pots
+              </label>
+            </div>
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="gear-3" name="gears" type="checkbox" value="Longlines">
+              <label class="govuk-label govuk-checkboxes__label" for="gear-3">
+                Longlines not specified
+              </label>
+            </div>
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="gear-4" name="gears" type="checkbox" value="Nephrops">
+              <label class="govuk-label govuk-checkboxes__label" for="gear-4">
+                Nephrops trawls (mesh size 80 mm)
+              </label>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+
+      <div id="nephrops-conditional" class="conditional-reveal" style="display:none;">
+        <h3 class="govuk-heading-s">Nephrops trawls (mesh size 80 mm)</h3>
+        <div class="govuk-form-group">
+          <label class="govuk-label" for="nephrops-shots">
+            Number of times gear was shot on the trip
+          </label>
+          <input class="govuk-input govuk-!-width-one-quarter" id="nephrops-shots" name="nephrops-shots" type="number" inputmode="numeric">
+        </div>
+      </div>
+
+      <div class="govuk-button-group">
+        <button type="submit" class="govuk-button govuk-button--primary" data-module="govuk-button">
+          Save and continue
+        </button>
+      </div>
+
+    </form>
+
+  </div>
+</div>
+
+<script>
+  const gear4 = document.getElementById('gear-4');
+  const nephropConditional = document.getElementById('nephrops-conditional');
+
+  gear4.addEventListener('change', () => {
+    if (gear4.checked) {
+      nephropConditional.style.display = 'block';
+    } else {
+      nephropConditional.style.display = 'none';
+    }
+  });
+</script>
+
+{% endblock %}

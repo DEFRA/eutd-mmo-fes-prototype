@@ -1,0 +1,71 @@
+{% set serviceName = "Record your catch" %}
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Trip submitted
+{% endblock %}
+
+{% block content %}
+  {% include "../includes/phase.html" %}
+
+<style>
+  .success-box {border-left:4px solid #00703c; padding:15px; background:#f3f2f1; margin-bottom:30px;}
+  .reference-box {border:2px solid #1d70b8; padding:20px; margin-bottom:30px; background:#ffffff;}
+  .reference-number {font-size:24px; font-weight:bold; word-break:break-all; margin:10px 0;}
+  .next-steps {margin-bottom:30px;}
+  .next-steps li {margin-bottom:10px;}
+  .govuk-button-group {margin-top:50px;}
+</style>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+
+    <div class="success-box">
+      <h1 class="govuk-heading-xl" style="margin-top:0;">Your catch record has been submitted</h1>
+      <p class="govuk-body">Your trip details for vessel ACHILLES have been successfully recorded.</p>
+    </div>
+
+    <div class="reference-box">
+      <p class="govuk-body"><strong>Your catch record reference:</strong></p>
+      <div class="reference-number">CC-2026-123456</div>
+      <p class="govuk-body">Save this for your records</p>
+    </div>
+
+    <div class="next-steps">
+      <h2 class="govuk-heading-m">What happens next</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>Your catch record has been received by the relevant fishing authority</li>
+        <li>You'll receive a confirmation email within 24 hours</li>
+        <li>You can view your submitted records in your account at any time</li>
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="govuk-heading-m">Next steps</h2>
+      <div class="govuk-button-group">
+        <a href="/mobile-app/departure-port.html" class="govuk-button govuk-button--primary" data-module="govuk-button">
+          Submit another trip
+        </a>
+      </div>
+
+      <ul class="govuk-list">
+        <li><a href="#" class="govuk-link">View my catch records</a></li>
+        <li><a href="#" class="govuk-link">Download this record as PDF</a></li>
+        <li><a href="#" class="govuk-link">Print this record</a></li>
+        <li><a href="#" class="govuk-link">Return to home</a></li>
+      </ul>
+    </div>
+
+    <div class="app-contact-panel" style="margin-top:60px; padding-top:20px; border-top:2px solid #1d70b8;">
+      <h2 class="govuk-heading-m">Get help</h2>
+      <p class="govuk-body">If you have questions about your submission, contact your local MMO office:</p>
+      <ul class="govuk-list">
+        <li><strong>Phone:</strong> 0330 159 1989</li>
+        <li><strong>Monday to Friday, 9am to 5pm</strong> (except public holidays)</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}

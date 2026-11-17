@@ -1,0 +1,98 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  GOV.UK Prototype Kit
+{% endblock %}
+
+{% block content %}
+	{% include "../../includes/phase.html" %}
+
+<style>
+	.govuk-button-group {margin-top:50px;}
+</style>
+
+<style>
+  .app-contact-panel {
+    margin-top: 60px;
+    /* govuk-responsive-margin(9, "top") equivalent */
+    padding-top: 20px;
+    /* govuk-spacing(3) equivalent */
+    border-top: 2px solid #1d70b8;
+    /* govuk-colour("blue") */
+  }
+
+  .app-contact-panel__heading,
+  .app-contact-panel__body,
+  .app-contact-panel__link {
+    max-width: 100%;
+  }
+
+  .app-contact-panel__heading {
+    font-family: "GDS Transport", Arial, sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 1.25;
+    padding-top: 10px;
+  }
+
+  .app-contact-panel__heading:first-child {
+    padding-top: 0;
+  }
+
+  .app-contact-panel__body:last-child {
+    margin-bottom: 0;
+  }
+</style>
+  
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <a href="javascript:history.back()" class="govuk-back-link">Back</a>
+
+      <div class="govuk-panel govuk-panel--confirmation">
+        <h1 class="govuk-panel__title">The catch certificate has been created</h1>
+        <div class="govuk-panel__body">Catch certificate number<br><strong>GBR-2025-CC-DB9443BBF</strong></div>
+      </div>
+      
+		<h2 class="govuk-heading-l">Processing your catch certificate</h2>
+		
+    <p class="govuk-body">Your catch certificate is being processed.</p>
+
+    <p class="govuk-body">This usually takes up to 30 minutes.</p>
+
+    <h2 class="govuk-heading-m">What you can do now</h2>
+
+    <p class="govuk-body">Check <a href="catch-certificates-complete" class="govuk-link">your dashboard</a> regularly for updates.</p>
+
+<p class="govuk-body">Once complete, it will either appear as 'Completed' or 'Failed' on your dashboard.</p>
+
+      <p class="govuk-body">If processing takes longer than 2 hours, contact support.</p>
+
+        <div class="app-contact-panel">
+                <h2 class="app-contact-panel__heading">Get help with your application</h2>
+
+                <p class="app-contact-panel__body">
+                  If you have a catch certificate unique reference number, have it with you when you call.
+                </p>
+
+                <ul class="govuk-list">
+                  <li>Phone: 0330 159 1989</li>
+                  <li>Monday to Friday, 9am to 5pm (except public holidays)</li>
+                </ul>
+
+                <p class="govuk-body">
+                  <a class="govuk-link" href="#">Find out about call charges</a>
+                </p>
+
+                <p class="govuk-body">Read the guidance on <a
+                    href="https://www.gov.uk/guidance/exporting-or-moving-fish-from-the-uk#get-help-with-fish-export-documents"
+                    class="govuk-link" rel="noreferrer noopener" target="_blank">exporting or moving fish from the UK
+                    (opens in new tab)</a>.
+                </p>
+
+              </div>
+
+	  </div>
+  </div>
+
+{% endblock %}

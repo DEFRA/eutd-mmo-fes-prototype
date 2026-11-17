@@ -1,0 +1,482 @@
+{% set serviceName = "Create a UK processing statement" %}
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+GOV.UK Prototype Kit
+{% endblock %}
+
+{% block content %}
+{% include "../../includes/phase.html" %}
+
+<style>
+  .govuk-fieldset {
+    margin-bottom: 30px;
+  }
+
+  .govuk-fieldset__legend {
+    font-weight: bold;
+  }
+
+  #cmr-hint {
+    margin-bottom: 50px;
+  }
+
+  .black {
+    color: #0b0c0c;
+  }
+
+  .govuk-button-group {
+    margin-top: 50px;
+  }
+</style>
+
+<style>
+  .app-contact-panel {
+    margin-top: 60px;
+    padding-top: 20px;
+    border-top: 2px solid #1d70b8;
+  }
+
+  .app-contact-panel__heading,
+  .app-contact-panel__body,
+  .app-contact-panel__link {
+    max-width: 100%;
+  }
+
+  .app-contact-panel__heading {
+    font-family: "GDS Transport", Arial, sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 1.25;
+    padding-top: 10px;
+  }
+
+  .app-contact-panel__heading:first-child {
+    padding-top: 0;
+  }
+
+  .app-contact-panel__body:last-child {
+    margin-bottom: 0;
+  }
+</style>
+
+<style>
+  input[readonly] {
+    background-color: #e8effe;
+    border-color: #0b0c0c;
+    color: #0b0c0c;
+  }
+</style>
+
+<style>
+  .search-container {
+    /* Optional container styling */
+  }
+
+  .form-search {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+    width: 100%;
+  }
+
+  .search-input-wrapper {
+    display: flex;
+    gap: 0.5em;
+    width: 100%;
+  }
+
+  input[type="search"] {
+    flex: 1;
+    width: 100%;
+    font-family: "GDS Transport", arial, sans-serif;
+    height: auto;
+    border-radius: 0;
+    padding: 5px;
+    border: 2px solid #0b0c0c;
+    margin-bottom: 0;
+    -webkit-appearance: none;
+    box-sizing: border-box;
+    font-weight: 400;
+    font-size: 1.1875rem;
+    line-height: 1.3157894737;
+    color: #0b0c0c;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  input[type="search"]:focus {
+    outline: 3px solid #fd0; /* Yellow GOV.UK focus ring */
+    box-shadow: inset 0 0 0 2px #0b0c0c; /* Black inner border */
+    z-index: 1;
+  }
+
+  .btn {
+    background-color: #1d70b8;
+    color: white;
+    border: none;
+    padding: 0.5em 1em;
+    font-size: 1.1875rem;
+    font-family: "GDS Transport", arial, sans-serif;
+    cursor: pointer;
+    line-height: 1.3157894737;
+    border-radius: 0;
+  }
+
+  .btn:hover {
+    background-color: #1d70b8;
+  }
+
+  .btn:focus {
+    outline: 3px solid #fd0;
+    box-shadow: inset 0 0 0 4px #0b0c0c;
+    z-index: 1;
+  }
+</style>
+
+
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+    <a href="javascript:history.back()" class="govuk-back-link">Back</a>
+
+
+{% set processedProducts = [] %}
+{% for entry in data.productEntries %}
+  {% if not entry.isPartial and entry.description and entry.description != "" %}
+    {% set _ = processedProducts.push(entry) %}
+  {% endif %}
+{% endfor %}
+
+    {% set validDocuments = [] %}
+{% for entry in data.productEntries %}
+  {% if entry.productReferenceNumber %}
+    {% set _ = validDocuments.push(entry) %}
+  {% endif %}
+{% endfor %}
+
+{% set tagColours = ["blue", "green", "yellow", "red", "turquoise", "purple", "pink", "orange", "grey"] %}
+{% set uniqueDescriptions = [] %}
+{% for entry in data.productEntries %}
+  {% if entry.description not in uniqueDescriptions %}
+    {% set _ = uniqueDescriptions.push(entry.description) %}
+  {% endif %}
+{% endfor %}
+
+
+
+
+
+    <form method="post" action="/delta/ps/product-summary">
+
+      <div class="govuk-form-group">
+
+        {% set validEntries = [] %}
+{% for entry in data.productEntries %}
+  {% if not entry.isPartial and entry.species %}
+    {% set _ = validEntries.push(entry) %}
+  {% endif %}
+{% endfor %}
+
+        {% if validEntries.length == 1 %}
+
+        <h1 class="govuk-heading-xl">
+  You have added {{ uniqueDescriptions.length }} processed product{% if uniqueDescriptions.length > 1 %}s{% endif %} to this consignment
+</h1>
+
+
+        <h1 class="govuk-heading-l">
+          You have added {{ validDocuments.length }} document{% if validDocuments.length > 1 %}s{% endif %} for ‘{{ data.description }}’
+        </h1>
+
+
+        <table class="govuk-table govuk-table--m">
+          <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+              <th scope="col" class="govuk-table__header">Product description</th>
+              <th scope="col" class="govuk-table__header">Species name (FAO)</th>
+              <th scope="col" class="govuk-table__header">Catch certificate</th>
+              <th scope="col" class="govuk-table__header">Catch certificate weight</th>
+              <th scope="col" class="govuk-table__header">Export weight before processing</th>
+              <th scope="col" class="govuk-table__header">Export weight after processing</th>
+              <th scope="col" class="govuk-table__header">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="govuk-table__body">
+            {% for entry in data.productEntries %}
+            {% if not entry.isPartial and entry.species %}
+            <tr class="govuk-table__row">
+            
+              {% set colourIndex = uniqueDescriptions.indexOf(entry.description) %}
+{% set colour = tagColours[colourIndex % tagColours.length] %}
+<td class="govuk-table__cell">
+  <strong class="govuk-tag govuk-tag--{{ colour }} govuk-!-margin-right-2">
+    {{ entry.description }}
+  </strong>
+</td>
+            
+              <td class="govuk-table__cell">{{ entry.species }}</td>
+              <td class="govuk-table__cell">
+                {% if entry.productReferenceNumber %}
+                {{ entry.productReferenceNumber }}
+                {% endif %}
+              </td>
+              <td class="govuk-table__cell">
+                <div class="govuk-form-group">
+                  <label class="govuk-label govuk-visually-hidden" for="catch-certificate-weight-{{ loop.index0 }}">
+                    Catch certificate weight for {{ entry.species }}
+                  </label>
+                  <div class="govuk-input__wrapper">
+                    <input class="govuk-input govuk-input--width-5" id="catch-certificate-weight-{{ loop.index0 }}"
+                      name="catch-certificate-weight-{{ loop.index0 }}" type="number" min="0"
+                      value="{{ entry['catch-certificate-weight'] }}" spellcheck="false" readonly>
+                    <div class="govuk-input__suffix" aria-hidden="true">kg</div>
+                  </div>
+                </div>
+              </td>
+
+              <td class="govuk-table__cell">
+                <div class="govuk-form-group">
+                  <label class="govuk-label govuk-visually-hidden" for="net-weight-{{ loop.index0 }}">
+                    Export weight before processing for {{ entry.species }}
+                  </label>
+                  <div class="govuk-input__wrapper">
+                    <input class="govuk-input govuk-input--width-5" id="net-weight-{{ loop.index0 }}"
+                      name="net-weight-{{ loop.index0 }}" type="number" min="0" value="{{ entry['net-weight'] }}"
+                      spellcheck="false" readonly>
+                    <div class="govuk-input__suffix" aria-hidden="true">kg</div>
+                  </div>
+                </div>
+              </td>
+
+              <td class="govuk-table__cell">
+                <div class="govuk-form-group">
+                  <label class="govuk-label govuk-visually-hidden" for="fish-weight-{{ loop.index0 }}">
+                    Export weight after processing for {{ entry.species }}
+                  </label>
+                  <div class="govuk-input__wrapper">
+                    <input class="govuk-input govuk-input--width-5" id="fish-weight-{{ loop.index0 }}"
+                      name="fish-weight-{{ loop.index0 }}" type="number" min="0" value="{{ entry['fish-weight'] }}"
+                      spellcheck="false" readonly>
+                    <div class="govuk-input__suffix" aria-hidden="true">kg</div>
+                  </div>
+                </div>
+              </td>
+              <td class="govuk-table__cell">
+                <a class="govuk-link" href="/delta/ps/edit-product/{{ loop.index0 }}">Edit</a><br>
+                <a href="/delta/ps/remove-product/{{ loop.index0 }}"
+                  class="govuk-link govuk-link--destructive remove-row">Remove</a>
+              </td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+          </tbody>
+        </table>
+
+        {% else %}
+
+       <h1 class="govuk-heading-xl">
+  You have added {{ uniqueDescriptions.length }} processed product{% if uniqueDescriptions.length > 1 %}s{% endif %} to this consignment
+</h1>
+
+
+        <div class="bottom search-container">
+              <label class="govuk-label govuk-label--s" for="s">Find the documents for a processed product</label>
+                <div id="species-hint" class="govuk-hint">
+            You can search by product description, FAO code or species name
+          </div>
+                <form method="get" role="search"  id="searchform" class="form-search" action="/delta/ps/product-summary">
+    <div class="search-input-wrapper">
+        <input enterkeyhint="search" title="Search" type="search" value="{{ searchQuery }}" name="s" id="s" class="search-query">
+        <button class="btn" type="submit">
+  <svg class="gem-c-search__icon" width="27" height="27" viewBox="0 0 27 27" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+    <circle cx="12.0161" cy="11.0161" r="8.51613" stroke="currentColor" stroke-width="3"></circle>
+    <line x1="17.8668" y1="17.3587" x2="26.4475" y2="25.9393" stroke="currentColor" stroke-width="3"></line>
+  </svg>
+</button>
+    </div>
+</form>
+            </div>
+
+            <br>
+
+        <table class="govuk-table govuk-table--m">
+          <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+              <th scope="col" class="govuk-table__header">Product description</th>
+              <th scope="col" class="govuk-table__header">Species name (FAO)</th>
+              <th scope="col" class="govuk-table__header">Catch certificate</th>
+              <th scope="col" class="govuk-table__header">Catch certificate weight</th>
+              <th scope="col" class="govuk-table__header">Export weight before processing</th>
+              <th scope="col" class="govuk-table__header">Export weight after processing</th>
+              <th scope="col" class="govuk-table__header">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="govuk-table__body">
+            {% for entry in data.productEntries %}
+            {% if not entry.isPartial and entry.species %}
+            <tr class="govuk-table__row">
+
+             {% set colourIndex = uniqueDescriptions.indexOf(entry.description) %}
+{% set colour = tagColours[colourIndex % tagColours.length] %}
+<td class="govuk-table__cell">
+  <strong class="govuk-tag govuk-tag--{{ colour }} govuk-!-margin-right-2">
+    {{ entry.description }}
+  </strong>
+</td>
+
+              <td class="govuk-table__cell">{{ entry.species }}</td>
+              <td class="govuk-table__cell">
+                {% if entry.productReferenceNumber %}
+                {{ entry.productReferenceNumber }}
+                {% endif %}
+              </td>
+              <td class="govuk-table__cell">
+                <div class="govuk-form-group">
+                  <label class="govuk-label govuk-visually-hidden" for="catch-certificate-weight-{{ loop.index0 }}">
+                    Catch certificate weight for {{ entry.species }}
+                  </label>
+                  <div class="govuk-input__wrapper">
+                    <input class="govuk-input govuk-input--width-5" id="catch-certificate-weight-{{ loop.index0 }}"
+                      name="catch-certificate-weight-{{ loop.index0 }}" type="number" min="0"
+                      value="{{ entry['catch-certificate-weight'] }}" spellcheck="false" readonly>
+                    <div class="govuk-input__suffix" aria-hidden="true">kg</div>
+                  </div>
+                </div>
+              </td>
+
+              <td class="govuk-table__cell">
+                <div class="govuk-form-group">
+                  <label class="govuk-label govuk-visually-hidden" for="net-weight-{{ loop.index0 }}">
+                    Export weight before processing for {{ entry.species }}
+                  </label>
+                  <div class="govuk-input__wrapper">
+                    <input class="govuk-input govuk-input--width-5" id="net-weight-{{ loop.index0 }}"
+                      name="net-weight-{{ loop.index0 }}" type="number" min="0" value="{{ entry['net-weight'] }}"
+                      spellcheck="false" readonly>
+                    <div class="govuk-input__suffix" aria-hidden="true">kg</div>
+                  </div>
+                </div>
+              </td>
+
+              <td class="govuk-table__cell">
+                <div class="govuk-form-group">
+                  <label class="govuk-label govuk-visually-hidden" for="fish-weight-{{ loop.index0 }}">
+                    Export weight after processing for {{ entry.species }}
+                  </label>
+                  <div class="govuk-input__wrapper">
+                    <input class="govuk-input govuk-input--width-5" id="fish-weight-{{ loop.index0 }}"
+                      name="fish-weight-{{ loop.index0 }}" type="number" min="0" value="{{ entry['fish-weight'] }}"
+                      spellcheck="false" readonly>
+                    <div class="govuk-input__suffix" aria-hidden="true">kg</div>
+                  </div>
+                </div>
+              </td>
+              <td class="govuk-table__cell">
+                <a class="govuk-link" href="/delta/ps/edit-product/{{ loop.index0 }}">Edit</a><br>
+                <a href="/delta/ps/remove-product/{{ loop.index0 }}"
+                  class="govuk-link govuk-link--destructive remove-row">Remove</a>
+              </td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+          </tbody>
+        </table>
+
+<nav class="govuk-pagination" aria-label="Pagination">
+  <ul class="govuk-pagination__list">
+    <li class="govuk-pagination__item govuk-pagination__item--current">
+      <a class="govuk-link govuk-pagination__link" href="/delta/ps/product-summary?s={{ searchQuery }}&page=1" aria-label="Page 1" aria-current="page">
+        1
+      </a>
+    </li>
+    <li class="govuk-pagination__item">
+      <a class="govuk-link govuk-pagination__link" href="/delta/ps/product-summary?s={{ searchQuery }}&page=2" aria-label="Page 2">
+        2
+      </a>
+    </li>
+    <li class="govuk-pagination__item">
+      <a class="govuk-link govuk-pagination__link" href="/delta/ps/product-summary?s={{ searchQuery }}&page=3" aria-label="Page 3">
+        3
+      </a>
+    </li>
+  </ul>
+  <div class="govuk-pagination__next">
+    <a class="govuk-link govuk-pagination__link" href="#" rel="next">
+      <span class="govuk-pagination__link-title">
+        Next<span class="govuk-visually-hidden"> page</span>
+      </span>
+      <svg class="govuk-pagination__icon govuk-pagination__icon--next" xmlns="http://www.w3.org/2000/svg" height="13" width="15" aria-hidden="true" focusable="false" viewBox="0 0 15 13">
+        <path d="m8.107-0.0078125-1.4136 1.414 4.2926 4.293h-12.986v2h12.896l-4.1855 3.9766 1.377 1.4492 6.7441-6.4062-6.7246-6.7266z"></path>
+      </svg>
+    </a>
+  </div>
+</nav>
+
+        {% endif %}
+
+
+        <div class="govuk-form-group">
+          <fieldset class="govuk-fieldset" aria-describedby="more-products">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+              Do you need to add another product?
+            </legend>
+            <div class="govuk-radios govuk-radios--inline">
+              <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="more-products-yes" name="more-products" type="radio" value="Yes">
+                <label class="govuk-label govuk-radios__label" for="more-products-yes">Yes</label>
+              </div>
+              <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="more-products-no" name="more-products" type="radio" value="No">
+                <label class="govuk-label govuk-radios__label" for="more-products-no">No</label>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+
+        <details class="govuk-details">
+          <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">Why add another product?</span>
+          </summary>
+          <div class="govuk-details__text">
+            You may need to add another product if your consignment covers multiple species or product types.
+          </div>
+        </details>
+
+        <div class="govuk-button-group">
+          <button class="govuk-button" data-module="govuk-button" type="submit">
+            Save and continue
+          </button>
+          <button class="govuk-button govuk-button--secondary" data-module="govuk-button"
+            formaction="../processing-statement.html">
+            Save as draft
+          </button>
+        </div>
+    </form>
+
+    <p class="govuk-body" style="margin-top: 30px;">
+      <a href="../ps/progress.html" class="govuk-link">Back to your progress</a>
+    </p>
+
+    <div class="app-contact-panel">
+      <h2 class="app-contact-panel__heading">Get help with your application</h2>
+      <p class="app-contact-panel__body">
+        If you have a processing statement unique reference number, have it with you when you call.
+      </p>
+      <ul class="govuk-list">
+        <li>Phone: 0330 159 1989 </li>
+        <li>Monday to Friday, 9am to 5pm (except public holidays)</li>
+      </ul>
+      <p class="govuk-body">
+        <a class="govuk-link" href="#">Find out about call charges</a>
+      </p>
+      <p>Read the guidance on <a
+          href="https://www.gov.uk/guidance/exporting-or-moving-fish-from-the-uk#get-help-with-fish-export-documents"
+          class="govuk-link" rel="noreferrer noopener" target="_blank">exporting or moving fish from the UK
+          (opens in new tab).</a>
+      </p>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

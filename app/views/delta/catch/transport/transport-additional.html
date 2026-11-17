@@ -1,0 +1,225 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  GOV.UK Prototype Kit
+{% endblock %}
+
+{% block content %}
+  {% include "../../../includes/phase.html" %}
+
+    <style>
+  .app-contact-panel {
+    margin-top: 60px;
+    /* govuk-responsive-margin(9, "top") equivalent */
+    padding-top: 20px;
+    /* govuk-spacing(3) equivalent */
+    border-top: 2px solid #1d70b8;
+    /* govuk-colour("blue") */
+  }
+
+  .app-contact-panel__heading,
+  .app-contact-panel__body,
+  .app-contact-panel__link {
+    max-width: 100%;
+  }
+
+  .app-contact-panel__heading {
+    font-family: "GDS Transport", Arial, sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 1.25;
+    padding-top: 10px;
+  }
+
+  .app-contact-panel__heading:first-child {
+    padding-top: 0;
+  }
+
+  .app-contact-panel__body:last-child {
+    margin-bottom: 0;
+  }
+</style>
+
+<style>
+	.govuk-fieldset {margin-bottom:30px;}
+  .govuk-fieldset__legend {font-weight:bold;}
+  #cmr-hint {margin-bottom:50px;}
+  .black {color:#0b0c0c;}
+  .govuk-button-group {margin-top:50px;}
+</style>
+
+<script>
+  function navigateOption() {
+    if (document.getElementById('additional-modes-yes').checked) {
+      window.location = 'transport/transport-type';
+    }
+
+    if (document.getElementById('additional-modes-no').checked) {
+      // No page yet – leave this blank or show a placeholder message
+      window.location = 'progress';
+    }
+
+    return false;
+  }
+</script>
+
+  
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+      
+		<a href="javascript:history.back()" class="govuk-back-link">Back</a>
+		
+		<h1 class="govuk-heading-xl">Transport details</h1>
+
+      <div class="govuk-warning-text">
+  <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+  <strong class="govuk-warning-text__text">
+    <span class="govuk-visually-hidden">Warning</span>
+   Only the transport type with the ‘PDF’ tag will appear on your catch certificate.
+  </strong>
+</div>
+
+<table class="govuk-table govuk-table--small-text-until-tablet">
+  <thead class="govuk-table__head">
+    <tr class="govuk-table__row">
+      <th scope="col" class="govuk-table__header app-custom-class">Transport type</th>
+      <th scope="col" class="govuk-table__header app-custom-class">Documents</th>
+      <th scope="col" class="govuk-table__header app-custom-class">References</th>
+      <th scope="col" class="govuk-table__header app-custom-class"></th>
+      <th scope="col" class="govuk-table__header app-custom-class"></th>
+    </tr>
+  </thead>
+<tbody class="govuk-table__body">
+  {% if groupedTransportTypes %}
+    {% for type, entries in groupedTransportTypes %}
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">{{ type or 'Not provided' }}</td>
+        <td class="govuk-table__cell">
+          {% set docNames = [] %}
+          {% for entry in entries %}
+            {% if entry.documentName is iterable and entry.documentName is not string %}
+              {% for doc in entry.documentName %}
+                {% set docNames = docNames.concat([doc]) %}
+              {% endfor %}
+            {% else %}
+              {% set docNames = docNames.concat([entry.documentName or 'Not provided']) %}
+            {% endif %}
+          {% endfor %}
+          {{ docNames | join(', ') }}
+        </td>
+        <td class="govuk-table__cell">
+          {% set refNumbers = [] %}
+          {% for entry in entries %}
+            {% if entry.referenceNumber is iterable and entry.referenceNumber is not string %}
+              {% for ref in entry.referenceNumber %}
+                {% set refNumbers = refNumbers.concat([ref]) %}
+              {% endfor %}
+            {% else %}
+              {% set refNumbers = refNumbers.concat([entry.referenceNumber or 'Not provided']) %}
+            {% endif %}
+          {% endfor %}
+          {{ refNumbers | join(', ') }}
+        </td>
+        <td class="govuk-table__cell">
+          {# Only the first row should have the PDF tag. Ensure your backend logic always assigns the PDF tag to the first row after any removal. #}
+          {% if loop.first %}
+            <strong class="govuk-tag govuk-tag--blue">PDF</strong>
+          {% endif %}
+        </td>
+        <td class="govuk-table__cell">
+          <a href="/delta/transport/transport-type?edit={{ entries[0]._originalIndex }}" class="govuk-button govuk-button--secondary" data-module="govuk-button">Edit</a>
+          <form method="post" action="/delta/catch/transport/transport-additional" style="display:inline">
+            <input type="hidden" name="removeIndex" value="{{ entries[0]._originalIndex }}">
+            <button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">Remove</button>
+          </form>
+        </td>
+      </tr>
+    {% endfor %}
+  {% else %}
+    <tr><td class="govuk-table__cell" colspan="5">No transport types added yet.</td></tr>
+  {% endif %}
+</tbody>
+
+</table>
+
+
+
+
+
+    
+		
+    <form method="post" action="/delta/catch/transport/transport-additional">
+      <!-- Transport type -->
+      <div class="govuk-form-group">
+        <fieldset class="govuk-fieldset" aria-describedby="additional-modes">
+         <legend class="govuk-fieldset__legend govuk-fieldset__legend--s" for="additional-modes">Do you have more transport modes to add?</legend>
+
+          <div id="transport-mode-hint" class="govuk-hint">
+            You only need to enter the transport mode leaving the country. You can add more if you know them.
+          </div>
+          <div class="govuk-radios govuk-radios--inline">
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="additional-modes-yes" name="additional-modes" type="radio" value="Yes">
+              <label class="govuk-label govuk-radios__label" for="additional-modes-yes">Yes</label>
+            </div>
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="additional-modes-no" name="additional-modes" type="radio" value="No">
+              <label class="govuk-label govuk-radios__label" for="additional-modes-no">No</label>
+            </div>
+          </div>
+        </fieldset>
+        <details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Why add another transport mode?
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+    You may need to add another transport mode if the catch is moved between locations before export — for example, by road to a port and then by sea.
+  </div>
+</details>
+      </div>
+    
+      <!-- Form controls -->
+      <div class="govuk-button-group">
+                  <button class="govuk-button" data-module="govuk-button" type="submit">
+  Save and continue
+</button>
+        <button class="govuk-button govuk-button--secondary" data-module="govuk-button" formaction="../catch-certificates-reference.html">Save as draft</button>
+      </div>
+    </form>
+    
+		   <div class="app-contact-panel">
+                <h2 class="app-contact-panel__heading">Get help with your application</h2>
+
+                <p class="app-contact-panel__body">
+If you have a catch certificate unique reference number, have it with you when you call.
+                </p>
+
+                <ul class="govuk-list">
+                  <li>Phone: 0330 159 1989 </li>
+                  <li>Monday to Friday, 9am to 5pm (except public holidays)</li>
+                </ul>
+
+                <p class="govuk-body">
+                  <a class="govuk-link" href="#">Find out about call charges</a>
+                </p>
+
+                <p>Read the guidance on <a
+                    href="https://www.gov.uk/guidance/exporting-or-moving-fish-from-the-uk#get-help-with-fish-export-documents"
+                    class="govuk-link" rel="noreferrer noopener" target="_blank">exporting or moving fish from the UK
+                    (opens in new tab).</a>
+                </p>
+              </div>
+
+		
+
+	 </div>
+</div>
+
+
+
+            
+
+
+{% endblock %}

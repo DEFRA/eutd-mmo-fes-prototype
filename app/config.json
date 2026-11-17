@@ -12,5 +12,5 @@
   "useCookieSessionStore": false,
   "useDocumentation": true,
   "useHttps": true,
-  "useBrowserSync": true
+  "useBrowserSync": false
 }

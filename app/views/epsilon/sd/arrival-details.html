@@ -1,0 +1,327 @@
+{% set serviceName = "Create a UK non-manipulation document" %}
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+GOV.UK Prototype Kit
+{% endblock %}
+
+{% block content %}
+{% include "../../includes/phase.html" %}
+
+<style>
+  .app-contact-panel {
+    margin-top: 60px;
+    /* govuk-responsive-margin(9, "top") equivalent */
+    padding-top: 20px;
+    /* govuk-spacing(3) equivalent */
+    border-top: 2px solid #1d70b8;
+    /* govuk-colour("blue") */
+  }
+
+  .app-contact-panel__heading,
+  .app-contact-panel__body,
+  .app-contact-panel__link {
+    max-width: 100%;
+  }
+
+  .app-contact-panel__heading {
+    font-family: "GDS Transport", Arial, sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 1.25;
+    padding-top: 10px;
+  }
+
+  .app-contact-panel__heading:first-child {
+    padding-top: 0;
+  }
+
+  .app-contact-panel__body:last-child {
+    margin-bottom: 0;
+  }
+</style>
+
+<style>
+.custom-radio-style .govuk-radios__input {
+  background-color: white !important;
+}
+</style>
+
+
+
+
+
+
+<div class="govuk-grid-row">
+
+  <div class="govuk-grid-column-two-thirds">
+
+    <a href="javascript:history.back()" class="govuk-back-link">Back</a>
+
+
+    <h1 class="govuk-heading-xl">Arrival details<h1>
+
+      <form method="post" action="arrival-details">
+
+<!-- Destination country -->
+<div class="govuk-form-group">
+    <div style="position:relative">
+  <fieldset class="govuk-fieldset" aria-describedby="departure-country-hint">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+      Country of departure
+    </legend>
+
+    <div id="departure-country-hint" class="govuk-hint">
+      Enter the main departure country for the consignment. Do not include countries the goods are passing through.
+    </div>
+    <div style="position: relative;">
+      <input name="departure-country" type="text"
+  class="govuk-input govuk-!-width-two-thirds"
+        id="departure-country" autocomplete="off"
+        aria-expanded="false" role="combobox" aria-autocomplete="list"
+        aria-owns="departure-country-listbox" aria-activedescendant="">
+      <ul id="departure-country-listbox" role="listbox"
+        class="govuk-list"
+        style="display: none; border: 1px solid #b1b4b6; padding: 0.5em; background: white; position: absolute; z-index: 1000; width: 63%;">
+      <script>
+const countries = [
+  "Belgium",
+  "China",
+  "Denmark",
+  "Estonia",
+  "Finland",
+  "France",
+  "Germany",
+  "Greece",
+  "Iceland",
+  "Ireland",
+  "Italy",
+  "Latvia",
+  "Lithuania",
+  "Netherlands",
+  "Norway",
+  "Northern Ireland",
+  "Poland",
+  "Portugal",
+  "Republic of Ireland",
+  "South Korea",
+  "Spain",
+  "Sweden",
+  "United Kingdom",
+  "United States",
+  "Vietnam"
+];
+
+
+
+  const input = document.getElementById("departure-country");
+  const listbox = document.getElementById("departure-country-listbox");
+
+  input.addEventListener("input", () => {
+    const value = input.value.toLowerCase();
+    listbox.innerHTML = "";
+
+    if (value.length < 2) {
+      listbox.style.display = "none";
+      return;
+    }
+
+    const matches = countries.filter(country => country.toLowerCase().includes(value));
+    if (matches.length === 0) {
+      listbox.style.display = "none";
+      return;
+    }
+
+    matches.forEach((country, index) => {
+      const option = document.createElement("li");
+      option.setAttribute("role", "option");
+      option.setAttribute("id", `departure-country-option-${index}`);
+      option.textContent = country;
+      option.style.cursor = "pointer";
+      option.style.padding = "0.25em 0";
+      option.onclick = () => {
+        input.value = country;
+        listbox.style.display = "none";
+      };
+      listbox.appendChild(option);
+    });
+
+    listbox.style.display = "block";
+  });
+
+  // Optional: hide listbox when clicking outside
+  document.addEventListener("click", (e) => {
+    if (!input.contains(e.target) && !listbox.contains(e.target)) {
+      listbox.style.display = "none";
+    }
+  });
+</script>
+      </ul>
+    </div>
+<br>
+
+
+<div class="govuk-form-group">
+  <fieldset class="govuk-fieldset" role="group" aria-describedby="departure-date-issued-hint">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+      Departure date
+    </legend>
+    <div id="departure-date-hint" class="govuk-hint">
+      For example, 27/8/2025
+    </div>
+    <div class="govuk-date-input" id="departure-date">
+      <div class="govuk-date-input__item">
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-date-input__label" for="departure-date-day">
+            Day
+          </label>
+          <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="departure-date-day" name="departure-date-day" type="text" inputmode="numeric">
+        </div>
+      </div>
+      <div class="govuk-date-input__item">
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-date-input__label" for="departure-date-month">
+            Month
+          </label>
+          <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="departure-date-month" name="departure-date-month" type="text" inputmode="numeric">
+        </div>
+      </div>
+      <div class="govuk-date-input__item">
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-date-input__label" for="departure-date-year">
+            Year
+          </label>
+          <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="departure-date-year" name="departure-date-year" type="text" inputmode="numeric">
+        </div>
+      </div>
+    </div>
+  </fieldset>
+</div>
+
+        <!-- Last departure location description -->
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-label--s" for="departure-location">Last departure location</label>
+          <div class="govuk-form-group">
+            <div id="departure-location" class="govuk-hint" for="departure-location">
+              For example, a port, airport or departure point
+            </div>
+            <input class="govuk-input govuk-!-width-two-thirds" id="departure-location" name="departure-location" type="text">
+          </div>
+
+          </div>
+
+          <div class="govuk-form-group">
+  <fieldset class="govuk-fieldset" role="group" aria-describedby="arrival-date-issued-hint">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+      Arrival date at the storage facility
+    </legend>
+    <div id="arrival-date-hint" class="govuk-hint">
+      For example, 30/8/2025
+    </div>
+    <div class="govuk-date-input" id="arrival-date">
+      <div class="govuk-date-input__item">
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-date-input__label" for="arrival-date-day">
+            Day
+          </label>
+          <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="arrival-date-day" name="arrival-date-day" type="text" inputmode="numeric">
+        </div>
+      </div>
+      <div class="govuk-date-input__item">
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-date-input__label" for="arrival-date-month">
+            Month
+          </label>
+          <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="arrival-date-month" name="arrival-date-month" type="text" inputmode="numeric">
+        </div>
+      </div>
+      <div class="govuk-date-input__item">
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-date-input__label" for="arrival-date-year">
+            Year
+          </label>
+          <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="arrival-date-year" name="arrival-date-year" type="text" inputmode="numeric">
+        </div>
+      </div>
+    </div>
+  </fieldset>
+</div>
+
+                  <!-- Arrival storage location description -->
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-label--s" for="commodity-code">Storage location for arrival</label>
+          <div class="govuk-form-group">
+            <div id="storage-location" class="govuk-hint" for="storage-location">
+              For example, a warehouse, cold store, or port facility.
+            </div>
+            <input class="govuk-input govuk-!-width-two-thirds" id="storage-location" name="storage-location" type="text">
+          </div>
+
+          </div>
+
+
+
+
+
+
+
+             
+           
+
+   
+
+             
+
+
+                <div class="govuk-button-group">
+
+                  <button class="govuk-button" data-module="govuk-button" type="submit">
+                    Save and continue
+                  </button>
+
+                  <button type="button" class="dcx-button govuk-button govuk-button--secondary" id="saveAsDraft"
+                    data-module="govuk-button" data-testid="save-draft-button" onclick="location.href='progress.html'">
+                    Save as draft
+                  </button>
+
+                </div>
+              </form>
+
+
+
+              <p class="govuk-body">
+                <a href="../sd/progress.html" class="govuk-link">Back to your progress</a>
+              </p>
+
+              <div class="app-contact-panel">
+                <h2 class="app-contact-panel__heading">Get help with your application</h2>
+
+                <p class="app-contact-panel__body">
+                  If you have a non-manipulation document unique reference number, have it with you when you call.
+                </p>
+
+                <ul class="govuk-list">
+                  <li>Phone: 0330 159 1989 </li>
+                  <li>Monday to Friday, 9am to 5pm (except public holidays)</li>
+                </ul>
+
+                <p class="govuk-body">
+                  <a class="govuk-link" href="#">Find out about call charges</a>
+                </p>
+
+                <p>Read the guidance on <a
+                    href="https://www.gov.uk/guidance/exporting-or-moving-fish-from-the-uk#get-help-with-fish-export-documents"
+                    class="govuk-link" rel="noreferrer noopener" target="_blank">exporting or moving fish from the UK
+                    (opens in new tab).</a>
+                </p>
+
+
+
+
+
+
+                  {% endblock %}
+
+              </div>
+            </div>
+            </div>

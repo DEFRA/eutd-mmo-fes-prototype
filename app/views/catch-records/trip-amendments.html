@@ -1,0 +1,53 @@
+{% extends "layouts/layout-defra.html" %}
+
+{% block pageTitle %}Version history - Trip {{ tripRecord.id }}{% endblock %}
+
+{% set serviceName %}
+Web Admin Portal
+{% endset %}
+
+{% set activeNavSection = "fishing-trips" %}
+
+{% block beforeContent %}
+<a class="govuk-back-link" href="trip-profile?trip={{ tripRecord.id }}&amp;status=amended">Back to trip details</a>
+{% endblock %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+    <p class="govuk-caption-l">Trip {{ tripRecord.id }}</p>
+    <h1 class="govuk-heading-xl">Version history</h1>
+    <p class="govuk-body">Select a version to view its details{% if catchRecordsRole.permissions.downloadTripPdf %} or download a PDF{% endif %}.</p>
+    {% if tripRecord.isPrototypeSample %}<p class="govuk-hint">The amendment history shown for this trip is sample prototype data.</p>{% endif %}
+
+    <div class="catch-records-table-wrapper" role="region" aria-label="Version history for trip {{ tripRecord.id }}" tabindex="0">
+      <table class="govuk-table">
+        <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+            <th class="govuk-table__header" scope="col">Version</th>
+            <th class="govuk-table__header" scope="col">Date and time</th>
+            <th class="govuk-table__header" scope="col">Submitted or amended by</th>
+            {% if catchRecordsRole.permissions.downloadTripPdf %}<th class="govuk-table__header" scope="col">Action</th>{% endif %}
+          </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+          {% for version in tripRecord.amendments %}
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell"><a class="govuk-link" href="trip-profile?trip={{ tripRecord.id }}&amp;status=amended&amp;version={{ version.key }}">{{ version.label }}</a></td>
+            <td class="govuk-table__cell">{{ version.dateTime }}</td>
+            <td class="govuk-table__cell">{{ version.by }}</td>
+            {% if catchRecordsRole.permissions.downloadTripPdf %}<td class="govuk-table__cell"><a class="govuk-link" href="#" aria-label="Download PDF for {{ version.label }}">Download PDF</a></td>{% endif %}
+          </tr>
+          {% endfor %}
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell"><a class="govuk-link" href="trip-profile?trip={{ tripRecord.id }}&amp;status=submitted&amp;version=original">Original record</a></td>
+            <td class="govuk-table__cell">{{ tripRecord.originalVersion.dateTime }}</td>
+            <td class="govuk-table__cell">{{ tripRecord.originalVersion.by }}</td>
+            {% if catchRecordsRole.permissions.downloadTripPdf %}<td class="govuk-table__cell"><a class="govuk-link" href="#" aria-label="Download PDF for original record">Download PDF</a></td>{% endif %}
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

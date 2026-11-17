@@ -1,0 +1,41 @@
+<script type="module">
+  import { SortableTable } from '/catch-records/sortable-table.mjs'
+
+  function initialiseCatchRecordsSorting() {
+    var months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec']
+    document.querySelectorAll('main table[data-module="moj-sortable-table"], main #history table').forEach(function (table) {
+      if (!table.tHead || !table.tBodies.length) return
+      var headings = Array.from(table.tHead.querySelectorAll('th'))
+      if (headings.some(function (heading) { return heading.querySelector('button') })) return
+      table.setAttribute('data-module', 'moj-sortable-table')
+      headings.forEach(function (heading) { heading.setAttribute('aria-sort', 'none') })
+      Array.from(table.tBodies[0].rows).forEach(function (row) {
+        Array.from(row.cells).forEach(function (cell, index) {
+          var text = cell.textContent.replace(/\s+/g, ' ').trim()
+          var heading = headings[index].textContent.trim()
+          var date = /(\d{1,2}) ([A-Za-z]+) (\d{4})(?:,? (\d{2}):(\d{2}))?/.exec(text)
+          var value = text
+          if (/date|created on|received on|linked on/i.test(heading) && date) {
+            var month = months.indexOf(date[2].slice(0, 3).toLowerCase())
+            if (month !== -1) value = String(Date.UTC(Number(date[3]), month, Number(date[1]), Number(date[4] || 0), Number(date[5] || 0)))
+          } else if (/weight|user id/i.test(heading)) {
+            value = text && text !== '\u2013' ? text : '-1'
+          }
+          cell.setAttribute('data-sort-value', value || ' ')
+        })
+      })
+      var component = new SortableTable(table)
+      var addRows = component.addRows.bind(component)
+      component.addRows = function (rows) {
+        addRows(rows)
+        table.dispatchEvent(new CustomEvent('catch-records:sorted'))
+      }
+    })
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initialiseCatchRecordsSorting)
+  } else {
+    initialiseCatchRecordsSorting()
+  }
+</script>

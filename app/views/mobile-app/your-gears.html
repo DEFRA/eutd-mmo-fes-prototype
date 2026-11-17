@@ -1,0 +1,55 @@
+{% set serviceName = "Record your catch" %}
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Your gears
+{% endblock %}
+
+{% block content %}
+  {% include "../includes/phase.html" %}
+
+<style>
+  .gear-item {margin-bottom:30px; padding:15px; border:1px solid #b1b4b6; background:#f3f2f1;}
+  .gear-item h3 {margin-top:0; margin-bottom:10px;}
+  .gear-item p {margin:5px 0;}
+  .govuk-button-group {margin-top:50px;}
+</style>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+
+    <a href="javascript:history.back()" class="govuk-back-link">Back</a>
+
+    <h1 class="govuk-heading-xl">Gears you've added</h1>
+
+    <p class="govuk-body">Review the gears and measurements you've recorded. You can add more gears or remove any you don't need.</p>
+
+    <div id="gears-list">
+      <div class="gear-item">
+        <h3 class="govuk-heading-m">Bottom Otter Trawl</h3>
+        <p><strong>Number of nets:</strong> 2</p>
+        <p><strong>Mesh size:</strong> 100mm</p>
+        <p><a href="#" class="govuk-link govuk-link--destructive">Remove</a></p>
+      </div>
+    </div>
+
+    <form method="post" action="/mobile-app/gears-used-trip">
+
+      <div class="govuk-button-group">
+        <button type="button" class="govuk-button govuk-button--secondary" data-module="govuk-button" onclick="location.href='/mobile-app/gear-selection.html'">
+          Add another gear
+        </button>
+      </div>
+
+      <div class="govuk-button-group">
+        <button type="submit" class="govuk-button govuk-button--primary" data-module="govuk-button">
+          Save and continue
+        </button>
+      </div>
+
+    </form>
+
+  </div>
+</div>
+
+{% endblock %}

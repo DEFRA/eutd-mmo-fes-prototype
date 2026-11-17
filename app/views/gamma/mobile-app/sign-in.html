@@ -1,0 +1,88 @@
+{% set serviceName = "Record your catch" %}
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Sign in
+{% endblock %}
+
+{% block content %}
+  {% include "../../includes/phase.html" %}
+
+<style>
+  .govuk-fieldset {margin-bottom:30px;}
+  .govuk-button-group {margin-top:50px;}
+  .sign-in-container {max-width:500px;}
+</style>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+
+    <div class="sign-in-container">
+
+      <h1 class="govuk-heading-xl">Sign in</h1>
+
+      <p class="govuk-body">Sign in to your account to record your catch.</p>
+
+      <form method="post" action="/gamma/mobile-app/departure-port">
+
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-label--s" for="email">
+            Email address
+          </label>
+          <input class="govuk-input govuk-!-width-full" id="email" name="email" type="email" inputmode="email" autocomplete="email">
+        </div>
+
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-label--s" for="password">
+            Password
+          </label>
+          <input class="govuk-input govuk-!-width-full" id="password" name="password" type="password" autocomplete="current-password">
+        </div>
+
+        <div class="govuk-form-group">
+          <fieldset class="govuk-fieldset">
+            <div class="govuk-checkboxes">
+              <div class="govuk-checkboxes__item">
+                <input class="govuk-checkboxes__input" id="remember" name="remember" type="checkbox" value="yes">
+                <label class="govuk-label govuk-checkboxes__label" for="remember">
+                  Remember me
+                </label>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+
+        <div class="govuk-button-group">
+          <button type="submit" class="govuk-button govuk-button--primary" data-module="govuk-button">
+            Sign in
+          </button>
+        </div>
+
+      </form>
+
+      <hr class="govuk-section-break govuk-section-break--visible" style="margin:30px 0;">
+
+      <h2 class="govuk-heading-m">New to this service?</h2>
+      <p class="govuk-body">
+        <a href="#" class="govuk-link">Create an account</a>
+      </p>
+
+      <p class="govuk-body">
+        <a href="#" class="govuk-link">Forgotten your password?</a>
+      </p>
+
+    </div>
+
+    <div class="app-contact-panel" style="margin-top:60px; padding-top:20px; border-top:2px solid #1d70b8;">
+      <h2 class="govuk-heading-m">Get help</h2>
+      <p class="govuk-body">If you need help signing in, contact your local MMO office:</p>
+      <ul class="govuk-list">
+        <li><strong>Phone:</strong> 0330 159 1989</li>
+        <li><strong>Monday to Friday, 9am to 5pm</strong> (except public holidays)</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}

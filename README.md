@@ -6,15 +6,14 @@ This project was created using the [GOV.UK Prototype Kit](https://prototype-kit.
 ## Getting Started
 
 ### Prerequisites
-- Node.js (version 26.x)
-- npm (version 11.x or 12.x)
+- Node.js 26 & npm 11 or 12
 - Git
 
 ### Installation
 1. **Clone the repository**:
    ```sh
-   git clone https://github.com/thefishman-fish/fes.git
-   cd fes
+   git clone https://github.com/DEFRA/eutd-mmo-fes-prototype.git
+   cd eutd-mmo-fes-prototype
    ```
 
 2. **Install dependencies**:

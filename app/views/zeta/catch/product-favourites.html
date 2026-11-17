@@ -1,0 +1,454 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+GOV.UK Prototype Kit
+{% endblock %}
+
+{% block content %}
+{% include "../../includes/phase.html" %}
+
+<style>
+  .secondary-button-style {
+    display: inline-block;
+    position: relative;
+    padding: 6px 10px 5px;
+    margin: 0 10px 20px 0;
+    /* Adds spacing between buttons */
+    min-width: 80px;
+    width: auto;
+    /* Prevents full-width stretching */
+    font-family: "GDS Transport", arial, sans-serif;
+    font-size: 1.1875rem;
+    font-weight: 400;
+    line-height: 1.3157894737;
+    color: #0b0c0c;
+    background: rgba(0, 0, 0, 0);
+    border: 1px solid #0b0c0c;
+    box-shadow: 0 3px 0 #0b0c0c;
+    text-align: center;
+    text-decoration: none;
+    vertical-align: top;
+    cursor: pointer;
+    border-radius: 0;
+    box-sizing: border-box;
+    -webkit-appearance: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
+  }
+
+  .secondary-button-style:hover {
+    background-color: #f3f2f1;
+    color: #0b0c0c;
+  }
+
+  .secondary-button-style:focus {
+    outline: 3px solid #fd0;
+    outline-offset: 0;
+    box-shadow: inset 0 0 0 1px #0b0c0c;
+  }
+
+  .secondary-button-style:active {
+    top: 2px;
+    box-shadow: 0 1px 0 #0b0c0c;
+  }
+</style>
+
+<style>
+  #guidance {
+    background-color: #eaf4f9;
+    border-left-color: #2b8cc4;
+  }
+
+  #manual,
+  #favourites {
+    background-color: #f8f8f8;
+  }
+
+  .govuk-button-group {
+    margin-top: 50px;
+  }
+
+  #update-button {
+    display: none;
+  }
+
+  #your-products {
+    margin-bottom: 100px;
+  }
+
+  #your-products tbody tr td:last-child {
+    white-space: nowrap;
+  }
+
+  .govuk-table__caption {
+    display: none;
+  }
+
+  .govuk-table tr th:last-child,
+  .govuk-table tr td:last-child {
+    text-align: right;
+  }
+</style>
+
+<script>
+
+  const speciesList = [
+    "Atlantic Cod (COD)", "Haddock (HAD)", "Atlantic Mackerel (MAC)", "European Hake (HKE)",
+    "Atlantic Salmon (SAL)", "European Plaice (PLE)", "Common Sole (SOL)", "European Lobster (LBE)",
+    "Monkfish (MON)", "Edible crab (CRA)", "Herring (HER)", "Bluefin Tuna (BFT)", "Yellowfin Tuna (YFT)",
+    "Bigeye Tuna (BET)", "Swordfish (SWO)", "Anchovy (ANC)", "Sardine (SAR)", "Sprat (SPR)",
+    "Whiting (WHG)", "Pollock (POL)", "Red Mullet (MUL)", "Sea Bass (BSS)", "John Dory (DOR)",
+    "Turbot (TUR)", "Halibut (HAL)", "Ling (LIN)"
+
+  ];
+
+  // FUNCTION: Edit a product
+  function editProduct(btn) {
+
+    // Define the variables
+    var row = btn.parentNode.parentNode;
+    var product = btn.parentNode.parentNode.cells[0].innerHTML;
+    var comCode = btn.parentNode.parentNode.cells[1].innerHTML;
+
+    // Get the row index and use as an ID
+    document.getElementById("pid").value = row.rowIndex;
+
+    // Extract the product into separate variables
+    var productArr = product.split(', ');
+
+    // Populate the species input
+    document.getElementById("species").value = productArr[0];
+
+
+    // Choose the correct state select value
+    for (var option of document.getElementById("state").options) {
+
+      if (option.value === productArr[1]) {
+        option.selected = true;
+      };
+
+    };
+
+    // Choose the correct presentation select value
+    for (var option of document.getElementById("presentation").options) {
+
+      if (option.value === productArr[2]) {
+        option.selected = true;
+      };
+
+    };
+
+    // Choose the correct presentation select value
+    for (var option of document.getElementById("commodity-code").options) {
+
+      if (option.value === comCode) {
+        option.selected = true;
+      };
+
+    };
+
+    // Switch form buttons
+    document.getElementById("add-button").style.display = 'none';
+    document.getElementById("update-button").style.display = 'inline';
+
+    // Stop the page refreshing
+    return false;
+
+  }
+
+  // FUNCTION: Update a product
+  function updateProduct() {
+
+    // Define the variables
+    var rowId = document.getElementById("pid").value;
+    var species = document.getElementById("species").value;
+    var state = document.getElementById("state").value;
+    var presentation = document.getElementById("presentation").value;
+    var comCode = document.getElementById("commodity-code").value;
+    var ptable = document.getElementById("your-products");
+
+    // Update the table cells
+    ptable.rows[rowId].cells[0].innerHTML = species + ", " + state + ", " + presentation;
+    ptable.rows[rowId].cells[1].innerHTML = comCode;
+
+    // Reset the form fields
+    $("#product-form")[0].reset();
+
+    // Return form buttons to default
+    document.getElementById("add-button").style.display = 'inline';
+    document.getElementById("update-button").style.display = 'none';
+
+    // Stop the page refreshing
+    return false;
+
+  }
+
+  // Remove product from table
+  function deleteProduct(btn) {
+    var row = btn.parentNode.parentNode;
+    row.parentNode.removeChild(row);
+  }
+
+  // FUNCTION: Add a product from a favourite
+  function addFavourite() {
+
+    // Define the variables
+    var product = document.getElementById("product").value;
+
+    // Extract the product into separate variables
+    var productArr = product.split(', ');
+
+    // Populate the species input
+    document.getElementById("species").value = productArr[0];
+
+    // First check if a <tbody> tag exists, add one if not
+    if ($("#your-products tbody").length == 0) {
+      $("#your-products").append("<tbody></tbody>");
+    };
+
+    // Append product to the table
+    $("#your-products tbody").append(
+      "<tr>" +
+      "<td class='govuk-table__cell'>" + productArr[0] + ", " + productArr[1] + ", " + productArr[2] + "</td>" +
+      "<td class='govuk-table__cell'>" + productArr[3] + "</td>" +
+      "<td class='govuk-table__cell'><button class='govuk-button govuk-button--secondary' data-module='govuk-button' style='margin-bottom:0;' onclick='editProduct(this);'>Edit</button>&nbsp;&nbsp;<button class='govuk-button govuk-button--secondary' data-module='govuk-button' style='margin-bottom:0;' onclick='deleteProduct(this);'>Remove</button></td>" +
+      "</tr>");
+
+    // Reset form fields
+    $("#favourites-form")[0].reset();
+
+    // Stop page refreshing
+    return false;
+
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    // hook up listeners _after_ the DOM (page) is ready, otherwise they won't exist!
+    const speciesInput = document.getElementById("species");
+    const speciesListbox = document.getElementById("species-listbox");
+
+    speciesInput.addEventListener("input", () => {
+      const value = speciesInput.value.toLowerCase();
+      speciesListbox.innerHTML = "";
+
+      if (value.length < 2) {
+        speciesListbox.style.display = "none";
+        return;
+      }
+
+      const matches = speciesList.filter(item => item.toLowerCase().includes(value));
+      if (matches.length === 0) {
+        speciesListbox.style.display = "none";
+        return;
+      }
+
+      matches.forEach((item, index) => {
+        const option = document.createElement("li");
+        option.setAttribute("role", "option");
+        option.setAttribute("id", `species-option-${index}`);
+        option.textContent = item;
+        option.style.cursor = "pointer";
+        option.style.padding = "0.25em 0";
+        option.onclick = () => {
+          speciesInput.value = item;
+          speciesListbox.style.display = "none";
+        };
+        speciesListbox.appendChild(option);
+      });
+
+      speciesListbox.style.display = "block";
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!speciesInput.contains(e.target) && !speciesListbox.contains(e.target)) {
+        speciesListbox.style.display = "none";
+      }
+    });
+
+  });
+
+</script>
+
+
+
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+
+    <a href="upload-file.html" class="govuk-back-link">Back</a>
+
+    <!-- Guidance -->
+
+<h2 class="govuk-heading-l">Product Favourites</h2>
+
+<p class="govuk-body">
+  <strong>What are product favourites?</strong></p>
+
+  <p class="govuk-body">
+  Product favourites are essential to enable the uploading of products and also can be used to speed up the process of adding products manually.<br>
+</p>
+
+<p class="govuk-body">  When a product favourite is saved, it generates a product ID which can then be used to identify products during the uploading of landings. Product IDs are only used internally by the FES service and have no relevance to the final catch certificate.
+</p>
+
+  
+
+      <!-- Add products panel -->
+      <div class="govuk-tabs__panel" id="manual">
+        <h2 class="govuk-heading-l">Add products</h2>
+
+        <form method="post">
+
+          <input class="govuk-input" id="pid" name="pid" type="hidden" value="">
+
+          <!-- Species -->
+          <label class="govuk-label govuk-label--s" for="species">Common name or FAO code</label>
+          <input class="govuk-input govuk-!-width-one-half" id="species" name="species" type="text" autocomplete="off"
+            aria-expanded="false" role="combobox" aria-autocomplete="list" aria-owns="species-listbox"
+            aria-activedescendant="">
+          <ul id="species-listbox" role="listbox" class="govuk-list"
+            style="display: none; border: 1px solid #b1b4b6; padding: 0.5em; background: white; position: absolute; z-index: 1000; width: 50%;">
+          </ul>
+
+
+          <div style="margin-bottom: 1rem;"></div>
+
+
+          <details class="govuk-details">
+            <summary class="govuk-details__summary">
+              <span class="govuk-details__summary-text">
+                I cannot find the species
+              </span>
+            </summary>
+            <div class="govuk-details__text">
+              <p class="govuk-body">For best results, search for the common English name or the FAO code (if known) as
+                species nicknames are not supported.</p>
+              <p class="govuk-body">Some species are exempt: <a
+                  href="https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:32011R0202&qid=1647522263758&from=EN">Species
+                  exempt from Catch Certificates (europa.eu)</a></p>
+              <p class="govuk-body">If you cannot find the species and it is not exempt, call 0330 159 1989.</p>
+            </div>
+          </details>
+
+       
+
+
+
+
+          <!-- State -->
+          <div class="govuk-form-group">
+            <label class="govuk-label govuk-label--s" for="state">State</label>
+            <select class="govuk-select govuk-!-width-one-half" id="state" name="state">
+              <option value="">Select ...</option>
+              <option value="Alive">Alive</option>
+              <option value="Fresh">Fresh</option>
+              <option value="Frozen">Frozen</option>
+              <option value="Boiled">Boiled</option>
+            </select>
+          </div>
+
+          <!-- Presentation -->
+          <div class="govuk-form-group">
+            <label class="govuk-label govuk-label--s" for="presentation">Presentation</label>
+            <select class="govuk-select govuk-!-width-one-half" id="presentation" name="presentation">
+              <option value="">Select ...</option>
+              <option value="Filleted">Filleted</option>
+              <option value="Whole">Whole</option>
+              <option value="Claws only">Claws only</option>
+            </select>
+          </div>
+
+          <!-- Commodity code -->
+          <div class="govuk-form-group">
+            <label class="govuk-label govuk-label--s" for="commodity-code">Commodity code</label>
+            <select class="govuk-select govuk-!-width-one-half" id="commodity-code" name="commodity-code">
+              <option value="">Select ...</option>
+              <option value="03044490">03044490</option>
+              <option value="03022980">03022980</option>
+              <option value="16051000">16051000</option>
+            </select>
+          </div>
+
+          <details class="govuk-details">
+            <summary class="govuk-details__summary">
+              <span class="govuk-details__summary-text">
+                I cannot find the commodity code
+              </span>
+            </summary>
+            <div class="govuk-details__text">
+              <p class="govuk-body"></p>Call 0330 159 1989 if the commodity code you need is not shown.
+            </div>
+          </details>
+
+       
+
+          <!-- Form controls -->
+          <div class="govuk-button-group">
+            <button class="govuk-button govuk-button--secondary" class="secondary-button-style" data-module="govuk-button" type="reset">Cancel</button>
+            <button type="submit" class="govuk-button" data-module="govuk-button" id="add-button">Add product</button>
+            <button class="govuk-button" data-module="govuk-button" id="update-button"
+              onclick="return updateProduct()">Update product favourite</button>
+          </div>
+          </form>
+
+      </div>
+
+     
+
+      </div>
+    </div>
+<br>
+    <!-- Your products -->
+    <h2 class="govuk-heading-l">Your product favourites</h2>
+
+    <table class="govuk-table" id="your-products">
+      <caption class="govuk-table__caption">Your products</caption>
+      <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+          <th scope="col" class="govuk-table__header">Product ID</th>
+          <th scope="col" class="govuk-table__header">Product</th>
+          <th scope="col" class="govuk-table__header">Action</th>
+        </tr>
+      </thead>
+            <tbody>
+        {% for product in data['products'] %}
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">{{product.species}}, {{product.state}}, {{product.presentation}}</td>
+          <td class="govuk-table__cell">{{product.commodityCode}}</td>
+          <td class="govuk-table__cell">
+            <form method="post" action="delete-product/{{ loop.index }}">
+              <button type="submit" class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0">Remove</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+        <form action="/zeta/landings-entry" method="post">
+    <div class="govuk-button-group">
+<button class="govuk-button" data-module="govuk-button" type="submit">
+        Save and continue
+      </button>
+              <button type="button" class="dcx-button govuk-button govuk-button--secondary" id="saveAsDraft"
+          data-module="govuk-button" data-testid="save-draft-button" onclick="location.href='progress.html'">
+        Save as draft
+      </button>
+
+      
+    </div>
+    </form>
+
+    <p class="govuk-body">
+      <a href="../catch-certificates.html" class="govuk-link">Back to your progress</a>
+    </p>
+
+
+    
+
+
+
+
+    {% include "../../includes/help.html" %}
+    {% endblock %}

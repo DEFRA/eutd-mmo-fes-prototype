@@ -1,0 +1,23 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+Are you sure you want to remove this product description? – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block content %}
+<a href="javascript:history.back()" class="govuk-back-link">Back</a>
+
+<h1 class="govuk-heading-xl">Are you sure you want to remove this product description?</h1>
+
+<p class="govuk-body">This action cannot be undone.</p>
+
+<form method="get" action="/gamma/ps/product-description">
+  <div class="govuk-button-group">
+    <button type="submit" class="govuk-button govuk-button" data-module="govuk-button">
+      Yes, remove product description
+    </button>
+    <a href="javascript:history.back()" class="govuk-link">Cancel</a>
+  </div>
+</form>
+
+{% endblock %}

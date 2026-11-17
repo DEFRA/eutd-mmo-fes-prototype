@@ -1,5 +1,5 @@
 
-{% set serviceName = "Create a UK storage document" %}
+{% set serviceName = "Create a UK non-manipulation document" %}
 {% extends "layouts/main.html" %}
 
 {% block pageTitle %}
@@ -8,6 +8,53 @@
 
 {% block content %}
   {% include "../../includes/phase.html" %}
+
+  <style>
+  .secondary-button-style {
+    display: inline-block;
+    position: relative;
+    padding: 6px 10px 5px;
+    margin: 0 10px 20px 0;
+    /* Adds spacing between buttons */
+    min-width: 80px;
+    width: auto;
+    /* Prevents full-width stretching */
+    font-family: "GDS Transport", arial, sans-serif;
+    font-size: 1.1875rem;
+    font-weight: 400;
+    line-height: 1.3157894737;
+    color: #0b0c0c;
+    background: rgba(0, 0, 0, 0);
+    border: 1px solid #0b0c0c;
+    box-shadow: 0 3px 0 #0b0c0c;
+    text-align: center;
+    text-decoration: none;
+    vertical-align: top;
+    cursor: pointer;
+    border-radius: 0;
+    box-sizing: border-box;
+    -webkit-appearance: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
+  }
+
+  .secondary-button-style:hover {
+    background-color: #f3f2f1;
+    color: #0b0c0c;
+  }
+
+  .secondary-button-style:focus {
+    outline: 3px solid #fd0;
+    outline-offset: 0;
+    box-shadow: inset 0 0 0 1px #0b0c0c;
+  }
+
+  .secondary-button-style:active {
+    top: 2px;
+    box-shadow: 0 1px 0 #0b0c0c;
+  }
+</style>
 
   <style>
     .govuk-table {
@@ -105,6 +152,25 @@
   </ul>
 </div>
 
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-label--s" for="destination-point-truck">Point of destination</label>
+          <div id="destination-point-truck-hint" class="govuk-hint">
+            Enter the final intended destination for the consignment. For example, Bologna or Port of Rotterdam..
+          </div>
+          <input class="govuk-input govuk-!-width-two-thirds" id="destination-point-truck" name="destination-point-truck" type="text" aria-describedby="destination-point-truck-hint">
+        </div>
+
+        <details class="govuk-details" data-module="govuk-details">
+          <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+              Help with point of destination
+            </span>
+          </summary>
+          <div class="govuk-details__text">
+            If you do not know the final destination of the consignment, enter the first EU entry point. For example, Port of Rotterdam.
+          </div>
+        </details>
+
 <div class="govuk-form-group">
   <fieldset class="govuk-fieldset" role="group" aria-describedby="departure-date-uk-issued-hint">
     <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
@@ -191,7 +257,68 @@
           <input class="govuk-input govuk-input--width-10" id="freight-number" name="freight-number" type="text" aria-describedby="freight-number-hint">
         </div>
 
+                      <!-- Container identification -->
+<div id="container-fields">
+  <div class="govuk-form-group container-field">
+    <label class="govuk-label" for="container-identification-truck"><b>Container identification number (optional)</b></label>
+    <div id="plane-departure-hint" class="govuk-hint">Enter the container or trailer identification number. For example, ABCD1234567. </div>
+    <input class="govuk-input govuk-!-width-one-third" id="container-identification-truck" name="container-identification-truck" type="text">
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const containerFields = document.getElementById('container-fields');
+    const addButton = document.getElementById('add-container-button');
+    let containerCount = 1;
+
+    addButton.addEventListener('click', function () {
+      containerCount++;
+
+      const wrapper = document.createElement('div');
+      wrapper.classList.add('govuk-form-group', 'container-field');
+      wrapper.id = `container-field-${containerCount}`;
+
+      const label = document.createElement('label');
+      label.classList.add('govuk-label');
+      label.setAttribute('for', `container-identification-${containerCount}`);
+      label.innerHTML = '<b>Container identification number</b>';
+
+      const input = document.createElement('input');
+      input.classList.add('govuk-input', 'govuk-!-width-one-third');
+      input.id = `container-identification-${containerCount}`;
+      input.name = 'container-identification[]';
+      input.type = 'text';
+
+      const buttonWrapper = document.createElement('div');
+      buttonWrapper.classList.add('govuk-!-margin-top-2');
+
+          const removeButton = document.createElement('button');
+      removeButton.type = 'button';
+      // match the add button styling
+      removeButton.classList.add('govuk-button', 'govuk-button--secondary', 'secondary-button-style');
+      removeButton.textContent = 'Remove';
+      removeButton.addEventListener('click', function () {
+        wrapper.remove();
+      });
+
+      buttonWrapper.appendChild(removeButton);
+      wrapper.appendChild(label);
+      wrapper.appendChild(input);
+      wrapper.appendChild(buttonWrapper);
+      containerFields.appendChild(wrapper);
+    });
+  });
+</script>
+
+
+<div class="govuk-button-group govuk-!-margin-top-2">
+  <button type="button" class="secondary-button-style govuk-button--secondary" id="add-container-button">Add another container</button>
+</div>
+
       </div>
+
+      
       
 
         <!-- Form controls -->
@@ -213,7 +340,7 @@
                 <h2 class="app-contact-panel__heading">Get help with your application</h2>
 
                 <p class="app-contact-panel__body">
-                  If you have a storage document unique reference number, have it with you when you call.
+                  If you have a non-manipulation document unique reference number, have it with you when you call.
                 </p>
 
                 <ul class="govuk-list">

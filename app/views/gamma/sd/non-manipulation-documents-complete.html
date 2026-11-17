@@ -1,4 +1,4 @@
-{% set serviceName = "Create a UK storage document" %}
+{% set serviceName = "Create a UK non-manipulation document" %}
 {% extends "layouts/main.html" %}
 
 {% block head %}
@@ -41,7 +41,7 @@
     <div class="govuk-grid-column-two-thirds">
       <div class="dashboardheader">
         <div class="dashboardinnerheader">
-          <h1 class="govuk-heading-xl">Aqua Seafood Specials: storage documents</h1>
+          <h1 class="govuk-heading-xl">Aqua Seafood Specials: non-manipulation documents</h1>
         </div>
       </div>
       <div class="govuk-!-margin-bottom-3">
@@ -50,13 +50,12 @@
 <a href="../gamma/landings-entry.html" role="button"
    class="dcx-button govuk-button govuk-button--start govuk-!-margin-bottom-3 govuk-!-padding-left-4 govuk-!-padding-right-8"
    draggable="false" data-module="govuk-button">
-  Create a new storage document
+  Create a new non-manipulation document
 </a>
 
 
         </form>
-            <a id="manageYourProductFavourites" class="govuk-link" href="/manage-favourites">Manage your product
-          favourites</a>
+        <p class="govuk-body govuk-!-margin-bottom-6"><a id="manageYourProductFavourites" class="govuk-link" href="/manage-favourites">Manage your product favourites</a></p>
       </div>
 <h2 class="govuk-heading-l">In progress</h2>
 
@@ -65,7 +64,7 @@
   <li class="app-task-list__item govuk-!-padding-left-0 govuk-!-margin-left-0">
     <span class="app-task-list__task-name govuk-!-padding-left-0 govuk-!-margin-left-0">
       <p class="govuk-body-m govuk-!-margin-bottom-0 govuk-!-padding-left-0 govuk-!-margin-left-0">
-       Your draft storage documents will appear here when you’ve created them.</p>
+       Your draft non-manipulation documents will appear here when you’ve created them.</p>
     </span>
   </li>
 </ul>
@@ -81,7 +80,7 @@
             <th scope="col" class="govuk-table__header">Document number</th>
             <th scope="col" class="govuk-table__header">Your reference</th>
             <th scope="col" class="govuk-table__header">Date completed</th>
-            <th scope="col" class="govuk-table__header">Status</th>
+            <th scope="col" class="govuk-table__header">EU CATCH integration</th>
             <th scope="col" class="govuk-table__header">Action</th>
           </tr>
         </thead>
@@ -92,20 +91,56 @@
           <td scope="row" class="govuk-table__cell govuk-!-width-one-quarter">GBR-2025-SD-DB9443BBF</td>
           <td scope="row" class="govuk-table__cell tablerowuserref">Usability testing</td>
           <td scope="row" class="govuk-table__cell">28 May 2025</td>
-                 <td scope="row" class="govuk-table__cell">
-            <strong class="govuk-tag govuk-tag--turquoise">Completed</strong></div>
+          <td scope="row" class="govuk-table__cell">
+            <a href="success.html" class="govuk-link">Check status</a>
           </td>
                   <td scope="row" class="govuk-table__cell govuk-table__cell--numeric"><a id="continue" class="govuk-link"
               href="https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/570855/uk-catch-certificate.pdf">View<span
-                class="govuk-visually-hidden">storage document GBR-2024-CC-042C9AEC2 CC-SIMPLE storage document
+                class="govuk-visually-hidden">non-manipulation document GBR-2024-CC-042C9AEC2 CC-SIMPLE non-manipulation document
                 REFERENCE}</span></a><br><a id="delete" class="govuk-link"
               href="tbc"><span
-                class="govuk-visually-hidden">storage document GBR-2024-CC-042C9AEC2 CC-SIMPLE storage document
+                class="govuk-visually-hidden">non-manipulation document GBR-2024-CC-042C9AEC2 CC-SIMPLE non-manipulation document
                 REFERENCE}</span></a>
                 <a id="continue" class="govuk-link"
               href="progress">Void<span
-                class="govuk-visually-hidden">storage document GBR-2024-CC-042C9AEC2 CC-SIMPLE storage document
+                class="govuk-visually-hidden">non-manipulation document GBR-2024-CC-042C9AEC2 CC-SIMPLE non-manipulation document
                 REFERENCE}</span><br>Copy</a>
+              </td>
+   
+        </tr>
+        <tr class="govuk-table__row">
+          <td scope="row" class="govuk-table__cell govuk-!-width-one-quarter">GBR-2025-SD-C5E829A4B</td>
+          <td scope="row" class="govuk-table__cell tablerowuserref">Warehouse transfer 3</td>
+          <td scope="row" class="govuk-table__cell">22 May 2025</td>
+          <td scope="row" class="govuk-table__cell">
+            <a href="pending.html" class="govuk-link">Check status</a>
+          </td>
+                  <td scope="row" class="govuk-table__cell govuk-table__cell--numeric"><a id="continue" class="govuk-link"
+              href="https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/570855/uk-catch-certificate.pdf">View<span
+                class="govuk-visually-hidden">non-manipulation document GBR-2025-SD-C5E829A4B</span></a><br><a id="delete" class="govuk-link"
+              href="tbc"><span
+                class="govuk-visually-hidden">non-manipulation document GBR-2025-SD-C5E829A4B</span></a>
+                <a id="continue" class="govuk-link"
+              href="progress">Void<span
+                class="govuk-visually-hidden">non-manipulation document GBR-2025-SD-C5E829A4B</span><br>Copy</a>
+              </td>
+   
+        </tr>
+        <tr class="govuk-table__row">
+          <td scope="row" class="govuk-table__cell govuk-!-width-one-quarter">GBR-2025-SD-F91A2C8D7</td>
+          <td scope="row" class="govuk-table__cell tablerowuserref">Belgium export prep</td>
+          <td scope="row" class="govuk-table__cell">12 May 2025</td>
+          <td scope="row" class="govuk-table__cell">
+            <a href="failed.html" class="govuk-link">Check status</a>
+          </td>
+                  <td scope="row" class="govuk-table__cell govuk-table__cell--numeric"><a id="continue" class="govuk-link"
+              href="https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/570855/uk-catch-certificate.pdf">View<span
+                class="govuk-visually-hidden">non-manipulation document GBR-2025-SD-F91A2C8D7</span></a><br><a id="delete" class="govuk-link"
+              href="tbc"><span
+                class="govuk-visually-hidden">non-manipulation document GBR-2025-SD-F91A2C8D7</span></a>
+                <a id="continue" class="govuk-link"
+              href="progress">Void<span
+                class="govuk-visually-hidden">non-manipulation document GBR-2025-SD-F91A2C8D7</span><br>Copy</a>
               </td>
    
         </tr>
@@ -114,7 +149,7 @@
 
 <div class="govuk-inset-text">
   <p class="govuk-body">
-    Refresh the page to check for updates to your storage documents. Open failed submissions to find out how to fix the problem.
+    Refresh the page to check for updates to your non-manipulation documents. Open failed submissions to find out how to fix the problem.
   </p>
 </div>
 
@@ -186,7 +221,7 @@
 </p>
 <p class="govuk-body">
   <a class="govuk-link" href="https://www.gov.uk/create-a-uk-storage-document" target="_blank" rel="noopener noreferrer">
-    Get a UK storage document
+    Get a UK non-manipulation document
   </a>
 </p></div>
   </div>

@@ -482,7 +482,7 @@ GOV.UK Prototype Kit
             </b></label>
           <div class="govuk-form-group">
             <div id="weight" class="govuk-hint" for="width-20">
-              Enter the weight of the species before any processing. Do not include any additional ingredients.
+              This is the weight of the whole product, including all ingredients – not just the fish. For example, a fish pie weighing 350g.
             </div>
             <div class="govuk-input__wrapper">
               <input class="govuk-input govuk-input--width-5" id="net-weight" name="net-weight" type="number" value=""
@@ -496,7 +496,7 @@ GOV.UK Prototype Kit
           <label class="govuk-label govuk-label--s" for="fish-weight">Export weight after processing
             </b></label>
           <div id="weight" class="govuk-hint" for="width-20">
-            Enter the weight of the species after any processing. Do not include any additional ingredients.
+            This is the weight of the fish only – do not include any other ingredients. For example, 200g of cod used in a fish pie.
           </div>
           <div class="govuk-input__wrapper">
             <input class="govuk-input govuk-input--width-5" id="fish-weight" name="fish-weight" type="number" value=""
@@ -548,6 +548,7 @@ GOV.UK Prototype Kit
               <th scope="col" class="govuk-table__header">Weight on catch certificate</th>
               <th scope="col" class="govuk-table__header">Export weight before processing</th>
               <th scope="col" class="govuk-table__header">Export weight after processing</th>
+              <th scope="col" class="govuk-table__header">Action</th>
             </tr>
           </thead>
           <tbody class="govuk-table__body">
@@ -558,6 +559,10 @@ GOV.UK Prototype Kit
               <td class="govuk-table__cell">{{ entry['catch-certificate-weight']}}kg</td>
               <td class="govuk-table__cell">{{ entry['net-weight'] }}kg</td>
               <td class="govuk-table__cell">{{ entry['fish-weight'] }}kg</td>
+              <td class="govuk-table__cell">
+                <a class="govuk-link" href="/gamma/ps/edit-product/{{ loop.index0 }}">Change</a><br/>
+                <a class="govuk-link govuk-link--destructive" href="/gamma/ps/confirm-remove-description.html?row={{ loop.index0 }}">Remove</a>
+              </td>
             </tr>
             {% endif %}
             {% endfor %}

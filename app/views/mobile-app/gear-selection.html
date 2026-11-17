@@ -1,0 +1,112 @@
+{% set serviceName = "Record your catch" %}
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  What gear did you use?
+{% endblock %}
+
+{% block content %}
+  {% include "../includes/phase.html" %}
+
+<style>
+  .govuk-fieldset {margin-bottom:30px;}
+  .govuk-button-group {margin-top:50px;}
+</style>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+
+    <a href="javascript:history.back()" class="govuk-back-link">Back</a>
+
+    <h1 class="govuk-heading-xl">What gear did you use?</h1>
+
+    <form method="post" action="/mobile-app/gear-selection">
+
+      <div class="govuk-form-group govuk-!-width-two-thirds">
+        <fieldset class="govuk-fieldset" aria-describedby="gear-hint">
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+            Select gear
+          </legend>
+
+          <div id="gear-hint" class="govuk-hint">
+            Type the name of the gear and select from the list.
+          </div>
+
+          <div style="position: relative;">
+            <input name="gear" type="text" class="govuk-input govuk-!-width-full"
+              id="gear-input" autocomplete="off" aria-expanded="false" role="combobox"
+              aria-autocomplete="list" aria-owns="gear-listbox" aria-activedescendant="">
+            <ul id="gear-listbox" role="listbox" class="govuk-list"
+              style="display: none; border: 1px solid #b1b4b6; padding: 0.5em; background: white; position: absolute; z-index: 1000; width: 100%;">
+            </ul>
+          </div>
+        </fieldset>
+      </div>
+
+      <div class="govuk-button-group">
+        <button type="submit" class="govuk-button govuk-button--primary" data-module="govuk-button">
+          Save and continue
+        </button>
+      </div>
+
+    </form>
+
+  </div>
+</div>
+
+<script>
+  const gears = [
+    "Bottom Otter Trawl",
+    "Seine Net",
+    "Purse Seine",
+    "Gillnet",
+    "Longline",
+    "Handlines and pole lines",
+    "Pots",
+    "Nephrops trawls",
+    "Beam trawl"
+  ];
+
+  const input = document.getElementById("gear-input");
+  const listbox = document.getElementById("gear-listbox");
+
+  input.addEventListener("input", () => {
+    const value = input.value.toLowerCase();
+    listbox.innerHTML = "";
+
+    if (value.length < 2) {
+      listbox.style.display = "none";
+      return;
+    }
+
+    const matches = gears.filter(gear => gear.toLowerCase().includes(value));
+    if (matches.length === 0) {
+      listbox.style.display = "none";
+      return;
+    }
+
+    matches.forEach((gear, index) => {
+      const option = document.createElement("li");
+      option.setAttribute("role", "option");
+      option.setAttribute("id", `gear-option-${index}`);
+      option.textContent = gear;
+      option.style.cursor = "pointer";
+      option.style.padding = "0.25em 0";
+      option.onclick = () => {
+        input.value = gear;
+        listbox.style.display = "none";
+      };
+      listbox.appendChild(option);
+    });
+
+    listbox.style.display = "block";
+  });
+
+  document.addEventListener("click", (e) => {
+    if (!input.contains(e.target) && !listbox.contains(e.target)) {
+      listbox.style.display = "none";
+    }
+  });
+</script>
+
+{% endblock %}

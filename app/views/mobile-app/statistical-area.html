@@ -1,0 +1,174 @@
+{% set serviceName = "Record your catch" %}
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Statistical sub area
+{% endblock %}
+
+{% block content %}
+  {% include "../includes/phase.html" %}
+
+<style>
+  .tab-buttons {display:flex; gap:10px; margin-bottom:20px;}
+  .tab-button {padding:10px 15px; background:#f3f2f1; border:1px solid #b1b4b6; cursor:pointer;}
+  .tab-button.active {background:#1d70b8; color:white;}
+  .map-view, .list-view {display:none;}
+  .map-view.active, .list-view.active {display:block;}
+  .govuk-button-group {margin-top:50px;}
+</style>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+
+    <a href="javascript:history.back()" class="govuk-back-link">Back</a>
+
+    <h1 class="govuk-heading-xl">Where was the majority of your catch caught?</h1>
+
+    <p class="govuk-body">The 9 statistical areas closest to your departure port are shown below. Select the area where most of your catch was caught, or select 'Other' to enter a different area.</p>
+
+    <div class="tab-buttons">
+      <button type="button" class="tab-button active" onclick="switchView('map')">🗺️ Map view</button>
+      <button type="button" class="tab-button" onclick="switchView('list')">☰ List view</button>
+    </div>
+
+    <form method="post" action="/mobile-app/species-caught">
+
+      <div class="map-view active" id="map-view">
+        <div style="border:2px solid #b1b4b6; padding:20px; background:#f3f2f1; text-align:center; min-height:300px;">
+          <p class="govuk-body"><strong>Interactive map will display here</strong></p>
+          <p class="govuk-body">9 statistical areas will be clickable</p>
+        </div>
+      </div>
+
+      <div class="list-view" id="list-view">
+        <fieldset class="govuk-fieldset">
+          <div class="govuk-radios">
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="area-1" name="statistical-area" type="radio" value="27.6.a">
+              <label class="govuk-label govuk-radios__label" for="area-1">
+                Area 27.6.a
+              </label>
+            </div>
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="area-2" name="statistical-area" type="radio" value="27.6.b">
+              <label class="govuk-label govuk-radios__label" for="area-2">
+                Area 27.6.b
+              </label>
+            </div>
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="area-3" name="statistical-area" type="radio" value="27.7.a">
+              <label class="govuk-label govuk-radios__label" for="area-3">
+                Area 27.7.a
+              </label>
+            </div>
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="area-4" name="statistical-area" type="radio" value="27.7.b">
+              <label class="govuk-label govuk-radios__label" for="area-4">
+                Area 27.7.b
+              </label>
+            </div>
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="area-5" name="statistical-area" type="radio" value="27.7.c">
+              <label class="govuk-label govuk-radios__label" for="area-5">
+                Area 27.7.c
+              </label>
+            </div>
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="area-6" name="statistical-area" type="radio" value="27.7.d">
+              <label class="govuk-label govuk-radios__label" for="area-6">
+                Area 27.7.d
+              </label>
+            </div>
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="area-7" name="statistical-area" type="radio" value="27.7.e">
+              <label class="govuk-label govuk-radios__label" for="area-7">
+                Area 27.7.e
+              </label>
+            </div>
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="area-8" name="statistical-area" type="radio" value="27.7.f">
+              <label class="govuk-label govuk-radios__label" for="area-8">
+                Area 27.7.f
+              </label>
+            </div>
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="area-9" name="statistical-area" type="radio" value="27.8.a">
+              <label class="govuk-label govuk-radios__label" for="area-9">
+                Area 27.8.a
+              </label>
+            </div>
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="area-other" name="statistical-area" type="radio" value="other">
+              <label class="govuk-label govuk-radios__label" for="area-other">
+                Other - enter a different area
+              </label>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+
+      <div id="other-area-conditional" style="display:none; margin-top:20px; padding:15px; background:#f3f2f1;">
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-label--s" for="other-area-code">
+            Enter the statistical sub area code
+          </label>
+          <div class="govuk-hint">
+            Codes are comprised of ICES rectangle (e.g., 29E6) followed by sub rectangle (1-9). For example: 29E6-1
+          </div>
+          <div style="position: relative;">
+            <input name="other-area-code" type="text" class="govuk-input govuk-!-width-full"
+              id="other-area-code" autocomplete="off" aria-expanded="false" role="combobox"
+              aria-autocomplete="list" aria-owns="area-listbox" aria-activedescendant="">
+            <ul id="area-listbox" role="listbox" class="govuk-list"
+              style="display: none; border: 1px solid #b1b4b6; padding: 0.5em; background: white; position: absolute; z-index: 1000; width: 100%;">
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="govuk-button-group">
+        <button type="submit" class="govuk-button govuk-button--primary" data-module="govuk-button">
+          Save and continue
+        </button>
+      </div>
+
+    </form>
+
+  </div>
+</div>
+
+<script>
+  function switchView(view) {
+    const mapView = document.getElementById('map-view');
+    const listView = document.getElementById('list-view');
+    const buttons = document.querySelectorAll('.tab-button');
+
+    if (view === 'map') {
+      mapView.classList.add('active');
+      listView.classList.remove('active');
+      buttons[0].classList.add('active');
+      buttons[1].classList.remove('active');
+    } else {
+      mapView.classList.remove('active');
+      listView.classList.add('active');
+      buttons[0].classList.remove('active');
+      buttons[1].classList.add('active');
+    }
+  }
+
+  const areaOther = document.getElementById('area-other');
+  const otherAreaConditional = document.getElementById('other-area-conditional');
+  const allAreas = document.querySelectorAll('input[name="statistical-area"]');
+
+  allAreas.forEach(area => {
+    area.addEventListener('change', () => {
+      if (areaOther.checked) {
+        otherAreaConditional.style.display = 'block';
+      } else {
+        otherAreaConditional.style.display = 'none';
+      }
+    });
+  });
+</script>
+
+{% endblock %}

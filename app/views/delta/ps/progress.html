@@ -1,0 +1,322 @@
+{% set serviceName = "Create a UK processing statement" %}
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+Progress - Catch Certificates
+{% endblock %}
+
+
+{% block content %}
+
+<style>
+  .app-contact-panel {
+    margin-top: 60px;
+    /* govuk-responsive-margin(9, "top") equivalent */
+    padding-top: 20px;
+    /* govuk-spacing(3) equivalent */
+    border-top: 2px solid #1d70b8;
+    /* govuk-colour("blue") */
+  }
+
+  .app-contact-panel__heading,
+  .app-contact-panel__body,
+  .app-contact-panel__link {
+    max-width: 100%;
+  }
+
+  .app-contact-panel__heading {
+    font-family: "GDS Transport", Arial, sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 1.25;
+    padding-top: 10px;
+  }
+
+  .app-contact-panel__heading:first-child {
+    padding-top: 0;
+  }
+
+  .app-contact-panel__body:last-child {
+    margin-bottom: 0;
+  }
+</style>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+
+    <div class="govuk-phase-banner" style="position:relative;top:-50px;">
+      <p class="govuk-phase-banner__content">
+        <strong class="govuk-tag govuk-phase-banner__content__tag">Beta</strong>
+        <span class="govuk-phase-banner__text">
+          This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
+        </span>
+      </p>
+    </div>
+
+    <!-- Back link -->
+    <a href="../delta/landings-entry.html" class="govuk-back-link">Back</a>
+
+
+    <h1 class="govuk-heading-xl govuk-!-margin-bottom-2" data-testid="progress-titling">Your progress</h1>
+    <span class="govuk-caption-xl">processing statement: GBR-2025-PS-DB9443BBF</span>
+    <br>
+    <h2 class="govuk-heading-l" id="application-status" class="govuk-!-margin-bottom-2">Application incomplete</h2>
+    <p class="govuk-body" id="progress-counter" class="govuk-body govuk-!-margin-bottom-7">
+      You have completed 0 of 5 required sections.
+    </p>
+
+
+
+
+    <ol class="app-task-list">
+
+      <!-- Section 1 - Exporter -->
+
+      <li>
+        <h2 class="govuk-heading-m govuk-!-font-weight-bold govuk-!-font-size-36 app-task-list__section">
+          <span class="app-task-list__section-number">1. </span> Exporter
+        </h2>
+        <ul class="app-task-list__items">
+
+          <!-- Your reference -->
+          <li class="app-task-list__item">
+            <span class="app-task-list__task-name">
+              <a href="your-reference.html" aria-describedby="your-reference-status">Your reference (optional)</a>
+            </span>
+            {% if data['your-reference'] %}
+            <strong class="govuk-tag app-task-list__tag govuk-tag--green">Completed</strong>
+            {% else %}
+            <strong class="govuk-tag app-task-list__tag govuk-tag--blue">Incomplete</strong>
+            {% endif %}
+          </li>
+
+          <!-- Exporter details -->
+          <li class="app-task-list__item">
+            <span class="app-task-list__task-name">
+              <a href="exporter-details.html" aria-describedby="exporter-details-status">Exporter details</a>
+            </span>
+            {% if data['company-name'] %}
+            <strong class="govuk-tag app-task-list__tag govuk-tag--green">Completed</strong>
+            {% else %}
+            <strong class="govuk-tag app-task-list__tag govuk-tag--blue">Incomplete</strong>
+            {% endif %}
+          </li>
+        </ul>
+      </li>
+
+
+  <!-- Section 2 - Products -->
+<li>
+  <h2 class="govuk-heading-m govuk-!-font-weight-bold govuk-!-font-size-36 app-task-list__section">
+    <span class="app-task-list__section-number">2. </span> Processed products
+  </h2>
+  <ul class="app-task-list__items">
+
+    <!-- Product details -->
+    <li class="app-task-list__item">
+      <span class="app-task-list__task-name">
+        <a href="product-description.html" aria-describedby="product-details-status">Processed product details</a>
+      </span>
+      {% if data.productEntries and data.productEntries.length > 0 %}
+  <strong class="govuk-tag app-task-list__tag govuk-tag--green" id="product-details-status">Completed</strong>
+{% else %}
+  <strong class="govuk-tag app-task-list__tag govuk-tag--blue" id="product-details-status">Incomplete</strong>
+{% endif %}
+    </li>
+
+
+  </ul>
+</li>
+
+
+
+  <!-- Section 4 - Storage facility -->
+<li>
+  <h2 class="govuk-heading-m govuk-!-font-weight-bold govuk-!-font-size-36 app-task-list__section">
+    <span class="app-task-list__section-number">3. </span> Processing plant
+  </h2>
+  <ul class="app-task-list__items">
+
+    <!-- Storage details -->
+    <li class="app-task-list__item">
+      <span class="app-task-list__task-name">
+        <a href="plant-details.html" aria-describedby="storage-details-status">Processing plant details</a>
+      </span>
+      {% if data['plant-name'] and data['building-number'] and data['building-name'] and data['street-name'] and data['postcode'] %}
+  <strong class="govuk-tag app-task-list__tag govuk-tag--green" id="storage-details-status">Completed</strong>
+{% else %}
+  <strong class="govuk-tag app-task-list__tag govuk-tag--blue" id="storage-details-status">Incomplete</strong>
+{% endif %}
+    </li>
+
+  </ul>
+</li>
+
+
+
+       <!-- Section 5 - Products (depature from storage) -->
+      <li>
+        <h2 class="govuk-heading-m govuk-!-font-weight-bold govuk-!-font-size-36 app-task-list__section">
+          <span class="app-task-list__section-number">4. </span> Transportation and logistics
+        </h2>
+        <ul class="app-task-list__items">
+
+          <!-- Health certificate -->
+          <li class="app-task-list__item">
+            <span class="app-task-list__task-name">
+              <a href="health-certificate.html" aria-describedby="export-journey-status">Health certificate</a>
+            </span>
+            {% if data['health-certificate'] and data['certificate-date'] %}
+            <strong class="govuk-tag app-task-list__tag govuk-tag--green">Completed</strong>
+            {% else %}
+            <strong class="govuk-tag app-task-list__tag govuk-tag--blue">Incomplete</strong>
+            {% endif %}
+          </li>
+
+          
+           <!-- Export journey -->
+          <li class="app-task-list__item">
+            <span class="app-task-list__task-name">
+              <a href="departure-destination.html" aria-describedby="export-journey-status">Consignment destination</a>
+            </span>
+            {% if data['departure-destination-country'] %}
+            <strong class="govuk-tag app-task-list__tag govuk-tag--green">Completed</strong>
+            {% else %}
+            <strong class="govuk-tag app-task-list__tag govuk-tag--blue">Incomplete</strong>
+            {% endif %}
+          </li>
+
+
+
+        </ul>
+      </li>
+
+   
+
+    <!-- Page navigation -->
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-full">
+        <div class="govuk-button-group">
+
+
+
+{% set allComplete = true %}
+
+{# Section 1: Exporter #}
+{% if not data['company-name'] %}
+  {% set allComplete = false %}
+{% endif %}
+
+{# Section 2: Products #}
+{% if not (
+  data.productEntries and
+  data.productEntries.length > 0
+) %}
+  {% set allComplete = false %}
+{% endif %}
+
+
+{# Section 3: Processing plant #}
+{% if not (
+  data['plant-name'] and
+  data['building-number'] and
+  data['building-name'] and
+  data['street-name'] and
+  data['postcode']
+) %}
+  {% set allComplete = false %}
+{% endif %}
+
+{# Section 4: Transportation and logistics #}
+{% if not (
+  data['health-certificate'] and
+  data['certificate-date'] and
+  data['departure-destination-country']
+) %}
+  {% set allComplete = false %}
+{% endif %}
+
+
+{# Show button if all sections are complete #}
+{% if allComplete %}
+  <a href="/delta/ps/check-your-answers" role="button" class="dcx-button govuk-button"
+     draggable="false" data-module="govuk-button" data-testid="continue-button">
+    Check your answers and submit
+  </a>
+{% endif %}
+
+
+
+          <a href="../delta/storage-document.html" role="button"
+            class="dcx-button govuk-button govuk-button--secondary" draggable="false" data-module="govuk-button"
+            data-testid="return-to-dashboard-button">
+            Return to your dashboard
+          </a>
+
+
+
+
+
+
+
+        </div>
+      </div>
+    </div>
+
+
+     <div class="app-contact-panel">
+                <h2 class="app-contact-panel__heading">Get help with your application</h2>
+
+                <p class="app-contact-panel__body">
+                  If you have a processing statement unique reference number, have it with you when you call.
+                </p>
+
+                <ul class="govuk-list">
+                  <li>Phone: 0330 159 1989 </li>
+                  <li>Monday to Friday, 9am to 5pm (except public holidays)</li>
+                </ul>
+
+                <p class="govuk-body">
+                  <a class="govuk-link" href="#">Find out about call charges</a>
+                </p>
+
+                <p>Read the guidance on <a
+                    href="https://www.gov.uk/guidance/exporting-or-moving-fish-from-the-uk#get-help-with-fish-export-documents"
+                    class="govuk-link" rel="noreferrer noopener" target="_blank">exporting or moving fish from the UK
+                    (opens in new tab).</a>
+                </p>
+              </div>
+
+
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const allTags = document.querySelectorAll('.app-task-list__item .govuk-tag');
+    let completedCount = 0;
+
+    allTags.forEach(tag => {
+      const isCompleted = tag.textContent.trim() === 'Completed';
+      const isVisible = window.getComputedStyle(tag).display !== 'none';
+      if (isCompleted && isVisible) {
+        completedCount++;
+      }
+    });
+
+    // Update progress counter
+    const counter = document.getElementById('progress-counter');
+    if (counter) {
+      counter.textContent = `You have completed ${completedCount} of 6 required sections.`;
+    }
+
+    // Update application status heading
+    const statusHeading = document.getElementById('application-status');
+    if (statusHeading) {
+      statusHeading.textContent = completedCount === 10 ? 'Application complete' : 'Application incomplete';
+    }
+  });
+</script>
+
+
+{% endblock %}

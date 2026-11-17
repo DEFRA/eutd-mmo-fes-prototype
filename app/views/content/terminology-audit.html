@@ -1,0 +1,166 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Terminology audit — CC, PS, NMD/SD
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+
+    <h1 class="govuk-heading-xl">Terminology audit</h1>
+    <p class="govuk-body">Comparison of terminology and hint text across the three export document journeys: Catch Certificate (CC), Processing Statement (PS), and Non-Manipulation Document / Storage Document (NMD/SD).</p>
+    <p class="govuk-body">Users complete these journeys in order: CC first, then PS, then NMD/SD.</p>
+
+    <table class="govuk-table">
+      <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+          <th scope="col" class="govuk-table__header">#</th>
+          <th scope="col" class="govuk-table__header">Area</th>
+          <th scope="col" class="govuk-table__header">CC (Catch Certificate)</th>
+          <th scope="col" class="govuk-table__header">PS (Processing Statement)</th>
+          <th scope="col" class="govuk-table__header">NMD/SD (Non-Manipulation)</th>
+          <th scope="col" class="govuk-table__header">Conceptually similar</th>
+          <th scope="col" class="govuk-table__header">Priority</th>
+        </tr>
+      </thead>
+      <tbody class="govuk-table__body">
+
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">1</td>
+          <td class="govuk-table__cell"><strong>"Species" vs "fish" vs "raw" vs "product" vs "landed state"</strong></td>
+          <td class="govuk-table__cell">"species" in hint only — <em>"weight of the species to be exported in its landed state"</em> / "products" used as page name — "Add products" / "landed state" used nowhere else</td>
+          <td class="govuk-table__cell">"Species" used as label — "Species weight on catch certificate" / "raw" used in details link only — <em>"weight of the raw fish before any UK processing"</em> / "product" used in hints — <em>"weight of the product before/after processing"</em></td>
+          <td class="govuk-table__cell">"fish" used in hints — <em>"weight of the fish only"</em> / "product" used as label — <em>"Net weight of the product"</em> / "fishery products" used as label — <em>"Net weight of fishery products"</em></td>
+          <td class="govuk-table__cell">All five words are used interchangeably across journeys to describe the same thing: the fish before processing. A single agreed term is needed before anything else can be made consistent.</td>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--red">Critical</strong></td>
+        </tr>
+
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">2</td>
+          <td class="govuk-table__cell"><strong>Weight — source document</strong></td>
+          <td class="govuk-table__cell">Not present — CC is the originating document</td>
+          <td class="govuk-table__cell">"Species weight on catch certificate" / hint: <em>"Enter the weight of the species as shown on the catch certificate."</em></td>
+          <td class="govuk-table__cell">"Weight on entry document" / hint: <em>"Total weight on document for the selected commodity code in kg."</em></td>
+          <td class="govuk-table__cell">PS and NMD both look back at the previous document's weight — this is the same concept described differently.</td>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--red">Critical</strong></td>
+        </tr>
+
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">3</td>
+          <td class="govuk-table__cell"><strong>Weight — initial/raw state</strong></td>
+          <td class="govuk-table__cell">"Export weight (kg)" / hint: <em>"Enter the weight of the species to be exported in its landed state."</em></td>
+          <td class="govuk-table__cell">"Export weight before processing" / hint: <em>"Enter the weight of the product before any processing. Do not include any additional ingredients."</em></td>
+          <td class="govuk-table__cell">"Net weight of the product on arrival" / hint: <em>"This is the weight of the whole product, including all ingredients – not just the fish. For example, a fish pie weighing 0.35kg."</em></td>
+          <td class="govuk-table__cell">All three describe the weight of the fish as it enters this stage of the supply chain — before any transformation.</td>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--red">Critical</strong></td>
+        </tr>
+
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">4</td>
+          <td class="govuk-table__cell"><strong>Weight — fish only</strong></td>
+          <td class="govuk-table__cell">"Export weight (kg)" / "Total export weight" — neither field separates fish-only weight from whole product weight</td>
+          <td class="govuk-table__cell">"Species weight on catch certificate" / "Export weight before processing" — neither field separates fish-only weight from whole product weight</td>
+          <td class="govuk-table__cell">"Net weight of fishery products on arrival" / hint: <em>"This is the weight of the fish only – do not include any other ingredients. For example, 0.2kg of cod used in a fish pie."</em></td>
+          <td class="govuk-table__cell">CC and PS both have weight fields but neither separates fish-only weight from whole product weight. NMD does. This distinction may need to be applied consistently across all three.</td>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--red">Critical</strong></td>
+        </tr>
+
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">5</td>
+          <td class="govuk-table__cell"><strong>Weight — processed/final</strong></td>
+          <td class="govuk-table__cell">"Total export weight"</td>
+          <td class="govuk-table__cell">"Export weight after processing" / hint: <em>"Enter the weight of the product after any processing. Do not include any additional ingredients."</em></td>
+          <td class="govuk-table__cell">"Net weight on departure" / "Fishery product weight on departure" / no hint text on departure summary</td>
+          <td class="govuk-table__cell">All three describe the weight at the point the fish or product leaves this stage — after transformation or storage.</td>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--red">Critical</strong></td>
+        </tr>
+
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">6</td>
+          <td class="govuk-table__cell"><strong>Weight flow (input vs output)</strong></td>
+          <td class="govuk-table__cell">Single weight field, no distinction</td>
+          <td class="govuk-table__cell">Three separate weight fields but not labelled as input/output</td>
+          <td class="govuk-table__cell">Arrival vs departure split across tabs — clearest of the three</td>
+          <td class="govuk-table__cell">The weight journey becomes more complex with each document — only NMD makes the input/output flow visually explicit.</td>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--red">Critical</strong></td>
+        </tr>
+
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">7</td>
+          <td class="govuk-table__cell"><strong>Inclusions/exclusions</strong></td>
+          <td class="govuk-table__cell">Not mentioned in any hint text</td>
+          <td class="govuk-table__cell"><em>"Do not include any additional ingredients"</em> appears in both PS weight hints but does not specify what those ingredients are</td>
+          <td class="govuk-table__cell"><em>"not just the fish"</em> / <em>"do not include any other ingredients"</em> / brine, breadcrumbs, sauce, oil explicitly listed in details link</td>
+          <td class="govuk-table__cell">Guidance on what counts toward each weight becomes more detailed with each journey but is not consistent — CC has none, PS has partial, NMD has most.</td>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--red">Critical</strong></td>
+        </tr>
+
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">8</td>
+          <td class="govuk-table__cell"><strong>Document reference</strong></td>
+          <td class="govuk-table__cell">"Your reference"</td>
+          <td class="govuk-table__cell">"Catch certificate" / hint: <em>"Enter the catch certificate reference number, including any hyphens, dashes or other characters. For example, GBR-2024-CC-BEFCD6036."</em></td>
+          <td class="govuk-table__cell">"Entry document" / hint: <em>"Enter the entry document reference number, including any hyphens, dashes or other characters. For example, GBR-2024-CC-BEFCD6036."</em></td>
+          <td class="govuk-table__cell">"Catch certificate" (PS) and "Entry document" (NMD) may refer to the same document — NMD uses the broader term as the entry document could also be a PS or NMD.</td>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--red">Critical</strong></td>
+        </tr>
+
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">9</td>
+          <td class="govuk-table__cell"><strong>Processing types</strong></td>
+          <td class="govuk-table__cell">hint: <em>"This could include filleting, smoking, freezing, battering or canning."</em> (radio button hint)</td>
+          <td class="govuk-table__cell"><em>"filleting, smoking, freezing, battering or canning"</em> (details link only)</td>
+          <td class="govuk-table__cell">Not mentioned</td>
+          <td class="govuk-table__cell">CC and PS reference the same list. NMD does not — but storage may involve some of these processes.</td>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--orange">High</strong></td>
+        </tr>
+
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">10</td>
+          <td class="govuk-table__cell"><strong>Page titles — adding products/species</strong></td>
+          <td class="govuk-table__cell">"What are you exporting?" (add products) / "Add your trip" (manual entry and direct landing)</td>
+          <td class="govuk-table__cell">"Add your processed product" (product description) / "Add species to your processed product" (product details)</td>
+          <td class="govuk-table__cell">"Product details" (product details) / "Check and confirm your consignment weight" (departure summary)</td>
+          <td class="govuk-table__cell">All three journeys have pages for adding product and weight information but the page titles use different framing — "exporting", "processed product", and "product details" describe the same action at different stages. NMD's "Product details" is notably less descriptive than the others.</td>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--orange">High</strong></td>
+        </tr>
+
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">11</td>
+          <td class="govuk-table__cell"><strong>"State" and "Presentation"</strong></td>
+          <td class="govuk-table__cell">"State" and "Presentation" — explicit dropdown fields describing how the fish is prepared (e.g. gutted, filleted, smoked)</td>
+          <td class="govuk-table__cell">Users describe this themselves in the free-text "Product description" field (e.g. "Battered cod fillets")</td>
+          <td class="govuk-table__cell">"Product storage" — how the product is stored: chilled, frozen or other</td>
+          <td class="govuk-table__cell">All three journeys capture information about the condition or preparation of the fish but in very different ways — structured dropdowns (CC), free text (PS), and storage condition (NMD). The concept is similar but the approach and terminology differ significantly.</td>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--orange">High</strong></td>
+        </tr>
+
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">12</td>
+          <td class="govuk-table__cell"><strong>"Consignment"</strong></td>
+          <td class="govuk-table__cell">Not used</td>
+          <td class="govuk-table__cell">"Consignment" used in product summary — <em>"You have added X processed product(s) to this consignment"</em> / "Consignment item X" as section header in check your answers</td>
+          <td class="govuk-table__cell">"Consignment item X" used as section header in check your answers / <em>"Check and confirm your consignment weight"</em> as page title</td>
+          <td class="govuk-table__cell">"Consignment" appears in PS and NMD but not CC. In NMD it is used as a page title, in PS it is used in body text and section headers. CC uses "Products" and "Landings" instead. A decision is needed on whether "consignment" should be used consistently or avoided in favour of simpler language.</td>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--orange">High</strong></td>
+        </tr>
+
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">13</td>
+          <td class="govuk-table__cell"><strong>"Trip" vs "landing"</strong></td>
+          <td class="govuk-table__cell">"Add your trip" (page title for manual entry and direct landing) / "Start date of fishing trip" (field label) / "Your landings" (table heading) / "Add landing" (button) / "Landings" (check your answers section)</td>
+          <td class="govuk-table__cell">Neither "trip" nor "landing" used</td>
+          <td class="govuk-table__cell">Neither "trip" nor "landing" used</td>
+          <td class="govuk-table__cell">A trip is the whole fishing voyage; a landing is the act of bringing fish ashore. One trip can have multiple landings. These are used inconsistently within CC itself — the page is called "Add your trip" but the table shows "Your landings" and the button says "Add landing".</td>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--orange">High</strong></td>
+        </tr>
+
+      </tbody>
+    </table>
+
+  </div>
+</div>
+
+{% endblock %}
